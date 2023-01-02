@@ -1,4 +1,4 @@
-worker: python rss_telbot.py
+web: python rss_telbot.py
 ; web: gunicorn 프로젝트명.wsgi --log-file - 
 # 기본 값
 ; web: gunicorn 프로젝트명.wsgi --timeout 3000
