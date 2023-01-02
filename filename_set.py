@@ -1,30 +1,8 @@
 
 import urllib.request
 import json
-import time
 
 import googletrans
-from bs4 import BeautifulSoup as bs
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-chrome_options.add_experimental_option('useAutomationExtension', False)
-chrome_options.add_argument("start-maximized")
-chrome_options.add_argument('headless')    # 창 띄우지 X
-chrome_options.add_argument('disable-gpu')  # gpu 사용 X
-chrome_options.add_argument('no-sandbox')
-chrome_options.add_argument("single-process")
-chrome_options.add_argument("disable-dev-shm-usage")
-chrome_options.add_argument("--disableWarnings")
-chrome_options.add_argument('--log-level=1')   # 에러메시지 안뜨게?
-chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.115 Safari/537.36")
-
 
 
 def replaceTxt(txt):
@@ -202,93 +180,6 @@ def translater(txt):
     if result == "": result = txt
     # result = txt
     return result
-
-def get_pumInfo_fc2_test(pumnum, where=None):
-    ''' 
-    if where is "rssbot":
-        return writer1, actor1, createDate
-    else: 
-        return pumname = writer1 + actor1 + title + createDate
-    '''
-    
-    url = f'https://db.msin.jp/'
-    # driver = webdriver.Chrome(chrome_path, options=chrome_options)
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-    driver.get(url)
-    driver.find_element(By.CSS_SELECTOR, 'body > div.modalouter > div > a.close_modal').click() # 18세 확인창
-    try:
-        driver.find_element(By.CSS_SELECTOR, 'body > ins > div > div:nth-child(1) > span > svg > path').click() #광고창 닫기
-    except Exception as e:
-        print(e)
-        print("광고창 없음")
-
-    time.sleep(3)
-    driver.find_element(By.ID, 'mmbtn').click()
-    time.sleep(1)
-    driver.find_element(By.ID, 'mmbtn').click()
-    driver.find_element(By.ID, 'mbox').send_keys(pumnum)
-    driver.find_element(By.ID, 'mbox').send_keys(Keys.ENTER)
-    time.sleep(3)
-
-    source = driver.page_source
-    soup = bs(source, 'html.parser')
-
-    try:
-        title = soup.select('#content > div.movie_info_ditail > div.mv_title')[0].get_text()
-        print("제목 : "+title)
-        
-        if where is None:
-            title = translater(title) #번역
-            title = replaceTxt(title) #수정
-            print("수정 제목 : " + title)
-
-    except Exception as e :
-        print(e)
-        print("제목 없음 ? 검색결과 없음")
-        title = "#UnknownTitle"
-
-    try:
-        actor = soup.select('#content > div.movie_info_ditail > div.mv_artist')[0].get_text()
-        actor = actor.replace("（FC2動画）","")
-        print("배우 : "+actor)
-
-        actor1 = translater(actor) #번역
-        actor1 = "#"+replaceTxt(actor1).replace(" ","").replace("#","").replace("-","") #수정
-
-        # actor1 = actor1 + " " + actor
-        print("수정 배우 :" + actor1)
-
-    except Exception as e :
-        print(e)
-        print("배우명 없음")
-        actor1 = "#UnknownActor"
-
-    try:
-        createDate = soup.select('#content > div.movie_info_ditail > div.mv_createDate')[0].get_text()
-        createDate = "("+ createDate +")"
-        print("날짜 : "+createDate)
-    except Exception as e :
-        print(e)
-        print("날짜 없음")
-        createDate = ""
-    try :
-        writer = soup.select('#content > div.movie_info_ditail > div.mv_writer')[0].get_text()
-        print("제작자 : "+writer)
-        writer1 = replaceTxt(writer).replace("   ","").replace("  ","").replace(" ","").replace("#","").replace("-","") #수정
-        writer1 = "#"+replaceWriterTxt(writer1)
-        print("수정 제작자 :" + writer1)
-
-    except Exception as e :
-        print(e)
-        print("제작자 없음")
-        writer1 = "#UnknownWriter"
-
-    if where is None:
-        pumname = " "+writer1 + " "+actor1 + " "+title + " "+createDate 
-        return pumname
-    elif where == "rssbot":
-        return writer1, actor1, createDate
-
 
 
 
