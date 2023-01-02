@@ -3,4 +3,5 @@ googleapis-common-protos==1.56.3
 selenium==4.1.0
 python-telegram-bot==13.11
 bs4==0.0.1
+webdriver_manager
 
