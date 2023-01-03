@@ -9,7 +9,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 import filename_set
 import av_img_video_url
 
-''' version 23.1.3.13'''
+''' version 23.1.3.17'''
 
 #텔레그램 봇
 myToken = '5831801489:AAHvEw74bp6zz1mhbNCsAGu9JmtVifG0AWY'
@@ -63,10 +63,10 @@ def get_avrssbot_text(bot, update):
 
     trailer = av_img_video_url.makeVideoURL(pumnum)
 
-    txt = "[.](" +thumb1+ ") " + str(pumnum) + " #"+str(pumnum.replace("-","\_")) +"\n"\
-        + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+trailer+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+torrentLink+")]\n\n"\
-        + translatedTitle  +"\n"\
-        + fileSize
+    txt = "[.](" +str(thumb1)+ ") " + str(pumnum) + " #"+str(pumnum.replace("-","\_")) +"\n"\
+        + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
+        + str(translatedTitle)  +"\n"\
+        + str(fileSize)
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
