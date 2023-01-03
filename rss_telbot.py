@@ -1,5 +1,6 @@
 import re
 import time
+from threading import Thread
 
 import telegram  # pip install python-telegram-bot --upgrade
 from telegram import chat
@@ -156,7 +157,21 @@ def get_message(bot, update):
     if msgFrom == 'AvRssTorrent' : get_avrssbot_text(bot[tp], update); return 
     if msgFrom == 'Fc2RssTorrent': get_fc2rssbot_text(bot[tp], update); return
 
+
+
+
+def alarmi():
+    print("쓰레딩이이잉")
+    telbot.sendMessage(chat_id=group_id_trash, text=("ha봇 실행됨"))
+    while True:
+        
+        pass
+
 try :
+    # 스레드로 while문 따로 돌림
+    t = Thread(target=alarmi, daemon=True)
+    t.start()
+
     '''rssbot'''
     # 메시지 받아오는 곳
     message_handler = MessageHandler(Filters.text & (~Filters.command), get_message)
