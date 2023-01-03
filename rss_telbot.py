@@ -64,7 +64,7 @@ def get_avrssbot_text(bot, update):
     trailer = av_img_video_url.makeVideoURL(pumnum)
 
     txt = "[.](" +thumb1+ ") " + str(pumnum) + " #"+str(pumnum.replace("-","\_")) +"\n"\
-        + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+trailer+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum}"+")]   \[[avdbs]("+f"(https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+torrentLink+")]\n\n"\
+        + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+trailer+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+torrentLink+")]\n\n"\
         + translatedTitle  +"\n"\
         + fileSize
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
