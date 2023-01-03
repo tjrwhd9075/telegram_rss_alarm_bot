@@ -185,11 +185,11 @@ def translater(txt):
 
 def get_pumInfo_dbmsin_static(pumnum):
     '''
-    pumnum : 국내 -> asd-1234 , 해외(fc2) -> 123456
-    # 국내 https://db.msin.jp/jp.search/movie?str={}
-    # 해외 https://db.msin.jp/search/movie?str={}
+    # pumnum : 국내 -> asd-1234 , 해외(fc2) -> 123456
+    국내 https://db.msin.jp/jp.search/movie?str={}
+    해외 https://db.msin.jp/search/movie?str={}
 
-    return [title, writer, actor, createDate]
+    # return [title, writer, actor, createDate]
     '''
     
     avfc2=""
@@ -230,19 +230,21 @@ def get_pumInfo_dbmsin_static(pumnum):
         elif avfc2=="av": writer=soup.select_one("div.mv_series").get_text() #시리즈
 
         writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]","", writer) #특수문자 제거
-        writer = "#"+replaceWriterTxt(writer).replace(" ","")
+        writer = "#"+translater(replaceWriterTxt(writer)).replace(" ","")
     except Exception as e : writer="-"
     print(writer)
 
     try: 
         actor = soup.select_one("div.mv_artist").get_text()
         actor = actor.replace("（FC2動画）","")
+        actor = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", actor) #특수문자 제거
         
         if actor.find(" ") != -1 : #여러명인 경우
             actors = actor.split(" ")
             actor = ""
             for at in actors:
-                actor += "#"+replaceTxt(translater(at)).replace(" ","").replace("#","").replace("-","")+" "
+                if at != "" and at is not None :
+                    actor += "#"+replaceTxt(translater(at)).replace(" ","").replace("#","").replace("-","")+" "
         else:
             actor = "#"+replaceTxt(translater(actor)).replace(" ","").replace("#","").replace("-","")+" "
     except Exception as e : actor="-"
