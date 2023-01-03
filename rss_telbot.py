@@ -9,6 +9,8 @@ from telegram.ext import Updater, MessageHandler, Filters
 import filename_set
 import av_img_video_url
 
+''' version 23.1.3.13'''
+
 #텔레그램 봇
 myToken = '5831801489:AAHvEw74bp6zz1mhbNCsAGu9JmtVifG0AWY'
 telbot = telegram.Bot(token=myToken)
@@ -130,6 +132,7 @@ def get_fc2rssbot_text(bot, update):
     telbot.send_message(text=mgn, chat_id=chat_id)
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
+    time.sleep(4)
     return
 
 #그냥 채팅 전체 읽음
@@ -162,9 +165,9 @@ def get_message(bot, update):
 
 def alarmi():
     print("쓰레딩이이잉")
-    telbot.sendMessage(chat_id=group_id_trash, text=("ha봇 실행됨"))
+    telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
     while True:
-        
+
         pass
 
 try :
