@@ -9,7 +9,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 import filename_set
 import av_img_video_url
 
-''' version 23.1.3.17'''
+''' version 23.1.3.20'''
 
 #텔레그램 봇
 myToken = '5831801489:AAHvEw74bp6zz1mhbNCsAGu9JmtVifG0AWY'
@@ -63,10 +63,12 @@ def get_avrssbot_text(bot, update):
 
     trailer = av_img_video_url.makeVideoURL(pumnum)
 
+    title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
+
     txt = "[.](" +str(thumb1)+ ") " + str(pumnum) + " #"+str(pumnum.replace("-","\_")) +"\n"\
         + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
+        + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
         + str(translatedTitle)  +"\n"\
-        + str(fileSize)
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
@@ -121,10 +123,11 @@ def get_fc2rssbot_text(bot, update):
     print('torrentLink : ' + str(torrentLink))
 
     translatedTitle = filename_set.replaceTxt(filename_set.translater(title))
+    title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
     
     txt = "[.](" +f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"+ ") FC2PPV " + str(pumnum) + " #FC2PPV\_"+str(pumnum) +"\n"\
         + " \[[미리보기]("+f"https://db.msin.jp/sampleplay?id=fc2-ppv-{pumnum}"+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum}"+")]   \[[dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+torrentLink+")]\n\n"\
-        + "**"+fileSize +"**\n"\
+        + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
         + translatedTitle 
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)

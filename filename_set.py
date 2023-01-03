@@ -1,8 +1,10 @@
 
 import urllib.request
 import json
+import re
 
 import googletrans
+from bs4 import BeautifulSoup as bs
 
 
 def replaceTxt(txt):
@@ -181,7 +183,76 @@ def translater(txt):
     # result = txt
     return result
 
+def get_pumInfo_dbmsin_static(pumnum):
+    '''
+    pumnum : 국내 -> asd-1234 , 해외(fc2) -> 123456
+    # 국내 https://db.msin.jp/jp.search/movie?str={}
+    # 해외 https://db.msin.jp/search/movie?str={}
 
+    return [title, writer, actor, createDate]
+    '''
+    
+    avfc2=""
+    if pumnum.find("-") != -1 : url = f"https://db.msin.jp/jp.search/movie?str={pumnum}"; avfc2="av"
+    else :                      url = f'https://db.msin.jp/search/movie?str={pumnum}'; avfc2="fc2"
+
+    headers = {
+        "Cookie":"age=off",
+        'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/53.36'
+    } 
+    
+    req = urllib.request.Request(url=url, headers=headers)
+    response = urllib.request.urlopen(req).read().decode('utf-8')
+    soup = bs(response,'html.parser')
+
+    try: #여러개 검색되는 경우 한번더
+        href = soup.select_one("#content > div:nth-child(4) > div > div:nth-child(1) > div.movie_ditail > div.movie_title > a")['href']
+        print("https://db.msin.jp"+href[2:])
+        url = "https://db.msin.jp"+href[2:]
+        req = urllib.request.Request(url=url, headers=headers)
+        response = urllib.request.urlopen(req).read().decode('utf-8')
+        soup = bs(response,'html.parser')
+    except:
+        pass
+
+    if avfc2 == "fc2": print("fc2-ppv-"+str(pumnum), end=" ")
+    elif avfc2 == "av": print(str(pumnum), end=" ")
+
+    try: 
+        title=soup.select_one("div.mv_title").get_text()
+        title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", title) #특수문자 제거
+        title = replaceTxt(translater(title)) #수정
+    except Exception as e : title="-"
+    print(title)
+
+    try: 
+        if avfc2=="fc2": writer=soup.select_one("div.mv_writer").get_text()
+        elif avfc2=="av": writer=soup.select_one("div.mv_series").get_text() #시리즈
+
+        writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]","", writer) #특수문자 제거
+        writer = "#"+replaceWriterTxt(writer).replace(" ","")
+    except Exception as e : writer="-"
+    print(writer)
+
+    try: 
+        actor = soup.select_one("div.mv_artist").get_text()
+        actor = actor.replace("（FC2動画）","")
+        
+        if actor.find(" ") != -1 : #여러명인 경우
+            actors = actor.split(" ")
+            actor = ""
+            for at in actors:
+                actor += "#"+replaceTxt(translater(at)).replace(" ","").replace("#","").replace("-","")+" "
+        else:
+            actor = "#"+replaceTxt(translater(actor)).replace(" ","").replace("#","").replace("-","")+" "
+    except Exception as e : actor="-"
+    print(actor)
+
+    try: createDate=soup.select_one("div.mv_createDate").get_text()
+    except Exception as e : createDate="-"
+    print(createDate)
+
+    return title, writer, actor, createDate
 
 
 
