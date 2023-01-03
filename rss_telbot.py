@@ -68,7 +68,7 @@ def get_avrssbot_text(bot, update):
     txt = "[.](" +str(thumb1)+ ") " + str(pumnum) + " #"+str(pumnum.replace("-","\_")) +"\n"\
         + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
         + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
-        + str(translatedTitle)  +"\n"\
+        + str(translatedTitle)  +"\n"
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
