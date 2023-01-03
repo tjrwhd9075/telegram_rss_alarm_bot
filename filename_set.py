@@ -194,7 +194,7 @@ def get_pumInfo_dbmsin_static(pumnum):
     '''
     
     avfc2=""
-    if pumnum.find(" ") != -1 : urlpumnum = parse.quote('pumnum') 
+    if pumnum.find(" ") != -1 : urlpumnum = parse.quote(pumnum) 
     else : urlpumnum = pumnum
     if pumnum.find("-") != -1 : url = f"https://db.msin.jp/jp.search/movie?str={urlpumnum}"; avfc2="av"
     else :                      url = f'https://db.msin.jp/search/movie?str={urlpumnum}'; avfc2="fc2"
