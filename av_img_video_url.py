@@ -144,7 +144,7 @@ def makeImageURL(pumnum):
             url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
             try:
                 res = urllib.request.urlopen(url) 
-                print(key, url) 
+                print(key, url, res) 
                 return url
             except: pass
 
