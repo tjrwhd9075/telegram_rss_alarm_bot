@@ -66,16 +66,19 @@ DBMSIN_IMG = {
     # https://db.msin.jp/jp.images/cover/MGS/ABW-312.jpg
 }
 DBMSIN_AMA_IMG ={
-    '229scute' : ["scute", "229scute"],
-    '456MMNT' : ["MMNT", "456MMNT"],
-    '421OCN' : ["OCN","421OCN"]
+    'FANZA' : ["scute"],
+    'MGS' : ["229scute"],
+    "" : []
     #https://db.msin.jp/jp.images/cover/MGS/456MMNT-006.jpg
+    #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
+    #https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
 }
 DBMSIN_UNCEN_IMG = {
     'heyzo' : ["heyzo"],
     'h4610' : ["h4610"],
     'paco' : ["paco"],
-    'carib' : ["carib"]
+    'carib' : ["carib"],
+    "10mu" : ["10mu"]
     # https://db.msin.jp/images/cover/carib/carib-010323-001.jpg
 }
 import urllib.request
@@ -127,15 +130,24 @@ def makeImageURL(pumnum):
             
     for key in DBMSIN_UNCEN_IMG:
         if maker in DBMSIN_UNCEN_IMG[key]:
-            url = 'https://db.msin.jp/images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg'
+            url = 'https://db.msin.jp/images/cover/'+key+'/'+maker.lower()+'-'+num+'.jpg'
             print(key, url) 
             return url
     
     for key in DBMSIN_AMA_IMG:
         if maker in DBMSIN_AMA_IMG[key]:
-            url = 'https://db.msin.jp/images/cover/MGS/'+key.upper()+'-'+num+'.jpg'
+            if key == 'FANZA': url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.lower()+num+'.jpg'
+            else : url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg'
             print(key, url) 
             return url
+        if key == '':
+            url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
+            try:
+                res = urllib.request.urlopen(url) 
+                print(key, url) 
+                return url
+            except: pass
+
 
     for key in ALL_ITEMS:
         #소문자
@@ -174,11 +186,7 @@ def makeVideoURL(pumnum):
         elif maker.upper() in PRESTIGE_ITEMS[key]:
             url = f'https://www.prestige-av.com/api/media/movie/'+maker.upper()+'-'+num+'.mp4'
             # print(key, url)  
-            return url
-        elif key == '':
-            url = f'https://www.prestige-av.com/api/media/movie/'+maker.upper()+'-'+num+'.mp4'
-            # print(key, url)  
-            return url        
+            return url 
             
     for key in AMA:
         if maker in AMA[key]:

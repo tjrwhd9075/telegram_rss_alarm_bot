@@ -131,7 +131,7 @@ def papago(txt):
             translator = googletrans.Translator()
             source = translator.detect(txt).lang
         except Exception as e:
-            print("papago detect lang : " )
+            print("papago detect lang : " , end="")
             print(e)
             # print(traceback.format_exc())
             source = "en"
@@ -144,7 +144,7 @@ def papago(txt):
             request.add_header("X-Naver-Client-Secret",client_secret)
             response = urllib.request.urlopen(request, data=data.encode("utf-8"))
         except Exception as e:
-            print("papago request : " )
+            print("papago request : " , end="")
             print(e)
             # print(traceback.format_exc())
             return ""
@@ -159,7 +159,7 @@ def papago(txt):
             print("Error Code:" + rescode)
             return ""
     except Exception as e:
-        print("papago : " )
+        print("papago : " , end="")
         print(e)
         # print(traceback.format_exc())
         return ""
@@ -194,6 +194,7 @@ def pumnum_check(pumnum):
     elif pumnum.find("-1pon") != -1: pumnum = "1pon-"+pumnum.replace("-1pon","")# 010323_001-1PON
     elif pumnum.find("10musume") != -1: pumnum = pumnum.replace("10musume ","10mu-") #10musume 010323_01 -> 10mu-010323_01
     elif pumnum.find("pacopacomama ") != -1: pumnum = pumnum.replace("pacopacomama ","paco-") #Pacopacomama 010323_770 -> paco-010323_770
+    elif pumnum.find("FC2PPV ") != -1 : pumnum = pumnum.replace("FC2PPV ", "fc2-ppv-")
 
     return pumnum
 

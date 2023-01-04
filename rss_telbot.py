@@ -89,18 +89,24 @@ def get_avrssbot_text(bot, update):
 
     translatedTitle = filename_set.replaceTxt(filename_set.translater(title))
 
+    trailer = av_img_video_url.makeVideoURL(pumnum)
     thumb = av_img_video_url.makeImageURL(pumnum)
     if isinstance(thumb, list) :
         thumb1 = thumb[0]
         thumb2 = thumb[1]
     else: thumb1 = thumb
 
-    trailer = av_img_video_url.makeVideoURL(pumnum)
+    
 
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
 
+    uncPumnum = filename_set.pumnum_check(pumnum)
+    if uncPumnum.find("carib") == -1 or uncPumnum.find("1pon") == -1 or uncPumnum.find("10mu") == -1 or uncPumnum.find("paco") == -1 : 
+        dburl=f"https://db.msin.jp/search/movie?str={uncPumnum}"
+    else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
+
     txt = "[.](" +str(thumb1)+ ") " + str(pumnum.replace("_","\_")) + " #"+str(pumnum.replace("-","\_")) +"\n"\
-        + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
+        + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+dburl+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
         + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
         + str(translatedTitle)  +"\n"
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
