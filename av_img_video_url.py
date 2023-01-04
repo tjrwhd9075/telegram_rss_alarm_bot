@@ -142,11 +142,12 @@ def makeImageURL(pumnum):
             return url
         if key == '':
             url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
-            try:
-                res = urllib.request.urlopen(url) 
-                print(key, url, res) 
+            
+            res = urllib.request.urlopen(url).geturl()
+            print(key, url) 
+            if res != "https://db.msin.jp/404": 
                 return url
-            except: pass
+            
 
 
     for key in ALL_ITEMS:
@@ -231,3 +232,5 @@ def makeVideoURL(pumnum):
 # pumnum ="CAWD-434"
 # makeImageURL(pumnum)
 # makeVideoURL(pumnum)
+
+print(makeImageURL("CAWD-434"))
