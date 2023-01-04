@@ -19,7 +19,7 @@ AMA = {
     'hamedori2nd' : ["328hmdnc"],
     'ara' : ["261ara"],
     'luxutv' : ["259luxu"],
-    'prestige':["abw", "ymym"],
+    'prestige':["ymym"],
     'shirouto' : ['siro'],
     'scute' : ['229scute']
 }
@@ -62,16 +62,15 @@ ALL_ITEMS = {
 }
 
 DBMSIN_IMG = {
-    'MGS' : ["abw"]
-    # https://db.msin.jp/jp.images/cover/MGS/ABW-312.jpg
+    'MGS' : ["abw"] # https://db.msin.jp/jp.images/cover/MGS/ABW-312.jpg
 }
 DBMSIN_AMA_IMG ={
-    'FANZA' : ["scute"],
-    'MGS' : ["229scute"],
+    'FANZA' : ["scute"], #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
+    'MGS' : ["229scute"],#https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
     "" : []
-    #https://db.msin.jp/jp.images/cover/MGS/456MMNT-006.jpg
-    #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
-    #https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
+}
+DBMSIN_NUM_AMA_IMG ={
+    '539IND' : ["ind"], 
 }
 DBMSIN_UNCEN_IMG = {
     'heyzo' : ["heyzo"],
@@ -118,9 +117,6 @@ def makeImageURL(pumnum):
         if maker.upper() in PRESTIGE_ITEMS[key] : 
             print(key, url)  
             return url
-        if key == '' : 
-            print(key, url) 
-            return url
 
     for key in DBMSIN_IMG:
         if maker in DBMSIN_IMG[key]:
@@ -131,6 +127,12 @@ def makeImageURL(pumnum):
     for key in DBMSIN_UNCEN_IMG:
         if maker in DBMSIN_UNCEN_IMG[key]:
             url = 'https://db.msin.jp/images/cover/'+key+'/'+maker.lower()+'-'+num+'.jpg'
+            print(key, url) 
+            return url
+
+    for key in DBMSIN_NUM_AMA_IMG:
+        if maker in DBMSIN_NUM_AMA_IMG[key]:
+            url = 'https://db.msin.jp/jp.images/cover/MGS/'+key.upper()+'-'+num+'.jpg'
             print(key, url) 
             return url
     
@@ -147,7 +149,6 @@ def makeImageURL(pumnum):
             print(key, url) 
             if res != "https://db.msin.jp/404": 
                 return url
-            
 
 
     for key in ALL_ITEMS:

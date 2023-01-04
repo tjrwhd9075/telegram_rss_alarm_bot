@@ -50,7 +50,7 @@ def get_avrssbot_text(bot, update):
                 if p == "heyzo" : pumnum = p + "-" + pumnumTmpList[i+2] ; break
         elif title.find('Heyzo') != -1 :  # [Heyzo] [2946] [uncen] [2022] エッチ大好きなさとみちゃん～もまれすぎてオッパイが大きくなってきちゃいました～
             for i,p in enumerate(pumnumTmpList):
-                if p == "Heyzo" : pumnum = p + "-" + pumnumTmpList[i+4] ; break
+                if p == "Heyzo" : pumnum = p + "-" + pumnumTmpList[i+6] ; break
         
         elif title.find("-1pon-1080p") != -1 or title.find("-1PON") != -1:  # 010423_001-1pon-1080p-高級ソープへようこそ 安室なみ, 010323_001-1PON
             for i, p in enumerate(pumnumTmpList):
@@ -101,13 +101,13 @@ def get_avrssbot_text(bot, update):
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
 
     uncPumnum = filename_set.pumnum_check(pumnum)
-    if uncPumnum.find("carib") == -1 or uncPumnum.find("1pon") == -1 or uncPumnum.find("10mu") == -1 or uncPumnum.find("paco") == -1 : 
+    if uncPumnum.find("carib") != -1 or uncPumnum.find("1pon") != -1 or uncPumnum.find("10mu") != -1 or uncPumnum.find("paco") != -1 : 
         dburl=f"https://db.msin.jp/search/movie?str={uncPumnum}"
     else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
 
     txt = "[.](" +str(thumb1)+ ") " + str(pumnum.replace("_","\_")) + " #"+str(pumnum.replace("_","\_").replace("-","\_")) +"\n"\
         + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+dburl+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
-        + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
+        + str(actor) + " " + str(writer) + " " + str(createDate) + " *" + str(fileSize) + "*\n"\
         + str(translatedTitle)  +"\n"
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
 
