@@ -77,8 +77,7 @@ def get_avrssbot_text(bot, update):
         return
     
     sukebeiNum = msg.split(" | ")[0].split("#")[-1]
-    title = msg.split(" | ")[1].split("-")[1].split(" ")[1:]
-    title = ''.join(title)
+    title = msg.split(" | ")[1]
     fileSize = msg.split(" | ")[2]
     infoHash = msg.split(" | ")[4].split("\n")[0]
     torrentLink = msg.split(" | ")[4].split("\n")[-1]
