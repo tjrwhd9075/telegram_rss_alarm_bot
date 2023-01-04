@@ -47,10 +47,10 @@ def get_avrssbot_text(bot, update):
                 if p == "HEYZO" : pumnum = p + "-" + pumnumTmpList[i+1] ; break
         elif title.find('heyzo') != -1 and title.find('hd') != -1:  # heyzo_hd_2951_full-おしゃぶり上手なギャルのカラダを余すところなくいただきました 
             for i,p in enumerate(pumnumTmpList):
-                if p == "heyzo" : pumnum = p + "-" + p[i+2] ; break
+                if p == "heyzo" : pumnum = p + "-" + pumnumTmpList[i+2] ; break
         elif title.find('Heyzo') != -1 :  # [Heyzo] [2946] [uncen] [2022] エッチ大好きなさとみちゃん～もまれすぎてオッパイが大きくなってきちゃいました～
             for i,p in enumerate(pumnumTmpList):
-                if p == "Heyzo" : pumnum = p + "-" + p[i+4] ; break
+                if p == "Heyzo" : pumnum = p + "-" + pumnumTmpList[i+4] ; break
         
         elif title.find("-1pon-1080p") != -1 or title.find("-1PON") != -1:  # 010423_001-1pon-1080p-高級ソープへようこそ 安室なみ, 010323_001-1PON
             for i, p in enumerate(pumnumTmpList):
