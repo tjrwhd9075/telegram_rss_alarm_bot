@@ -36,6 +36,18 @@ def get_avrssbot_text(bot, update):
         if m.find("-") != -1 : #품번이 존재하면
             if m.find("]") != -1: pumnum=m.split("]")[-1]; break #띄어쓰기 안된 품번 asdf]ssis-123
             else: pumnum=m; break 
+    
+    if titleList[0] == "カリビアンコム": pumnum = "carib-"+pumnum
+    elif titleList[0] == "heyzo" and titleList[1] == "hd" : pumnum = titleList[0] + "-" + titleList[2]
+    elif titleList[2] == "Heyzo" and titleList[3] == " " and titleList[4] == " " : pumnum = titleList[2] + "-" + titleList[5] #  Heyzo   2946  [uncen] [2022] エッチ大好きなさとみちゃん～もまれすぎてオッパイが大きくなってきちゃいました～ - 石川さと 1080p
+    elif titleList[0].find("-carib-1080p") != -1: pumnum = "carib-"+titleList[0].split("-")[0]+"_"+titleList[0].split("-")[1] # 010423-001-carib-1080p-進撃の青山 ～欲求不満で止まらない～青山はな
+    elif titleList[1].find("-1pon-1080p") != -1: pumnum = "1pon-"+titleList[0]+"_"+titleList[1].split("-")[0] # 010423 001-1pon-1080p-高級ソープへようこそ 安室なみ
+    elif titleList[1].find("-1PON") != -1: pumnum = "1pon-"+titleList[0]+"_"+titleList[1].split("-")[0]
+    elif titleList[1].find("-10mu-1080p") != -1: pumnum = "10mu-"+titleList[0]+"_"+titleList[1].split("-")[0] # 010423 01-10mu-1080p-秘蔵マンコセレクション
+    elif titleList[1].find("-paco-1080p") != -1: pumnum = "paco-"+titleList[0]+"_"+titleList[1].split("-")[0] # 010423 771-paco-1080p-人妻マンコ図鑑 149
+    elif titleList[0].find("H4610-") !=-1 and titleList[0].find("HD-") != -1: pumnum = titleList[0].split("-")[0] + "-" + titleList[0].split("-")[1] #H4610-gol211-FHD-綺麗な肌全身で感じまくって
+
+
     if pumnum == "" : #품번이 없으면 삭제 후 종료
         telbot.delete_message(chat_id=chat_id, message_id=message_id); 
         print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
@@ -65,7 +77,7 @@ def get_avrssbot_text(bot, update):
 
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
 
-    txt = "[.](" +str(thumb1)+ ") " + str(pumnum) + " #"+str(pumnum.replace("-","\_")) +"\n"\
+    txt = "[.](" +str(thumb1)+ ") " + str(pumnum.replace("_","\_")) + " #"+str(pumnum.replace("-","\_")) +"\n"\
         + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+f"https://db.msin.jp/jp.search/movie?str={pumnum}"+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
         + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
         + str(translatedTitle)  +"\n"

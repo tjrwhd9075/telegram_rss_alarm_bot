@@ -184,6 +184,19 @@ def translater(txt):
     # result = txt
     return result
 
+
+def pumnum_check(pumnum):
+    pumnum = pumnum.lower()
+    if pumnum.find("scute") != -1: pumnum = pumnum.split(" ")[0] #229SCUTE-1288 Mayu -> 229SCUTE-1288
+    elif pumnum.find("caribbeancom ") != -1: pumnum = pumnum.replace("caribbeancom ","carib-") #Caribbeancom 010323-001 -> carib-010323-001
+    elif pumnum.find("-carib") != -1: pumnum = "carib-"+pumnum.replace("-carib","") #010323-001-CARIB -> -> carib-010323-001
+    elif pumnum.find("1pondo") != -1: pumnum = pumnum.replace("1pondo ","1pon-") #1Pondo 010323_001 -> 1pon-010323_001
+    elif pumnum.find("-1pon") != -1: pumnum = "1pon-"+pumnum.replace("-1pon","")# 010323_001-1PON
+    elif pumnum.find("10musume") != -1: pumnum = pumnum.replace("10musume ","10mu-") #10musume 010323_01 -> 10mu-010323_01
+    elif pumnum.find("pacopacomama ") != -1: pumnum = pumnum.replace("pacopacomama ","paco-") #Pacopacomama 010323_770 -> paco-010323_770
+
+    return pumnum
+
 def get_pumInfo_dbmsin_static(pumnum):
     '''
     # pumnum : 국내 -> asd-1234 , 해외(fc2) -> 123456
@@ -204,9 +217,15 @@ def get_pumInfo_dbmsin_static(pumnum):
         'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/53.36'
     } 
     
-    req = urllib.request.Request(url=url, headers=headers)
-    response = urllib.request.urlopen(req).read().decode('utf-8')
-    soup = bs(response,'html.parser')
+    try:
+        req = urllib.request.Request(url=url, headers=headers)
+        response = urllib.request.urlopen(req).read().decode('utf-8')
+        soup = bs(response,'html.parser')
+    except Exception as e:
+        print("url open fail")
+        print(e)
+        return "-","-","-","-"
+        
 
     try: #여러개 검색되는 경우 한번더
         href = soup.select_one("#content > div:nth-child(4) > div > div:nth-child(1) > div.movie_ditail > div.movie_title > a")['href']

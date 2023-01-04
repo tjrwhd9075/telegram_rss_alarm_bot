@@ -13,6 +13,17 @@ PRESTIGE_ITEMS = {
     'luxutv': ['lxv'],
     'documentv': ['dcv']
 }
+
+AMA = {
+    'nanpatv' : ["200gana"],
+    'hamedori2nd' : ["328hmdnc"],
+    'ara' : ["261ara"],
+    'luxutv' : ["259luxu"],
+    'prestige':["abw", "ymym"],
+    'shirouto' : ['siro'],
+    'scute' : ['229scute']
+}
+
 ALL_ITEMS = {
     '1': ["hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','SDNT','SDMU','NTTR','FSET','SHYN','DVDM','MIHA'],
     '2': ['dfe','wfr','ekw','wpvr','wkd'], 
@@ -54,13 +65,18 @@ DBMSIN_IMG = {
     'MGS' : ["abw"]
     # https://db.msin.jp/jp.images/cover/MGS/ABW-312.jpg
 }
-AMA = {
-    'nanpatv' : ["200gana"],
-    'hamedori2nd' : ["328hmdnc"],
-    'ara' : ["261ara"],
-    'luxutv' : ["259luxu"],
-    'prestige':["abw", "ymym"],
-    'shirouto' : ['siro']
+DBMSIN_AMA_IMG ={
+    '229scute' : ["scute", "229scute"],
+    '456MMNT' : ["MMNT", "456MMNT"],
+    '421OCN' : ["OCN","421OCN"]
+    #https://db.msin.jp/jp.images/cover/MGS/456MMNT-006.jpg
+}
+DBMSIN_UNCEN_IMG = {
+    'heyzo' : ["heyzo"],
+    'h4610' : ["h4610"],
+    'paco' : ["paco"],
+    'carib' : ["carib"]
+    # https://db.msin.jp/images/cover/carib/carib-010323-001.jpg
 }
 import urllib.request
 def purifyPumnum(pumnum):
@@ -71,6 +87,7 @@ def purifyPumnum(pumnum):
     splitID[0]
     [maker, num] = [splitID[0].lower().strip(), splitID[1].strip()]
 
+    if maker == "carib": num = splitID[1].strip() + "-" + splitID[2].strip()   # carib-11111-111   
     replaceItem = { 'kssis': 'ssis', 'kcawd': 'cawd','iptd':'ipt' }
 
     for key in replaceItem.keys():
@@ -105,6 +122,18 @@ def makeImageURL(pumnum):
     for key in DBMSIN_IMG:
         if maker in DBMSIN_IMG[key]:
             url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg'
+            print(key, url) 
+            return url
+            
+    for key in DBMSIN_UNCEN_IMG:
+        if maker in DBMSIN_UNCEN_IMG[key]:
+            url = 'https://db.msin.jp/images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg'
+            print(key, url) 
+            return url
+    
+    for key in DBMSIN_AMA_IMG:
+        if maker in DBMSIN_AMA_IMG[key]:
+            url = 'https://db.msin.jp/images/cover/MGS/'+key.upper()+'-'+num+'.jpg'
             print(key, url) 
             return url
 
@@ -150,7 +179,7 @@ def makeVideoURL(pumnum):
             url = f'https://www.prestige-av.com/api/media/movie/'+maker.upper()+'-'+num+'.mp4'
             # print(key, url)  
             return url        
-
+            
     for key in AMA:
         if maker in AMA[key]:
             url = 'https://sample.mgstage.com/sample/'+key+'/'+maker+'/'+num+'/'+maker+'-'+num+'_sample.mp4'
