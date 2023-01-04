@@ -105,7 +105,7 @@ def get_avrssbot_text(bot, update):
         dburl=f"https://db.msin.jp/search/movie?str={uncPumnum}"
     else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
 
-    txt = "[.](" +str(thumb1)+ ") " + str(pumnum.replace("_","\_")) + " #"+str(pumnum.replace("-","\_")) +"\n"\
+    txt = "[.](" +str(thumb1)+ ") " + str(pumnum.replace("_","\_")) + " #"+str(pumnum.replace("_","\_").replace("-","\_")) +"\n"\
         + "\[[javdb]("+f"https://javdb.com/search?q={pumnum}&f=all)]   \[[미리보기]("+str(trailer)+")]   \[[evojav]("+f"https://evojav.pro/en/?s={pumnum})]   \[[avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2)]   \[[dbmsin]("+dburl+")]   \[[sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +")]   \[[torrent]("+str(torrentLink)+")]\n\n"\
         + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
         + str(translatedTitle)  +"\n"
