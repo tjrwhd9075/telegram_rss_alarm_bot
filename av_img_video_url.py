@@ -85,7 +85,13 @@ DBMSIN_AMA_IMG ={
     'GIGA':["thp","ghov","gigp","spsa"], #https://db.msin.jp/jp.images/cover/GIGA/THP-96.jpg
     "" : []
 }
+
+
 import urllib.request
+
+headers = {
+    'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/53.36'
+} 
 def purifyPumnum(pumnum):
     '''
     품번(adf 2123 또는 asf-1234 형태일것) -> maker 와 num 으로 분리
@@ -147,7 +153,8 @@ def makeImageURL(pumnum):
             if key == 'FANZA': url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.lower()+num+'.jpg' #scute
             else : url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg' #229scute
             
-            res = urllib.request.urlopen(url).geturl()
+            req = urllib.request.Request(url=url, headers=headers)
+            res = urllib.request.urlopen(req).geturl()
             if res != "https://db.msin.jp/404": print(key, url); return url
 
             if maker == "scute": url = 'https://db.msin.jp/jp.images/cover/MGS/229SCUTE'+'-'+num+'.jpg'; return url
@@ -155,16 +162,20 @@ def makeImageURL(pumnum):
         
         if key == '':
             url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
-            res = urllib.request.urlopen(url).geturl()
+            req = urllib.request.Request(url=url, headers=headers)
+            res = urllib.request.urlopen(req).geturl()
             if res != "https://db.msin.jp/404":  print(key, url); return url
 
     for key in ALL_ITEMS:
         
         url = [f'https://pics.r18.com/digital/video/'+key+maker+num.zfill(5)+'/'+key+maker+num.zfill(5)+'pl.jpg', #작은 이미지 
                f'https://pics.dmm.co.jp/mono/movie/adult/'+key+maker+num+'/'+key+maker+num+'pl.jpg'] #큰 이미지
-               
-        res1 = urllib.request.urlopen(url[0]).geturl()
-        res2 = urllib.request.urlopen(url[1]).geturl()
+
+        req = urllib.request.Request(url=url[0], headers=headers)
+        res1 = urllib.request.urlopen(req).geturl()
+        req = urllib.request.Request(url=url[1], headers=headers)
+        res2 = urllib.request.urlopen(req).geturl()
+
         noPrintUrl = 'http://pics.dmm.co.jp/mono/movie/n/now_printing/now_printing.jpg'
 
         #소문자, 대문자
@@ -176,11 +187,12 @@ def makeImageURL(pumnum):
         if key=='':
             url = [f'https://pics.r18.com/digital/video/'+maker+num.zfill(5)+'/'+maker+num.zfill(5)+'pl.jpg', #작은 이미지 
                    f'https://pics.dmm.co.jp/mono/movie/adult/'+maker+num+'/'+maker+num+'pl.jpg']
-            res1 = urllib.request.urlopen(url[0]).geturl()
-            res2 = urllib.request.urlopen(url[1]).geturl()
+            req = urllib.request.Request(url=url[0], headers=headers)
+            res1 = urllib.request.urlopen(req).geturl()
+            req = urllib.request.Request(url=url[1], headers=headers)
+            res2 = urllib.request.urlopen(req).geturl()
             if res1 != noPrintUrl: print(key, url); return url[0]
             if res2 != noPrintUrl: print(key, url); return url[1]
-    
         
     print("img url 없음")
     return 0
