@@ -182,8 +182,8 @@ def makeImageURL(pumnum):
             req = urllib.request.Request(url=url[1], headers=headers)
             res2 = urllib.request.urlopen(req).geturl()
             print([res1, res2])
-            if res1 != noPrintUrl: print(key, url); return url[0]
-            if res2 != noPrintUrl: print(key, url); return url[1]
+            if res1.find("now_printing") == -1: print(key, url); return url[0]
+            if res2.find("now_printing") == -1: print(key, url); return url[1]
         
         #나머지 전부
         if key=='':
@@ -194,8 +194,8 @@ def makeImageURL(pumnum):
             req = urllib.request.Request(url=url[1], headers=headers)
             res2 = urllib.request.urlopen(req).geturl()
             print([res1, res2])
-            if res1 != noPrintUrl: print(key, url); return url[0]
-            if res2 != noPrintUrl: print(key, url); return url[1]
+            if res1.find("now_printing") == -1: print(key, url); return url[0]
+            if res2.find("now_printing") == -1: print(key, url); return url[1]
         
     print("img url 없음")
     return 0
