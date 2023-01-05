@@ -228,21 +228,23 @@ def get_pumInfo_dbmsin_static(pumnum):
         print(e)
         return "-","-","-","-"
 
-    if soup.select_one("#content > p:nth-child(4)").get_text() == "No Resutls": 
-        if pumnum[0:3].isdigit() is True:  #품번앞에 숫자가 붙어있는지 확인, 숫자 떼고 한번더 써치
-            pumnum = pumnum[3:]
-            try:
-                url = f"https://db.msin.jp/jp.search/movie?str=" + parse.quote(pumnum)
-                req = urllib.request.Request(url=url, headers=headers)
-                response = urllib.request.urlopen(req).read().decode('utf-8')
-                soup = bs(response,'html.parser')
-            except Exception as e:
-                print("url open fail")
-                print(e)
+    try:
+        if soup.select_one("#content > p:nth-child(4)").get_text() == "No Resutls": 
+            if pumnum[0:3].isdigit() is True:  #품번앞에 숫자가 붙어있는지 확인, 숫자 떼고 한번더 써치
+                pumnum = pumnum[3:]
+                try:
+                    url = f"https://db.msin.jp/jp.search/movie?str=" + parse.quote(pumnum)
+                    req = urllib.request.Request(url=url, headers=headers)
+                    response = urllib.request.urlopen(req).read().decode('utf-8')
+                    soup = bs(response,'html.parser')
+                except Exception as e:
+                    print("url open fail")
+                    print(e)
+                    return "-","-","-","-"
+            else:
+                print("dbmsin 검색결과 없음")
                 return "-","-","-","-"
-        else:
-            print("dbmsin 검색결과 없음")
-            return "-","-","-","-"
+    except: pass
 
     try: #여러개 검색되는 경우 한번더
         href = soup.select_one("#content > div:nth-child(4) > div > div:nth-child(1) > div.movie_ditail > div.movie_title > a")['href']
