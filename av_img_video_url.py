@@ -175,6 +175,7 @@ def makeImageURL(pumnum):
         res1 = urllib.request.urlopen(req).geturl()
         req = urllib.request.Request(url=url[1], headers=headers)
         res2 = urllib.request.urlopen(req).geturl()
+        print([res1, res2])
 
         noPrintUrl = 'http://pics.dmm.co.jp/mono/movie/n/now_printing/now_printing.jpg'
 
