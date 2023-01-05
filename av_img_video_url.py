@@ -64,21 +64,26 @@ ALL_ITEMS = {
 DBMSIN_IMG = {
     'MGS' : ["abw"] # https://db.msin.jp/jp.images/cover/MGS/ABW-312.jpg
 }
-DBMSIN_AMA_IMG ={
-    'FANZA' : ["scute"], #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
-    'MGS' : ["229scute"],#https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
-    "" : []
-}
-DBMSIN_NUM_AMA_IMG ={
-    '539IND' : ["ind"], 
+
+DBMSIN_NUM_AMA_IMG ={ # MGS 품번에는 숫자가 없는데, 링크에는 숫자가 있는것
+    '534IND' : ["ind"], 
+    '003T28' : ["t28"],
+    '107MOGI': ["mogi"], #https://db.msin.jp/jp.images/cover/MGS/107MOGI-071.jpg
+    '336KBI' : ["kbi"]
 }
 DBMSIN_UNCEN_IMG = {
     'heyzo' : ["heyzo"],
     'h4610' : ["h4610"],
-    'paco' : ["paco"],
+    'paco' : ["paco"],          
     'carib' : ["carib"],
     "10mu" : ["10mu"]
     # https://db.msin.jp/images/cover/carib/carib-010323-001.jpg
+}
+DBMSIN_AMA_IMG ={
+    'FANZA' : ["scute"], #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
+    'MGS' : ["229scute"],#https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
+    'GIGA':["thp","ghov","gigp","spsa"], #https://db.msin.jp/jp.images/cover/GIGA/THP-96.jpg
+    "" : []
 }
 import urllib.request
 def purifyPumnum(pumnum):
@@ -90,6 +95,7 @@ def purifyPumnum(pumnum):
     [maker, num] = [splitID[0].lower().strip(), splitID[1].strip()]
 
     if maker == "carib": num = splitID[1].strip() + "-" + splitID[2].strip()   # carib-11111-111   
+    if maker == "fc2": maker = "fc2-ppv"; num = splitID[-1].strip()
     replaceItem = { 'kssis': 'ssis', 'kcawd': 'cawd','iptd':'ipt' }
 
     for key in replaceItem.keys():
@@ -138,34 +144,43 @@ def makeImageURL(pumnum):
     
     for key in DBMSIN_AMA_IMG:
         if maker in DBMSIN_AMA_IMG[key]:
-            if key == 'FANZA': url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.lower()+num+'.jpg'
-            else : url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg'
-            print(key, url) 
-            return url
-        if key == '':
-            url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
+            if key == 'FANZA': url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.lower()+num+'.jpg' #scute
+            else : url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg' #229scute
             
             res = urllib.request.urlopen(url).geturl()
-            print(key, url) 
-            if res != "https://db.msin.jp/404": 
-                return url
+            if res != "https://db.msin.jp/404": print(key, url); return url
 
+            if maker == "scute": url = 'https://db.msin.jp/jp.images/cover/MGS/229SCUTE'+'-'+num+'.jpg'; return url
+            elif maker == "229scute": url = 'https://db.msin.jp/jp.images/cover/FANZA/scute'+num+'.jpg'; return url
+        
+        if key == '':
+            url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
+            res = urllib.request.urlopen(url).geturl()
+            if res != "https://db.msin.jp/404":  print(key, url); return url
 
     for key in ALL_ITEMS:
-        #소문자
+        
         url = [f'https://pics.r18.com/digital/video/'+key+maker+num.zfill(5)+'/'+key+maker+num.zfill(5)+'pl.jpg', #작은 이미지 
                f'https://pics.dmm.co.jp/mono/movie/adult/'+key+maker+num+'/'+key+maker+num+'pl.jpg'] #큰 이미지
-               # https://pics.dmm.co.jp/mono/movie/adult/adn425/adn425pl.jpg
-        if maker in ALL_ITEMS[key]:
-            print(key, url) 
-            return url
-        #소문자
-        if maker.upper() in ALL_ITEMS[key]:
-            print(key, url)  
-            return url
+               
+        res1 = urllib.request.urlopen(url[0]).geturl()
+        res2 = urllib.request.urlopen(url[1]).geturl()
+        noPrintUrl = 'http://pics.dmm.co.jp/mono/movie/n/now_printing/now_printing.jpg'
+
+        #소문자, 대문자
+        if maker.lower() in ALL_ITEMS[key] or maker.upper() in ALL_ITEMS[key]:
+            if res1 != noPrintUrl: print(key, url); return url[0]
+            if res2 != noPrintUrl: print(key, url); return url[1]
+        
+        #나머지 전부
         if key=='':
-            print(key, url)   
-            return url
+            url = [f'https://pics.r18.com/digital/video/'+maker+num.zfill(5)+'/'+maker+num.zfill(5)+'pl.jpg', #작은 이미지 
+                   f'https://pics.dmm.co.jp/mono/movie/adult/'+maker+num+'/'+maker+num+'pl.jpg']
+            res1 = urllib.request.urlopen(url[0]).geturl()
+            res2 = urllib.request.urlopen(url[1]).geturl()
+            if res1 != noPrintUrl: print(key, url); return url[0]
+            if res2 != noPrintUrl: print(key, url); return url[1]
+    
         
     print("img url 없음")
     return 0
@@ -234,4 +249,4 @@ def makeVideoURL(pumnum):
 # makeImageURL(pumnum)
 # makeVideoURL(pumnum)
 
-print(makeImageURL("CAWD-434"))
+# print(makeImageURL("CAWD-434"))

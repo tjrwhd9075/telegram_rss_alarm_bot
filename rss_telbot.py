@@ -41,6 +41,7 @@ def get_avrssbot_text(bot, update):
         if title.find("カリビアンコム") != -1 and title.find("-CARIB") == -1  : pumnum = "carib-"+pumnum # 010323-001-CARIB カリビアンコム , カリビアンコム 102517-525
         elif title.find("Caribbeancom") != -1 : pumnum = "carib-"+pumnum # [Uncensored] Caribbeancom 010323-001 旅館の生き残りに賭ける美人女将 , (UNCENSORED )Caribbeancom 加勒比 010323-001
         elif title.find("-carib-1080p") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] ## 010423-001-carib-1080p-進撃の青山 ～欲求不満で止まらない～青山はな
+        elif title.find("-CARIB ") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] #010423-001-CARIB
 
         elif title.find('HEYZO') != -1 and pumnum=="": # [HD/720p] HEYZO 2951 おしゃぶり上手なギャルのカラダを余すところなくいただきました！ – 羽月まい 
             for i,p in enumerate(pumnumTmpList) : 
