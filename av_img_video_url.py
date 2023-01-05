@@ -32,7 +32,7 @@ ALL_ITEMS = {
     '24': ['dfbvr','vdd','ped'], 
     '30': ['nha','msc','msa'],
     '36': ['doks','drop','DKWT'], 
-    '42': ['sp'],     '55': ['DAVK','tmavntgvr','T28'], 
+    '41':['pjf'],'42': ['sp'],     '55': ['DAVK','tmavntgvr','T28'], 
     '57': ['jksr','mcsr','itsr','bdsr','husr','sgsr'],
     '71': ['gas'],    '84': ['mdtm','mkmp','KMVR','UMSO'], 
     '86': ['axdvd'], '100': ['tv','yen'],     '125': ['umd'], '143': ['SHM'],     '149': ['rd'],    '171': ['lhtd'], '172': ['XRW'], '189': ['hsf'], '301': ['mbdd'],
@@ -69,7 +69,10 @@ DBMSIN_NUM_AMA_IMG ={ # MGS 품번에는 숫자가 없는데, 링크에는 숫�
     '534IND' : ["ind"], 
     '003T28' : ["t28"],
     '107MOGI': ["mogi"], #https://db.msin.jp/jp.images/cover/MGS/107MOGI-071.jpg
-    '336KBI' : ["kbi"]
+    '336KBI' : ["kbi"],
+    '258DTSG' : ["dtsg"],
+    '307SHIC' :["shic"],
+    '109IENE' : ["iene"]
 }
 DBMSIN_UNCEN_IMG = {
     'heyzo' : ["heyzo"],
@@ -78,7 +81,7 @@ DBMSIN_UNCEN_IMG = {
     'carib' : ["carib"],
     "10mu" : ["10mu"]
     # https://db.msin.jp/images/cover/carib/carib-010323-001.jpg
-}
+} 
 DBMSIN_AMA_IMG ={
     'FANZA' : ["scute"], #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
     'MGS' : ["229scute"],#https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg

@@ -184,7 +184,6 @@ def translater(txt):
     # result = txt
     return result
 
-
 def pumnum_check(pumnum):
     pumnum = pumnum.lower()
     if pumnum.find("scute") != -1: pumnum = pumnum.split(" ")[0] #229SCUTE-1288 Mayu -> 229SCUTE-1288

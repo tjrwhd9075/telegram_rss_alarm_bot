@@ -9,7 +9,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 import filename_set
 import av_img_video_url
 
-''' version 23.1.4.18'''
+''' version 23.1.5.18'''
 
 #텔레그램 봇
 myToken = '5831801489:AAHvEw74bp6zz1mhbNCsAGu9JmtVifG0AWY'
@@ -136,23 +136,24 @@ def get_fc2rssbot_text(bot, update):
     msg = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)(\n)(\t)(\r)(#)(.)(\-)(|)(:)(/)]", " ", msg)
     # print(msg.split(" | ")[1])
     sukebeiNum = msg.split(" | ")[0].split("#")[-1]
-
-    if msg.split(" | ")[1].find("FC2PPV ") != -1 : # FC2PPV 123456
-        pumnum = msg.split(" | ")[1].split("FC2PPV ")[1].split(" ")[0]
-        title = msg.split(" | ")[1].split("FC2PPV ")[1].split(" ")[1:]
-    elif msg.split(" | ")[1].find("FC2PPV-") != -1 : # FC2PPV-123456
-        pumnum = msg.split(" | ")[1].split("FC2PPV-")[1].split(" ")[0]
-        title = msg.split(" | ")[1].split("FC2PPV-")[1].split(" ")[1:]
-    elif msg.split(" | ")[1].find("FC2 PPV ") != -1 : # FC2 PPV 123456
-        pumnum = msg.split(" | ")[1].split("FC2 PPV ")[1].split(" ")[0]
-        title = msg.split(" | ")[1].split("FC2 PPV ")[1].split(" ")[1:]
-    elif msg.split(" | ")[1].find("FC2-PPV-") != -1 : # FC2-PPV-123456
-        pumnum = msg.split(" | ")[1].split("FC2-PPV-")[1].split(" ")[0]
-        title = msg.split(" | ")[1].split("FC2-PPV-")[1].split(" ")[1:]
+    
+    pumAndTitle = msg.split(" | ")[1].upper()
+    if pumAndTitle.find("FC2PPV ") != -1 : # FC2PPV 123456
+        pumnum = pumAndTitle.split("FC2PPV ")[1].split(" ")[0]
+        title = pumAndTitle.split("FC2PPV ")[1].split(" ")[1:]
+    elif pumAndTitle.find("FC2PPV-") != -1 : # FC2PPV-123456
+        pumnum = pumAndTitle.split("FC2PPV-")[1].split(" ")[0]
+        title = pumAndTitle.split("FC2PPV-")[1].split(" ")[1:]
+    elif pumAndTitle.find("FC2 PPV ") != -1 : # FC2 PPV 123456
+        pumnum = pumAndTitle.split("FC2 PPV ")[1].split(" ")[0]
+        title = pumAndTitle.split("FC2 PPV ")[1].split(" ")[1:]
+    elif pumAndTitle.find("FC2-PPV-") != -1 : # FC2-PPV-123456
+        pumnum = pumAndTitle.split("FC2-PPV-")[1].split(" ")[0]
+        title = pumAndTitle.split("FC2-PPV-")[1].split(" ")[1:]
     else: # FC2-PPV-123456
-        print(msg.split(" | ")[1])
-        pumnum = msg.split(" | ")[1].split("-")[2].split(" ")[0]
-        title = msg.split(" | ")[1].split("-")[2].split(" ")[1:]
+        print(pumAndTitle)
+        pumnum = pumAndTitle.split("-")[2].split(" ")[0]
+        title = pumAndTitle.split("-")[2].split(" ")[1:]
     title = ''.join(title)
     fileSize = msg.split(" | ")[2]
     infoHash = msg.split(" | ")[4].split("\n")[0]
