@@ -8,6 +8,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 
 import filename_set
 import av_img_video_url
+import watchlist
 
 ''' version 23.1.5.18'''
 
@@ -136,8 +137,15 @@ def get_avrssbot_text(bot, update):
     telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
     telbot.send_message(text=mgn, chat_id=chat_id, parse_mode='Markdown')
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
-    print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     time.sleep(4)
+
+    #키워드 알림
+    qs = watchlist.find_keyword_lines(pumnum + " " + txt,'av_list_keyword.txt') 
+    if qs != [] :
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Fc2RssTorrent](https://t.me/+Hqirrs4MIUZhOGI1)', parse_mode = 'Markdown')
+        time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+    print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
+    
     
 def get_fc2rssbot_text(bot, update):
     chat_id = bot['chat']['id']
@@ -205,8 +213,15 @@ def get_fc2rssbot_text(bot, update):
     telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
     telbot.send_message(text=mgn, chat_id=chat_id, parse_mode='Markdown')
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
-    print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     time.sleep(4)
+
+    #키워드 알림
+    qs = watchlist.find_keyword_lines(txt,'av_list_keyword.txt') 
+    if qs != [] :
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Fc2RssTorrent](https://t.me/+Hqirrs4MIUZhOGI1)', parse_mode = 'Markdown')
+        time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+    print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
+    
     return
 
 #그냥 채팅 전체 읽음
