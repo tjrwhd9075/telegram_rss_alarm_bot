@@ -42,6 +42,7 @@ def get_avrssbot_text(bot, update):
         elif title.find("Caribbeancom") != -1 : pumnum = "carib-"+pumnum # [Uncensored] Caribbeancom 010323-001 旅館の生き残りに賭ける美人女将 , (UNCENSORED )Caribbeancom 加勒比 010323-001
         elif title.find("-carib-1080p") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] ## 010423-001-carib-1080p-進撃の青山 ～欲求不満で止まらない～青山はな
         elif title.find("-CARIB ") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] #010423-001-CARIB
+        elif title.find("加勒比") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] #加勒比
 
         elif title.find('HEYZO') != -1 and pumnum=="": # [HD/720p] HEYZO 2951 おしゃぶり上手なギャルのカラダを余すところなくいただきました！ – 羽月まい 
             for i,p in enumerate(pumnumTmpList) : 
@@ -69,7 +70,10 @@ def get_avrssbot_text(bot, update):
 
         elif title.find("H4610-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] #H4610-gol211-FHD-綺麗な肌全身で感じまくって
         elif title.find("kin8-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] # kin8-3656-FHD-2022
-
+        elif title.find("Kin8tengoku") !=-1 : 
+            for i, t in enumerate(title.split(" ")):
+                if t=="Kin8tengoku": pumnum = "kin8-"+title.split(" ")[i+2] #[HD/720p] Kin8tengoku 金8天国 3659 小柄ボディー可愛いナタちゃんのお
+            
     except : pass
 
     if pumnum == "" or pumnum == "-" : #품번이 없으면 삭제 후 종료
