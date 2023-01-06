@@ -304,7 +304,7 @@ def get_command(bot, update):
                 telbot.send_message(chat_id = user_id, text = "알림을 등록할 키워드를 입력하세요\nex) /kadd [키워드]")
             return
         elif msg == "/KLIST":
-            klist = watchlist.get_querys('av_list_keyword.txt')
+            klist = watchlist.get_querys(user_id, 'av_list_keyword.txt')
             txt =""
             for key in klist: txt += key.split(" ")[1] +", "
             telbot.send_message(chat_id = user_id, text = "키워드 리스트\n" + txt)

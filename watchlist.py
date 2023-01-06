@@ -1,8 +1,14 @@
 
-def get_querys(file):
+def get_querys(user_id, file):
     with open(file, 'r', encoding = 'UTF-8') as f:
         querys = f.read().splitlines() 
-    return querys
+
+    qs=[]
+    for q in querys:
+        if str(q.split(" ")[0]) == str(user_id):
+            qs.append(q)
+
+    return qs
 
 def find_query_line(name, file):
     '''
