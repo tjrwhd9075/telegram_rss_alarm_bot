@@ -311,11 +311,13 @@ def get_command(bot, update):
             return
         elif msg.upper().find("/KDEL") != -1:
             try:
-                kdel = bot[tp]['text']
-                print("kdel : " + kdel)
-                chk = watchlist.del_keyword(str(user_id), kdel, 'av_list_keyword.txt')
-                if chk == 1: telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 완료")
-                else : telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 실패 또는 목록에 없음")
+                if bot[tp]['text'].upper() == "/KDEL": telbot.send_message(chat_id = user_id, text = "삭제할 키워드를 입력하세요\nex) /kdel [키워드] ")
+                else: 
+                    kdel = bot[tp]['text'].split(" ")[1]
+                    print("kdel : " + kdel)
+                    chk = watchlist.del_keyword(str(user_id), kdel, 'av_list_keyword.txt')
+                    if chk == 1: telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 완료")
+                    else : telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 실패 또는 목록에 없음")
             except Exception as e:
                 print(e)
                 telbot.send_message(chat_id = user_id, text = "삭제할 키워드를 입력하세요\nex) /kdel [키워드] ")
@@ -343,9 +345,11 @@ def get_command(bot, update):
                     print('feedback : ' + feedback)
                     with open(txtfile, 'a', encoding = 'UTF-8') as f:          
                         f.write(str(user_id) + " " +feedback + "\n")
-                    telbot.send_message(chat_id = my_user_id, text = str(user_id) + " : " +feedback)
-                    time.sleep(4)
                     telbot.send_message(chat_id = user_id, text = "피드백 감사합니다.^-^")
+                    time.sleep(4)
+                    telbot.send_message(chat_id = my_user_id, text = str(user_id) + " : " +feedback)
+                    
+                    
             except Exception as e:
                 print(e)
                 telbot.send_message(chat_id = user_id, text = "피드백을 전송하는데 실패했어요 ㅠㅅㅠ\n내용 : "+feedback)

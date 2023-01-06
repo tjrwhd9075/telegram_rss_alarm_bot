@@ -26,7 +26,7 @@ AMA = {
 
 ALL_ITEMS = {
     '1': ['shh','acme','nhdta','sdmf','mogi','stcv',"hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','sdnt','sdmu','nttr','fset','shyn','dvdm','miha'],
-    '2': ['dfe','wfr','ekw','wpvr','wkd'],  '12': ['bur','lol','imo','scr'], '13': ['GVG','dsvr','gqe','ovg','yvg','rvg'],
+    '2': ['ekbe','dfe','wfr','ekw','wpvr','wkd'],  '12': ['bur','lol','imo','scr'], '13': ['GVG','dsvr','gqe','ovg','yvg','rvg'],
     '18': ['mght','sprd','ntrd','spbx','mond'],  '21':['psd'],'24': ['dfbvr','vdd','ped'],  '30': ['nha','msc','msa'],
     '36': ['doks','drop','DKWT'],  '41':['pjf','ly'],'42': ['sp'],     '55': ['davk','tmavntgvr','T28'], 
     '57': ['jksr','mcsr','itsr','bdsr','husr','sgsr'], '71': ['gas'],    '84': ['mdtm','mkmp','kmvr','umso'], 
@@ -52,7 +52,7 @@ ALL_ITEMS = {
     'h_173': ['giro','ghkr','gtrl','ryoj','tbb','thp'], 'h_1454':['smdy'], 'h_1359':['swdf'],
     'h_189': ['cha','milf','pc','tsm','uta','vio'], 'h_237': ['find','ambi','ambs','clot','hdka','nacr','nacx','zmar'],
     'h_897': ['nmk','hict'], 'h_101': ['^gs$'], 'h_227': ['jukf'], 'h_1324': ['skmj'], 'h_1240': ['milk'],'h_1112':['nubi'],
-    'h_1472': ['hmvf','stvf'], 'h_1378': ['arso'], 'h_580': ['tms'], 'h_1533': ['can'], 'h_1321': ['pydvr'],'h_1133':['honb'],
+    'h_1472': ['hmvf','stvf','instv'], 'h_1378': ['arso'], 'h_580': ['tms'], 'h_1533': ['can'], 'h_1321': ['pydvr'],'h_1133':['honb'],
     'h_1155': ['crvr'], 'h_910': ['VRTM'], 'h_921': ['^hj$'], 'h_346': ['rebd'], 'h_1495': ['bank'],'h_1596':['gns'],
     '': [] # zfill(3)
 }
@@ -61,18 +61,10 @@ DBMSIN_IMG = {
     'MGS' : ["abw"] # https://db.msin.jp/jp.images/cover/MGS/ABW-312.jpg
 }
 
-DBMSIN_NUM_AMA_IMG ={ # MGS 품번에는 숫자가 없는데, 링크에는 숫자가 있는것
-    '534IND' : ["ind"], '107SDMF':['sdmf'],
-    '003T28' : ["t28"], '201TDMN':['tdmn'],
-    '107MOGI': ["mogi"], '116NHDTA':['nhdta'],
-    '336KBI' : ["kbi"], '116ACME':['acme'],
-    '258DTSG' : ["dtsg"], '1073DSVR':['3dsvr'],
-    '307SHIC' :["shic"], '116SHH':['shh'],
-    '109IENE' : ["iene"], '026MOND':['mond'],
-    '107SDMUA':["sdmua"], '352KNMD':['knmd'],
-    '005AOZ':["aoz"], '278GIRO':['giro'],
-    '043PYM':["pym"]
-}
+# MGS 품번에는 숫자가 없는데, 링크에는 숫자가 있는것 / 앞에 숫자 알아내기
+DBMSIN_NUM_AMA_IMG =['480FRIN','277DCV','300NTK','259LUXU','230ORECO','726ANKK','702NOSKN','558KRS','520SSK','223EKBE','043PYM','278GIRO','005AOZ','352KNMD','107SDMUA','026MOND','109IENE','116SHH','307SHIC','1073DSVR','258DTSG','116ACME','336KBI','116NHDTA','107MOGI','336ASI','534IND','107SDMF','336ASI','003T28','201TDMN']
+# matching = [s for s in DBMSIN_NUM_AMA_IMG if "베리" in s] 
+# print(matching) #리스트
 
 DBMSIN_UNCEN_IMG = {
     'heyzo' : ["heyzo"],
@@ -84,10 +76,10 @@ DBMSIN_UNCEN_IMG = {
     # https://db.msin.jp/images/cover/carib/carib-010323-001.jpg
 }
 DBMSIN_AMA_IMG ={
-    'FANZA' : ["scute"], #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
-    'MGS' : ["229scute"],#https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
+    'FANZA' : ['frin',"scute","pow","sqb","hmdnc","oreco","ankk",'ssk'], #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
+    'MGS' : ["229scute",'bkynb'],#https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
     'GIGA':["thp","ghov","gigp","spsa"], #https://db.msin.jp/jp.images/cover/GIGA/THP-96.jpg
-    "" : []
+    "" : [] #MGS 기타등등
 }
 import urllib.request
 
@@ -120,14 +112,6 @@ def makeImageURL(pumnum):
     [maker, num] = purifyPumnum(pumnum)
     print(maker, num, end=" ")
 
-    for key in PRESTIGE_ITEMS:
-        if maker in PRESTIGE_ITEMS[key] : 
-            url = [f'https://image.mgstage.com/images/'+key+'/'+maker+'/'+num+'/pb_e_'+maker+'-'+num+'.jpg',  #신작?
-               f'https://www.prestige-av.com/api/media/goods/'+key+'/'+maker+'/'+num+'/pb_'+maker+'-'+num+'.jpg']
-               
-            print(key, url) 
-            return url
-
     for key in DBMSIN_IMG:
         if maker in DBMSIN_IMG[key]:
             url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg'
@@ -139,14 +123,17 @@ def makeImageURL(pumnum):
             url = 'https://db.msin.jp/images/cover/'+key+'/'+maker.lower()+'-'+num+'.jpg'
             print(key, url) 
             return url
-
-    for key in DBMSIN_NUM_AMA_IMG:
-        if maker in DBMSIN_NUM_AMA_IMG[key]:
-            url = 'https://db.msin.jp/jp.images/cover/MGS/'+key.upper()+'-'+num+'.jpg'
-            print(key, url) 
-            return url
+            
+    if len(maker) > 2: #3글자 이상일때
+        if maker[0:3].isdigit() is False : #앞에 숫자가 없으면
+            digitMaker = [s for s in DBMSIN_NUM_AMA_IMG if maker.upper() in s] #숫자 찾아내기
+            if digitMaker != []: 
+                url = 'https://db.msin.jp/jp.images/cover/MGS/'+digitMaker[0].upper()+'-'+num+'.jpg'
+                req = urllib.request.Request(url=url, headers=headers)
+                res = urllib.request.urlopen(req).geturl()
+                if res != "https://db.msin.jp/404": print(digitMaker[0], url); return url
     
-    for key in DBMSIN_AMA_IMG:
+    for key in DBMSIN_AMA_IMG: # 앞에 숫자 있든 없든..
         if maker in DBMSIN_AMA_IMG[key]:
             if key == 'FANZA': url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.lower()+num+'.jpg' #scute
             else : url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg' #229scute
@@ -154,15 +141,33 @@ def makeImageURL(pumnum):
             req = urllib.request.Request(url=url, headers=headers)
             res = urllib.request.urlopen(req).geturl()
             if res != "https://db.msin.jp/404": print(key, url); return url
-
-            if maker == "scute": url = 'https://db.msin.jp/jp.images/cover/MGS/229SCUTE'+'-'+num+'.jpg'; return url
-            elif maker == "229scute": url = 'https://db.msin.jp/jp.images/cover/FANZA/scute'+num+'.jpg'; return url
+            
+            if maker[0:3].isdigit() :  #229scute 일경우
+                url = 'https://db.msin.jp/jp.images/cover/FANZA/'+maker[3:].lower()+num+'.jpg'
+                req = urllib.request.Request(url=url, headers=headers)
+                res = urllib.request.urlopen(req).geturl()
+                if res != "https://db.msin.jp/404": print(key, url); return url
+            else : #scute 일경우 -> 앞에 숫자 알아내서 붙이기,
+                digitMaker = [s for s in DBMSIN_NUM_AMA_IMG if maker.upper() in s]
+                if digitMaker != []: 
+                    url = 'https://db.msin.jp/jp.images/cover/MGS/'+digitMaker[0].upper()+'-'+num+'.jpg'
+                    req = urllib.request.Request(url=url, headers=headers)
+                    res = urllib.request.urlopen(req).geturl()
+                    if res != "https://db.msin.jp/404": print(digitMaker[0], url); return url
         
         if key == '':
             url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
             req = urllib.request.Request(url=url, headers=headers)
             res = urllib.request.urlopen(req).geturl()
             if res != "https://db.msin.jp/404":  print(key, url); return url
+
+    for key in PRESTIGE_ITEMS:
+        if maker in PRESTIGE_ITEMS[key] : 
+            url = [f'https://image.mgstage.com/images/'+key+'/'+maker+'/'+num+'/pb_e_'+maker+'-'+num+'.jpg',  #신작?
+               f'https://www.prestige-av.com/api/media/goods/'+key+'/'+maker+'/'+num+'/pb_'+maker+'-'+num+'.jpg']
+                
+            print(key, url)
+            return url
 
     for key in ALL_ITEMS:
 
