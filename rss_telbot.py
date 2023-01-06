@@ -270,7 +270,7 @@ def get_command(bot, update):
         print("to : " + msgTo)
 
     chat_id = bot[tp]['chat']['id']
-    msg = bot[tp]['text'].split('@')[0].upper()    # / 제외하고, 대문자로 변환
+    msg = bot[tp]['text'].split('@')[0]    # / 제외하고, 대문자로 변환
     message_id = bot[tp]['message_id']
 
     print("get command : " + msg)
@@ -292,7 +292,7 @@ def get_command(bot, update):
             */help* 도움말\n\
             \[ [에딥톡방](https://t.me/+A1HoasQqHMEzY2U1) ]\n\
             "
-        if msg.find("/KADD") != -1 :
+        if msg.upper().find("/KADD") != -1 :
             try:
                 kadd = bot[tp]['text'].split(" ")[1]
                 print("kadd : " + kadd)
@@ -303,15 +303,15 @@ def get_command(bot, update):
                 print(e)
                 telbot.send_message(chat_id = user_id, text = "알림을 등록할 키워드를 입력하세요\nex) /kadd [키워드]")
             return
-        elif msg == "/KLIST":
-            klist = watchlist.get_querys(user_id, 'av_list_keyword.txt')
+        elif msg.upper() == "/KLIST":
+            klist = watchlist.get_querys('av_list_keyword.txt', user_id=user_id)
             txt =""
             for key in klist: txt += key.split(" ")[1] +", "
             telbot.send_message(chat_id = user_id, text = "키워드 리스트\n" + txt)
             return
-        elif msg.find("/KDEL") != -1:
+        elif msg.upper().find("/KDEL") != -1:
             try:
-                kdel = bot[tp]['text'].split(" ")[1]
+                kdel = bot[tp]['text']
                 print("kdel : " + kdel)
                 chk = watchlist.del_keyword(str(user_id), kdel, 'av_list_keyword.txt')
                 if chk == 1: telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 완료")
@@ -321,10 +321,10 @@ def get_command(bot, update):
                 telbot.send_message(chat_id = user_id, text = "삭제할 키워드를 입력하세요\nex) /kdel [키워드] ")
             return
 
-        elif msg.find("/GETINFO") != -1:
-            if bot[tp]['text'] == "/getinfo" : telbot.send_message(chat_id = user_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
+        elif msg.upper().find("/GETINFO") != -1:
+            if bot[tp]['text'].upper() == "/GETINFO" : telbot.send_message(chat_id = user_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
             else:
-                getinfo = bot[tp]['text'].replace("/getinfo ","")
+                getinfo = " ".join(bot[tp]['text'].split(" ")[1:])
                 print("getinfo : " + getinfo)
                 try:
                     get_pumInfo(getinfo, str(user_id))
@@ -332,24 +332,25 @@ def get_command(bot, update):
                     print(e)
                     telbot.send_message(chat_id=user_id, txt=getinfo + " 조회 실패")
 
-        elif msg.find("/FEEDBACK") != -1:
+        elif msg.upper().find("/FEEDBACK") != -1:
             txtfile = "habot_feedback.txt"
-            feedback = bot[tp]['text'].replace('/feedback ',"")
-            print('feedback : ' + feedback)
+            
             try:
-                if feedback == "/feedback" :
+                if bot[tp]['text'].upper() == "/FEEDBACK" :
                     telbot.send_message(chat_id = user_id, text = "내용을 입력해주세요")
                 else:
+                    feedback = " ".join(bot[tp]['text'].split(" ")[1:])
+                    print('feedback : ' + feedback)
                     with open(txtfile, 'a', encoding = 'UTF-8') as f:          
                         f.write(str(user_id) + " " +feedback + "\n")
                     telbot.send_message(chat_id = my_user_id, text = str(user_id) + " : " +feedback)
                     time.sleep(4)
-                telbot.send_message(chat_id = user_id, text = "피드백 감사합니다.^-^\n"+feedback)
+                    telbot.send_message(chat_id = user_id, text = "피드백 감사합니다.^-^")
             except Exception as e:
                 print(e)
                 telbot.send_message(chat_id = user_id, text = "피드백을 전송하는데 실패했어요 ㅠㅅㅠ\n내용 : "+feedback)
 
-        elif msg == "/HELP":
+        elif msg.upper() == "/HELP":
             telbot.send_message(chat_id = user_id, text = helpmsg,parse_mode='Markdown' )
             return
         else :

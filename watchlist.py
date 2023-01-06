@@ -1,16 +1,23 @@
 
-def get_querys(user_id, file):
+def get_querys(file, user_id=None):
+    '''
+    user_id is None -> return [전체쿼리] 
+    user_id is not None -> return [유저에 해당하는 쿼리]
+    '''
     with open(file, 'r', encoding = 'UTF-8') as f:
         querys = f.read().splitlines() 
 
-    qs=[]
-    for q in querys:
-        if str(q.split(" ")[0]) == str(user_id):
-            qs.append(q)
+    if user_id is None: #전체 쿼리 리턴
+        return querys
+    else: #유저id에 해당하는 라인만 리턴
+        qs=[]
+        for q in querys:
+            if str(q.split(" ")[0]) == str(user_id):
+                qs.append(q)
 
     return qs
 
-def find_query_line(name, file):
+def find_query_line(txt, file):
     '''
     return T -> 행번호
     return F -> -1
@@ -18,10 +25,8 @@ def find_query_line(name, file):
     i = 0
     querys = get_querys(file)
 
-    for query in querys:
-        i = i+1
-        if query == name :
-            return i
+    for i, query in enumerate(querys):
+        if query == txt : return i # 몇번째 줄인지 리턴
     return -1
 
 def del_query(name, file):
@@ -68,8 +73,7 @@ def add_keyword(user_id, keyword, file):
     return -> 0 (fail 이미 목록에 있음) / 1 (true 추가 완료)
     '''
     user_id = str(user_id)
-    keyword = keyword.upper()
-    querys = get_querys(user_id, file)
+    querys = get_querys(file, user_id=user_id)
     for query in querys:
         if query == (user_id + " " + keyword) : # 목록에 있습니다
             return 0 # 저장안하고 종료
@@ -82,7 +86,6 @@ def del_keyword(user_id, keyword, file):
     '''
     return -> 0 (fail 목록에 없음) / 1 (true 삭제 완료)
     '''
-    keyword = keyword.upper()
     txt = user_id + " " + keyword
     
     if find_query_line(txt, file) < 0: #목록에 없습니다
