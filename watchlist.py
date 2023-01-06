@@ -67,6 +67,7 @@ def add_keyword(user_id, keyword, file):
     '''
     return -> 0 (fail 이미 목록에 있음) / 1 (true 추가 완료)
     '''
+    user_id = str(user_id)
     keyword = keyword.upper()
     querys = get_querys(user_id, file)
     for query in querys:
