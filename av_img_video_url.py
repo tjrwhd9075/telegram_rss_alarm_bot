@@ -25,7 +25,7 @@ AMA = {
 }
 
 ALL_ITEMS = {
-    '1': ["hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','SDNT','SDMU','NTTR','FSET','SHYN','DVDM','MIHA'],
+    '1': ['stcv',"hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','SDNT','SDMU','NTTR','FSET','SHYN','DVDM','MIHA'],
     '2': ['dfe','wfr','ekw','wpvr','wkd'], 
     '12': ['bur','lol','imo','scr'], '13': ['GVG','dsvr','gqe','ovg','yvg','rvg'],
     '18': ['mght','sprd','ntrd','spbx'], 
@@ -72,7 +72,8 @@ DBMSIN_NUM_AMA_IMG ={ # MGS 품번에는 숫자가 없는데, 링크에는 숫�
     '336KBI' : ["kbi"],
     '258DTSG' : ["dtsg"],
     '307SHIC' :["shic"],
-    '109IENE' : ["iene"]
+    '109IENE' : ["iene"],
+    '107SDMUA':["sdmua"]
 }
 DBMSIN_UNCEN_IMG = {
     'heyzo' : ["heyzo"],
@@ -88,7 +89,6 @@ DBMSIN_AMA_IMG ={
     'GIGA':["thp","ghov","gigp","spsa"], #https://db.msin.jp/jp.images/cover/GIGA/THP-96.jpg
     "" : []
 }
-
 
 import urllib.request
 

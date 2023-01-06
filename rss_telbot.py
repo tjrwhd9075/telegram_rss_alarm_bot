@@ -108,14 +108,14 @@ def get_avrssbot_text(bot, update):
 
     missavPumnum = "-".join(pumnum.split("-")[1:])
     txt = "[.](" +str(thumb1)+ ") " + str(pumnum.upper().replace("_","\_")) + " #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
-        + "[ [trailer]("+str(trailer)+") ]  \
-        \[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  \
-        \[ [missav]("+f"https://missav.com/ko/search/{missavPumnum}"+") ]  \
-        \[ [avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2) ]  \
-        \[ [javdb]("+f"https://javdb.com/search?q={pumnum}&f=all) ]  \
-        \[ [dbmsin]("+dburl+") ]  \
-        \[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  \
-        \[ [torrent]("+str(torrentLink)+") ]\n\n"\
+        + "\[ [trailer]("+str(trailer)+") ]  "+\
+        "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
+        "\[ [missav]("+f"https://missav.com/ko/search/{missavPumnum}"+") ]  "+\
+        "\[ [avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2) ]  "+\
+        "\[ [javdb]("+f"https://javdb.com/search?q={pumnum}&f=all) ]  "+\
+        "\[ [dbmsin]("+dburl+") ]  "+\
+        "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
+        "\[ [torrent]("+str(torrentLink)+") ]\n\n"\
         + str(actor) + " " + str(writer) + " " + str(createDate) + " *" + str(fileSize) + "*\n"\
         + str(translatedTitle)  +"\n"
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
@@ -176,12 +176,12 @@ def get_fc2rssbot_text(bot, update):
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static("fc2-ppv-"+str(pumnum))
     
     txt = "[.](" +f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"+ ") FC2PPV " + str(pumnum) + " #FC2PPV\_"+str(pumnum) +"\n"\
-        + " \[ [trailer]("+f"https://db.msin.jp/sampleplay?id=fc2-ppv-{pumnum}"+") ]  \
-            \[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}"+") ]  \
-            \[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}"+") ]  \
-            \[ [dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}"+") ]  \
-            \[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  \
-            \[ [torrent]("+torrentLink+") ]\n\n"\
+        + "\[ [trailer]("+f"https://db.msin.jp/sampleplay?id=fc2-ppv-{pumnum}"+") ]  "+\
+        "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}"+") ]  "+\
+        "\[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}"+") ]  "+\
+        "\[ [dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}"+") ]  "+\
+        "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
+        "\[ [torrent]("+torrentLink+") ]\n\n"\
         + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
         + translatedTitle 
     mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
