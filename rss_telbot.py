@@ -24,6 +24,7 @@ telbot = telegram.Bot(token=myToken)
 myBotName = "fc2rss_alarmBot"
 updater = Updater(myToken, use_context=True)
 
+my_user_id = '1706601591'
 group_id_trash = '-1001547828770'
 
 # rss봇이 보낸 메시지 처리
@@ -146,7 +147,6 @@ def get_avrssbot_text(bot, update):
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
-    
 def get_fc2rssbot_text(bot, update):
     chat_id = bot['chat']['id']
     message_id = bot['message_id']
@@ -249,7 +249,155 @@ def get_message(bot, update):
     if msgFrom == 'AvRssTorrent' : get_avrssbot_text(bot[tp], update); return 
     if msgFrom == 'Fc2RssTorrent': get_fc2rssbot_text(bot[tp], update); return
 
+def get_command(bot, update):
+    if bot.channel_post is not None : tp = "channel_post"   #채널일 경우
+    elif bot.message is not None : tp = "message"           #그룹일 경우
+    elif bot.edited_channel_post is not None  : return      #봇이 채널에 에딧한 메세지일 경우
+    else : print(bot)
 
+    # print(bot)
+    chat_type = bot[tp]['chat']['type'] 
+    print("채널타입 : " + chat_type)
+    if chat_type == 'private' or chat_type == 'channel': # 개인채팅, 채널일 경우
+        user_id = bot[tp]['chat']['id']
+        print("유저id : " + str(user_id))
+    elif chat_type == 'supergroup':
+        if bot[tp]['sender_chat'] is not None:
+            msgFrom = bot[tp]['sender_chat']['title']
+            print("from : " + msgFrom, end=" -> ")
+        else: msgFrom = ""
+        msgTo = bot[tp]['chat']['title']
+        print("to : " + msgTo)
+
+    chat_id = bot[tp]['chat']['id']
+    msg = bot[tp]['text'].split('@')[0].upper()    # / 제외하고, 대문자로 변환
+    message_id = bot[tp]['message_id']
+
+    print("get command : " + msg)
+
+    telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+
+    global COMMAND
+    if chat_type == 'private': # 개인챗에 메시지 전송
+        helpmsg = "키워드 알림 적용 채널, 그룹\n\
+            \[ [신작&순위 채널](https://t.me/+Y7PSYJPViXFiZTY1) ]  \[ [AvRss](https://t.me/+RJU6zonaLrswZWE9) ]  \[ [Fc2Rss](https://t.me/+Hqirrs4MIUZhOGI1) ]\n\
+            사용가능한 명령어\n\
+            */kadd* \[keyword] : 키워드 등록\n\
+            */klist*           : 키워드 리스트\n\
+            */kdel* \[keyword]  : 키워드 삭제\n\
+            !!! 띄어쓰기 포함 X. 키워드는 단어 단위로 입력해주세요. !!!\n\n\
+            */getinfo* \[품번]   : 품번 상세정보\n\
+            ex) abc-123, fc2-ppv-123456  \n\n\
+            */feedback* \[내용] : 문의사항, 건의사항\n\
+            */help* 도움말\n\
+            \[ [에딥톡방](https://t.me/+zdk5g1B2caE4Mzk1) ]\n\
+            "
+        if msg.find("/KADD") != -1 :
+            try:
+                kadd = bot[tp]['text'].split(" ")[1]
+                print("kadd : " + kadd)
+                chk = watchlist.add_keyword(str(user_id), kadd, 'av_list_keyword.txt')
+                if chk == 1: telbot.send_message(chat_id = user_id, text = kadd + " 키워드 추가 완료")
+                else : telbot.send_message(chat_id = user_id, text = kadd + " 키워드 추가 실패 또는 목록에 이미 있음")
+            except Exception as e:
+                print(e)
+                telbot.send_message(chat_id = user_id, text = "알림을 등록할 키워드를 입력하세요\nex) /kadd [키워드]")
+            return
+        elif msg == "/KLIST":
+            klist = watchlist.get_querys('av_list_keyword.txt')
+            txt =""
+            for key in klist: txt += key.split(" ")[1] +", "
+            telbot.send_message(chat_id = user_id, text = "키워드 리스트\n" + txt)
+            return
+        elif msg.find("/KDEL") != -1:
+            try:
+                kdel = bot[tp]['text'].split(" ")[1]
+                print("kdel : " + kdel)
+                chk = watchlist.del_keyword(str(user_id), kdel, 'av_list_keyword.txt')
+                if chk == 1: telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 완료")
+                else : telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 실패 또는 목록에 없음")
+            except Exception as e:
+                print(e)
+                telbot.send_message(chat_id = user_id, text = "삭제할 키워드를 입력하세요\nex) /kdel [키워드] ")
+            return
+
+        elif msg.find("/GETINFO") != -1:
+            if bot[tp]['text'] == "/getinfo" : telbot.send_message(chat_id = user_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
+            else:
+                getinfo = bot[tp]['text'].replace("/getinfo ","")
+                print("getinfo : " + getinfo)
+                try:
+                    get_pumInfo(getinfo, str(user_id))
+                except Exception as e:
+                    print(e)
+                    telbot.send_message(chat_id=user_id, txt=getinfo + " 조회 실패")
+
+        elif msg.find("/FEEDBACK") != -1:
+            txtfile = "habot_feedback.txt"
+            feedback = bot[tp]['text'].replace('/feedback ',"")
+            print('feedback : ' + feedback)
+            try:
+                if feedback == "/feedback" :
+                    telbot.send_message(chat_id = user_id, text = "내용을 입력해주세요")
+                else:
+                    with open(txtfile, 'a', encoding = 'UTF-8') as f:          
+                        f.write(str(user_id) + " " +feedback + "\n")
+                    telbot.send_message(chat_id = my_user_id, text = str(user_id) + " : " +feedback)
+                    time.sleep(4)
+                telbot.send_message(chat_id = user_id, text = "피드백 감사합니다.^-^\n"+feedback)
+            except Exception as e:
+                print(e)
+                telbot.send_message(chat_id = user_id, text = "피드백을 전송하는데 실패했어요 ㅠㅅㅠ\n내용 : "+feedback)
+
+        elif msg == "/HELP":
+            telbot.send_message(chat_id = user_id, text = helpmsg,parse_mode='Markdown' )
+            return
+        else :
+            telbot.send_message(chat_id = user_id, text = helpmsg,parse_mode='Markdown' )    
+            return                                 
+
+        try : telbot.delete_message(chat_id= user_id, message_id=message_id)
+        except Exception: pass
+
+def get_pumInfo(pumnum, chat_id):
+    '''
+    pumnum : qwer-1234 또는 fc2ppv 123456, fc2-ppv-123456
+    '''
+    
+
+    telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+
+    pumnum = filename_set.pumnum_check(pumnum) #fc2-ppv-12345
+    title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
+    highlight=""
+    if createDate != "-":
+        diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
+        if diffDate.days <= 7 : highlight="`"
+    if title != "-": 
+        title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", title) #특수문자 제거
+        title = filename_set.replaceTxt(filename_set.translater(title)) #수정
+    title = title.replace("_","\\_")
+    thumb = av_img_video_url.makeImageURL(pumnum)
+    if isinstance(thumb, list): thumb = thumb[1]
+    trailer = av_img_video_url.makeVideoURL(pumnum)
+    
+    if pumnum.find("fc2") != -1 or pumnum.find("carib") != -1 or pumnum.find("1pon") != -1 or pumnum.find("10mu") != -1 or pumnum.find("paco") != -1 : 
+        dburl=f"https://db.msin.jp/search/movie?str={pumnum}"
+    else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
+    missavPumnum = "-".join(pumnum.replace("fc2ppv ","fc2-ppv-").split("-")[1:])
+    if pumnum.lower().find("fc2") != -1: pumnum = "fc2ppv "+pumnum.replace(" ","-").split("-")[-1]
+
+    telbot.send_message(chat_id=chat_id, 
+                        text="[.]("+str(thumb)+") `" + pumnum.upper().replace("_","\_") +  "` #" +pumnum.upper().replace("_","\_").replace(" ","\_").replace("-","\_") + "\n\n" +
+                        "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "+
+                        "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "+
+                        "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "+
+                        "\[ [missav](https://missav.com/ko/search/"+missavPumnum+") ]  "+
+                        "\[ [trailer]("+str(trailer)+") ]  "+
+                        "\[ [dbmsin]("+ dburl +") ]\n\n"+
+                        writer+" "+actor+" "+highlight+createDate+highlight+"\n"+ title
+                        ,parse_mode='Markdown' )
+    time.sleep(4)
 
 
 def alarmi():
@@ -267,6 +415,9 @@ try :
     '''rssbot'''
     # 메시지 받아오는 곳
     message_handler = MessageHandler(Filters.text & (~Filters.command), get_message)
+    updater.dispatcher.add_handler(message_handler)
+
+    message_handler = MessageHandler(Filters.command, get_command)
     updater.dispatcher.add_handler(message_handler)
 
     updater.start_polling(timeout=5)
