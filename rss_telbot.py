@@ -1,15 +1,21 @@
 import re
 import time
 from threading import Thread
+from datetime import datetime
 
 import telegram  # pip install python-telegram-bot --upgrade
-from telegram import chat
 from telegram.ext import Updater, MessageHandler, Filters
 
 import filename_set
 import av_img_video_url
 
 ''' version 23.1.5.18'''
+
+'''
+*bold*
+_italic_
+`inline monospaced text`
+'''
 
 #텔레그램 봇
 myToken = '5831801489:AAHvEw74bp6zz1mhbNCsAGu9JmtVifG0AWY'
@@ -101,9 +107,11 @@ def get_avrssbot_text(bot, update):
         thumb2 = thumb[1]
     else: thumb1 = thumb
 
-    
-
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
+    highlight=""
+    if createDate != "-":
+        diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
+        if diffDate.days <= 7 : highlight="`"
 
     uncPumnum = filename_set.pumnum_check(pumnum)
     if uncPumnum.find("carib") != -1 or uncPumnum.find("1pon") != -1 or uncPumnum.find("10mu") != -1 or uncPumnum.find("paco") != -1 : 
@@ -111,7 +119,7 @@ def get_avrssbot_text(bot, update):
     else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
 
     missavPumnum = "-".join(pumnum.split("-")[1:])
-    txt = "[.](" +str(thumb1)+ ") " + str(pumnum.upper().replace("_","\_")) + " #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
+    txt = "[.](" +str(thumb1)+ ") `" + str(pumnum.upper().replace("_","\_")) + "` #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
         + "\[ [trailer]("+str(trailer)+") ]  "+\
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/search/{missavPumnum}"+") ]  "+\
@@ -120,13 +128,13 @@ def get_avrssbot_text(bot, update):
         "\[ [dbmsin]("+dburl+") ]  "+\
         "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
         "\[ [torrent]("+str(torrentLink)+") ]\n\n"\
-        + str(actor) + " " + str(writer) + " " + str(createDate) + " *" + str(fileSize) + "*\n"\
+        + str(actor) + " " + str(writer) + " " +highlight+ str(createDate) +highlight+ " *" + str(fileSize) + "*\n"\
         + str(translatedTitle)  +"\n"
-    mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
+    mgn = "`magnet:?xt=urn:btih:" + str(infoHash) +"`"
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
     telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
-    telbot.send_message(text=mgn, chat_id=chat_id)
+    telbot.send_message(text=mgn, chat_id=chat_id, parse_mode='Markdown')
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     time.sleep(4)
@@ -178,20 +186,24 @@ def get_fc2rssbot_text(bot, update):
 
     translatedTitle = filename_set.replaceTxt(filename_set.translater(title))
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static("fc2-ppv-"+str(pumnum))
+    highlight=""
+    if createDate != "-":
+        diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
+        if diffDate.days <= 7 : highlight="`"
     
-    txt = "[.](" +f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"+ ") FC2PPV " + str(pumnum) + " #FC2PPV\_"+str(pumnum) +"\n"\
+    txt = "[.](" +f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"+ ") `FC2PPV " + str(pumnum) + "` #FC2PPV\_"+str(pumnum) +"\n"\
         + "\[ [trailer]("+f"https://db.msin.jp/sampleplay?id=fc2-ppv-{pumnum}"+") ]  "+\
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}"+") ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}"+") ]  "+\
         "\[ [dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}"+") ]  "+\
         "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
         "\[ [torrent]("+torrentLink+") ]\n\n"\
-        + str(actor) + " " + str(writer) + " " + str(createDate) + " **" + str(fileSize) + "**\n"\
+        + str(actor) + " " + str(writer) + " " +highlight+ str(createDate) +highlight+ " **" + str(fileSize) + "**\n"\
         + translatedTitle 
-    mgn = 'magnet:?xt=urn:btih:' + str(infoHash)
+    mgn = "`magnet:?xt=urn:btih:" + str(infoHash) +"`"
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
     telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
-    telbot.send_message(text=mgn, chat_id=chat_id)
+    telbot.send_message(text=mgn, chat_id=chat_id, parse_mode='Markdown')
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     time.sleep(4)
