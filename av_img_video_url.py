@@ -25,26 +25,22 @@ AMA = {
 }
 
 ALL_ITEMS = {
-    '1': ['mogi','stcv',"hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','sdnt','sdmu','nttr','fset','shyn','dvdm','miha'],
-    '2': ['dfe','wfr','ekw','wpvr','wkd'], 
-    '12': ['bur','lol','imo','scr'], '13': ['GVG','dsvr','gqe','ovg','yvg','rvg'],
-    '18': ['mght','sprd','ntrd','spbx'], 
-    '24': ['dfbvr','vdd','ped'], 
-    '30': ['nha','msc','msa'],
-    '36': ['doks','drop','DKWT'], 
-    '41':['pjf','ly'],'42': ['sp'],     '55': ['davk','tmavntgvr','T28'], 
-    '57': ['jksr','mcsr','itsr','bdsr','husr','sgsr'],
-    '71': ['gas'],    '84': ['mdtm','mkmp','kmvr','umso'], 
-    '86': ['axdvd'], '100': ['tv','yen'],     '125': ['umd'], '143': ['shm'],     '149': ['rd'],    '171': ['lhtd'], '172': ['xrw'], '189': ['hsf'], '301': ['mbdd'],
-    '422': ['kagd'], '433': ['gun','neo'], '436': ['bubb'], '5013': ['tsds'], '504': ['ibw'],'540':['yst'],
+    '1': ['shh','acme','nhdta','sdmf','mogi','stcv',"hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','sdnt','sdmu','nttr','fset','shyn','dvdm','miha'],
+    '2': ['dfe','wfr','ekw','wpvr','wkd'],  '12': ['bur','lol','imo','scr'], '13': ['GVG','dsvr','gqe','ovg','yvg','rvg'],
+    '18': ['mght','sprd','ntrd','spbx','mond'],  '21':['psd'],'24': ['dfbvr','vdd','ped'],  '30': ['nha','msc','msa'],
+    '36': ['doks','drop','DKWT'],  '41':['pjf','ly'],'42': ['sp'],     '55': ['davk','tmavntgvr','T28'], 
+    '57': ['jksr','mcsr','itsr','bdsr','husr','sgsr'], '71': ['gas'],    '84': ['mdtm','mkmp','kmvr','umso'], 
+    '86': ['axdvd'], '100': ['tv','yen'],'118':['giro'],     '125': ['umd'], '143': ['shm'],     '149': ['rd'],    '171': ['lhtd'], '172': ['xrw'], '189': ['hsf'], '301': ['mbdd'],
+    '422': ['kagd'], '433': ['gun','neo'], '436': ['bubb','yas'], '5013': ['tsds'], '504': ['ibw'],'540':['yst','wpe'],
     '5443': ['loota'], '5448': ['mwkd'], '5561': ['brth','flvr11','lvid','ftsh','vntg','shmo'], 
-    '5581': ['pitv'], '5642': ['bndv','hodv'],    'h_068':['mxgs'], 'h_890':['mist'], 'h_1337': ['wvr9c'],
+    '5581': ['pitv'], '5642': ['bndv','hodv'],    
+    'h_021':['pym'],'h_068':['mxgs'], 'h_890':['mist'], 'h_1337': ['wvr9c'],'h_308':['aoz'],'h_491':['tdmn'],
     'h_1368': ['komz'], 'h_254': ['kir','ofku','spz','vnds','doki','mgdn','dmat','udak','nxg','kazk','eih'],
     'h_1248': ['kiwvr'], 'h_1462': ['com','pyu'], 'h_706': ['anda','coch','gredb','prbyb','sbmo','sprbd','thnib','ppmn'],
     'h_244': ['saba','supa'], 'h_1575': ['sgkx'], 'h_1256': ['tpvr','tprm'], 'h_1127': ['vovs','gopj','vosf','vosm'],
     'h_1116': ['cafuku','cami','casmani','cafr','capi','cabe','caca'], 'h_019': ['acz','kck'],
-    'h_1100': ['hzgd','hzhb'], 'h_1000': ['spye'], 'h_1001': ['oyaj'], 'h_1160': ['meko'],'h_1605':["stsk"],
-    'h_1231': ['^ss$'], 'h_1300': ['mtes'],
+    'h_1100': ['hzgb','hzgd','hzhb'], 'h_1000': ['spye'], 'h_1001': ['oyaj'], 'h_1160': ['meko'],'h_1605':["stsk"],
+    'h_1231': ['^ss$'], 'h_1300': ['mtes'],'h_1352':['knmd'],
     'h_1435': ['clo','bth'], 'h_1573': ['ftuj'], 'h_1577': ['favkh','fbcpv'], 'h_496': ['dogd'],
     'h_574': ['iqpa'], 'h_1569': ['nkkvr'], 'h_086': ['fera','keed','jrze','jura','mesu','nuka','abba','cvdx','toen','zeaa','iqqq','hima','ferax','iga','kaad','hone'],
     'h_1002': ['jgaho'], 'h_1386': ['dinm'], 'h_1492': ['siror'], 'h_1587': ['ein'], 'h_720': ['zex'],
@@ -53,9 +49,9 @@ ALL_ITEMS = {
     'h_1594': ['spro'], 'h_1096': ['bdsm'], 'h_113': ['^(bbacos','cb','ek','kpp','spo','sw)$','syk','sy','izm'],
     'h_1165': ['goju'], 'h_1553': ['ftvr'], 'h_1560': ['shind'],
     'h_1345': ['GNAX'], 'h_1558': ['csdx'], 'h_1593': ['cubex','fanq','fanx','papak'], 'h_172': ['HMNF'], 'h_1631': ['krs'],
-    'h_173': ['ghkr','gtrl','ryoj','tbb','thp'], 'h_1454':['smdy'], 'h_1359':['swdf'],
+    'h_173': ['giro','ghkr','gtrl','ryoj','tbb','thp'], 'h_1454':['smdy'], 'h_1359':['swdf'],
     'h_189': ['cha','milf','pc','tsm','uta','vio'], 'h_237': ['find','ambi','ambs','clot','hdka','nacr','nacx','zmar'],
-    'h_897': ['nmk'], 'h_101': ['^gs$'], 'h_227': ['jukf'], 'h_1324': ['skmj'], 'h_1240': ['milk'],'h_1112':['nubi'],
+    'h_897': ['nmk','hict'], 'h_101': ['^gs$'], 'h_227': ['jukf'], 'h_1324': ['skmj'], 'h_1240': ['milk'],'h_1112':['nubi'],
     'h_1472': ['hmvf','stvf'], 'h_1378': ['arso'], 'h_580': ['tms'], 'h_1533': ['can'], 'h_1321': ['pydvr'],'h_1133':['honb'],
     'h_1155': ['crvr'], 'h_910': ['VRTM'], 'h_921': ['^hj$'], 'h_346': ['rebd'], 'h_1495': ['bank'],'h_1596':['gns'],
     '': [] # zfill(3)
@@ -66,21 +62,25 @@ DBMSIN_IMG = {
 }
 
 DBMSIN_NUM_AMA_IMG ={ # MGS 품번에는 숫자가 없는데, 링크에는 숫자가 있는것
-    '534IND' : ["ind"], 
-    '003T28' : ["t28"],
-    '107MOGI': ["mogi"], #https://db.msin.jp/jp.images/cover/MGS/107MOGI-071.jpg
-    '336KBI' : ["kbi"],
-    '258DTSG' : ["dtsg"],
-    '307SHIC' :["shic"],
-    '109IENE' : ["iene"],
-    '107SDMUA':["sdmua"]
+    '534IND' : ["ind"], '107SDMF':['sdmf'],
+    '003T28' : ["t28"], '201TDMN':['tdmn'],
+    '107MOGI': ["mogi"], '116NHDTA':['nhdta'],
+    '336KBI' : ["kbi"], '116ACME':['acme'],
+    '258DTSG' : ["dtsg"], '1073DSVR':['3dsvr'],
+    '307SHIC' :["shic"], '116SHH':['shh'],
+    '109IENE' : ["iene"], '026MOND':['mond'],
+    '107SDMUA':["sdmua"], '352KNMD':['knmd'],
+    '005AOZ':["aoz"], '278GIRO':['giro'],
+    '043PYM':["pym"]
 }
+
 DBMSIN_UNCEN_IMG = {
     'heyzo' : ["heyzo"],
     'h4610' : ["h4610"],
     'paco' : ["paco"],          
     'carib' : ["carib"],
-    "10mu" : ["10mu"]
+    "10mu" : ["10mu"],
+    'fc2':["fc2-ppv"]
     # https://db.msin.jp/images/cover/carib/carib-010323-001.jpg
 }
 DBMSIN_AMA_IMG ={
@@ -103,6 +103,7 @@ def purifyPumnum(pumnum):
     [maker, num] = [splitID[0].lower().strip(), splitID[1].strip()]
 
     if maker == "carib": num = splitID[1].strip() + "-" + splitID[2].strip()   # carib-11111-111   
+    if maker == "fc2ppv": maker = "fc2-ppv"; num = splitID[-1].strip() # fc2-ppv 12345
     if maker == "fc2": maker = "fc2-ppv"; num = splitID[-1].strip()
     replaceItem = { 'kssis': 'ssis', 'kcawd': 'cawd','iptd':'ipt' }
 
@@ -172,10 +173,9 @@ def makeImageURL(pumnum):
 
             req = urllib.request.Request(url=url[0], headers=headers)
             res1 = urllib.request.urlopen(req).geturl()
+            if res1.find("now_printing") == -1: print(key, url); return url[0]
             req = urllib.request.Request(url=url[1], headers=headers)
             res2 = urllib.request.urlopen(req).geturl()
-            print([res1, res2])
-            if res1.find("now_printing") == -1: print(key, url); return url[0]
             if res2.find("now_printing") == -1: print(key, url); return url[1]
         
         #나머지 전부
@@ -184,10 +184,9 @@ def makeImageURL(pumnum):
                    f'https://pics.dmm.co.jp/mono/movie/adult/'+maker+num+'/'+maker+num+'pl.jpg']
             req = urllib.request.Request(url=url[0], headers=headers)
             res1 = urllib.request.urlopen(req).geturl()
+            if res1.find("now_printing") == -1: print(key, url); return url[0]
             req = urllib.request.Request(url=url[1], headers=headers)
             res2 = urllib.request.urlopen(req).geturl()
-            print([res1, res2])
-            if res1.find("now_printing") == -1: print(key, url); return url[0]
             if res2.find("now_printing") == -1: print(key, url); return url[1]
         
     print("img url 없음")
