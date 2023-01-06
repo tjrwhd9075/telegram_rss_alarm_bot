@@ -143,7 +143,7 @@ def get_avrssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(pumnum + " " + txt,'av_list_keyword.txt') 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Fc2RssTorrent](https://t.me/+Hqirrs4MIUZhOGI1)', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Av2RssTorrent](https://t.me/+4F1MKUjlKKQ2NWE1)', parse_mode = 'Markdown')
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -218,7 +218,7 @@ def get_fc2rssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(txt,'av_list_keyword.txt') 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Fc2RssTorrent](https://t.me/+Hqirrs4MIUZhOGI1)', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl)', parse_mode = 'Markdown')
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -280,7 +280,7 @@ def get_command(bot, update):
     global COMMAND
     if chat_type == 'private': # 개인챗에 메시지 전송
         helpmsg = "키워드 알림 적용 채널, 그룹\n\
-            \[ [신작&순위 채널](https://t.me/+Y7PSYJPViXFiZTY1) ]  \[ [AvRss](https://t.me/+RJU6zonaLrswZWE9) ]  \[ [Fc2Rss](https://t.me/+Hqirrs4MIUZhOGI1) ]\n\
+            \[ [신작&순위 채널](https://t.me/+NhDP-cnW7KA3NGM1) ]  \[ [AvRss](https://t.me/+4F1MKUjlKKQ2NWE1) ]  \[ [Fc2Rss](https://t.me/+x-HRQ8PpKI9iZTZl) ]\n\
             사용가능한 명령어\n\
             */kadd* \[keyword] : 키워드 등록\n\
             */klist*           : 키워드 리스트\n\
@@ -290,7 +290,7 @@ def get_command(bot, update):
             ex) abc-123, fc2-ppv-123456  \n\n\
             */feedback* \[내용] : 문의사항, 건의사항\n\
             */help* 도움말\n\
-            \[ [에딥톡방](https://t.me/+zdk5g1B2caE4Mzk1) ]\n\
+            \[ [에딥톡방](https://t.me/+A1HoasQqHMEzY2U1) ]\n\
             "
         if msg.find("/KADD") != -1 :
             try:
