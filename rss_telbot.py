@@ -2,6 +2,8 @@ import re
 import time
 from threading import Thread
 from datetime import datetime
+import schedule
+import asyncio
 
 import telegram  # pip install python-telegram-bot --upgrade
 from telegram.ext import Updater, MessageHandler, Filters
@@ -9,6 +11,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 import filename_set
 import av_img_video_url
 import watchlist
+import avdbs_crawling
 
 ''' version 23.1.5.18'''
 
@@ -143,7 +146,7 @@ def get_avrssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(pumnum + " " + txt,'av_list_keyword.txt') 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Av2RssTorrent](https://t.me/+4F1MKUjlKKQ2NWE1)', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -218,7 +221,7 @@ def get_fc2rssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(txt,'av_list_keyword.txt') 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : " + q.split(" ")[1] + " → " + str(pumnum.upper().replace("_","\_")) +' [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl)', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -405,17 +408,68 @@ def get_pumInfo(pumnum, chat_id):
     time.sleep(4)
 
 
+async def int2imoji(num : int):
+
+    res = ""
+
+    if num == 0: res = "0️⃣"
+    elif num == 1: res = "1️⃣"
+    elif num == 2: res = "2️⃣"
+    elif num == 3: res = "3️⃣"
+    elif num == 4: res = "4️⃣"
+    elif num == 5: res = "5️⃣"
+    elif num == 6: res = "6️⃣"
+    elif num == 7: res = "7️⃣"
+    elif num == 8: res = "8️⃣"
+    elif num == 9: res = "9️⃣"
+
+    return res
+
+async def get_avdbs_crawling(chat_id):
+    newContents = await avdbs_crawling.get_avdbs_whole_board()
+
+    #content : [num,thumb,boardType,adult,date,beforeTime,writer,lvl,view,recom,good,title,contentTxt]
+    #           0   1     2         3     4    5          6      7   8    9     10   11    12
+    for content in newContents:
+        adult, view, recom, good = "-","-","-","-"
+        if content[3] is not None : adult = "1️⃣9️⃣➕"
+        if content[8] is not None : view = content[8]
+        if content[9] is not None : recom = content[9]
+        if content[10] is not None : good = content[10]
+
+        lvl10 = await int2imoji(int(content[7]) / 10)
+        lvl1 = await int2imoji(int(content[7]) % 10)
+
+        txt= "[.]("+content[1]+")\t*AVDBS New 게시글 알림*\n\n"+\
+            "게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult + " | "  + content[4] + " | " + content[5] + "\n\n"+\
+            "제목 : "+ content[11] + "\n"+\
+            "👀" + view + " | 💬 : " + recom + " | 👍" + good + "\n"+\
+            "작성자 : " + content[6] + " LV : " + lvl10 + lvl1 + "\n\n"+\
+            content[12]
+
+        await telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+        await telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
+        await time.sleep(4)
+
+schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_trash))) 
+
 def alarmi():
     print("쓰레딩이이잉")
     telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
+    
     while True:
-
-        pass
+        schedule.run_pending()
 
 try :
     # 스레드로 while문 따로 돌림
     t = Thread(target=alarmi, daemon=True)
     t.start()
+
+    try:
+        get_avdbs_crawling(group_id_trash)
+    except Exception as e:
+        print("get_avdbs_crawling error : ", end="")
+        print(e)
 
     '''rssbot'''
     # 메시지 받아오는 곳
@@ -430,3 +484,4 @@ try :
     
 except Exception as e:               # 에러 발생시 예외 발생
     print(e)
+    # telbot.send_message(chat_id=group_id_trash, text="rssbot 에러 발생")

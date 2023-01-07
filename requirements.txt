@@ -1,6 +1,7 @@
 googletrans==4.0.0rc1
 googleapis-common-protos==1.56.3
 selenium==4.1.0
+schedule==1.1.0
 python-telegram-bot==13.11
 bs4==0.0.1
 webdriver-manager==3.7.0
@@ -8,3 +9,4 @@ Flask==2.2.2
 gunicorn==20.1.0
 aiohttp==3.8.1
 pymongo[srv]==3.12.3
+nest-asyncio @ file:///C:/ci/nest-asyncio_1649829929372/work
