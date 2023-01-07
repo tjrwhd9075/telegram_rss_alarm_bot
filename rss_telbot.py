@@ -460,7 +460,7 @@ async def get_avdbs_crawling(chat_id):
             "🕓 : "+content[4] + " | " + content[5] + "\n"+\
             "🖋 : " + writer + " | LV : " + lvl10 + lvl1 + "\n\n"+\
             "👀 : " + view + " | 💬 : " + recom + " | 👍 : " + good + "\n"+\
-            "제목 : ["+ title +"]("+content[1]+")" + "\n\n"+\
+            "제목 : ["+ title +"]("+content[0]+")" + "\n\n"+\
             contentTxt
 
         telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
