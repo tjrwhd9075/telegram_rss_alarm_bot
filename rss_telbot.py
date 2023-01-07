@@ -29,6 +29,7 @@ updater = Updater(myToken, use_context=True)
 
 my_user_id = '1706601591'
 group_id_trash = '-1001547828770'
+group_id_avdbs = '-1001870842558'
 
 # rss봇이 보낸 메시지 처리
 def get_avrssbot_text(bot, update):
@@ -244,10 +245,13 @@ def get_message(bot, update):
         # print(bot[tp])
         if bot[tp]['sender_chat'] is not None:
             msgFrom = bot[tp]['sender_chat']['title']
-            print("from : " + msgFrom, end=" -> ")
+            msgFromId = bot[tp]['sender_chat']['id']
+
+            print("from : " + msgFrom + " " + str(msgFromId), end=" -> ")
         else: msgFrom = ""
         msgTo = bot[tp]['chat']['title']
-        print("to : " + msgTo)
+        msgToId = bot[tp]['chat']['id']
+        print("to : " + msgTo + " " + str(msgToId))
 
     if msgFrom == 'AvRssTorrent' : get_avrssbot_text(bot[tp], update); return 
     if msgFrom == 'Fc2RssTorrent': get_fc2rssbot_text(bot[tp], update); return
@@ -267,10 +271,12 @@ def get_command(bot, update):
     elif chat_type == 'supergroup':
         if bot[tp]['sender_chat'] is not None:
             msgFrom = bot[tp]['sender_chat']['title']
-            print("from : " + msgFrom, end=" -> ")
+            msgFromId = bot[tp]['sender_chat']['id']
+            print("from : " + msgFrom + " " + str(msgFromId), end=" -> ")
         else: msgFrom = ""
         msgTo = bot[tp]['chat']['title']
-        print("to : " + msgTo)
+        msgToId = bot[tp]['chat']['id']
+        print("to : " + msgTo + " " + str(msgToId))
 
     chat_id = bot[tp]['chat']['id']
     msg = bot[tp]['text'].split('@')[0]    # / 제외하고, 대문자로 변환
@@ -451,7 +457,7 @@ async def get_avdbs_crawling(chat_id):
         await telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
         await time.sleep(4)
 
-schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_trash))) 
+schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 
 def alarmi():
     print("쓰레딩이이잉")
@@ -466,7 +472,7 @@ try :
     t.start()
 
     try:
-        get_avdbs_crawling(group_id_trash)
+        asyncio.run(get_avdbs_crawling(group_id_avdbs))
     except Exception as e:
         print("get_avdbs_crawling error : ", end="")
         print(e)
