@@ -432,7 +432,8 @@ async def int2imoji(num : int):
     return res
 
 async def ForTeleReplaceTxt(txt : str):
-    return txt.replace("_","\_").replace("*","\*").replace("[","\[").replace("~","\~").replace("`","\`")
+    txt = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)(\[)(\])]", "", txt)
+    return txt.replace("[","|").replace("]","| ")
 
 async def get_avdbs_crawling(chat_id):
     newContents = await avdbs_crawling.get_avdbs_whole_board_asyn()
