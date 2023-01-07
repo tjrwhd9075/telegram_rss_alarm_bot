@@ -441,7 +441,8 @@ async def get_avdbs_crawling(chat_id):
     #content : [num,thumb,boardType,adult,date,beforeTime,writer,lvl,view,recom,good,title,contentTxt]
     #           0   1     2         3     4    5          6      7   8    9     10   11    12
     for content in newContents:
-        adult, view, recom, good = "-","-","-","-"
+        thumb, adult, view, recom, good = "-","-","-","-","-"
+        if content[1] is not None : good = content[1]
         if content[3] is not None : adult = "1️⃣9️⃣➕"
         if content[8] is not None : view = content[8]
         if content[9] is not None : recom = content[9]
