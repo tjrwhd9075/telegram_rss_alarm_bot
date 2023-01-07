@@ -431,6 +431,9 @@ async def int2imoji(num : int):
 
     return res
 
+async def ForTeleReplaceTxt(txt : str):
+    return txt.replace("_","\_").replace("*","\*").replace("[","\[").replace("~","\~").replace("`","\`")
+
 async def get_avdbs_crawling(chat_id):
     newContents = await avdbs_crawling.get_avdbs_whole_board_asyn()
 
@@ -443,16 +446,20 @@ async def get_avdbs_crawling(chat_id):
         if content[9] is not None : recom = content[9]
         if content[10] is not None : good = content[10]
 
-        lvl10 = await int2imoji(int(content[7]) / 10)
+        writer = await ForTeleReplaceTxt(content[6])
+        title = await ForTeleReplaceTxt(content[11])
+        contentTxt = await ForTeleReplaceTxt(content[12])
+
+        lvl10 = await int2imoji(int(int(content[7]) / 10))
         lvl1 = await int2imoji(int(content[7]) % 10)
 
-        txt= "[.]("+content[1]+") 📣 *AVDBS New 게시글 알림* 📣\n\n"+\
-            "게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+\
-            content[4] + " | " + content[5] + "\n\n"+\
-            "🖋 : " + content[6] + " | LV : " + lvl10 + lvl1 + "\n\n"+\
+        txt= "[.]("+content[1]+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
+            "게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+"\n"+\
+            "🕓 : "+content[4] + " | " + content[5] + "\n"+\
+            "🖋 : " + writer + " | LV : " + lvl10 + lvl1 + "\n\n"+\
             "👀 : " + view + " | 💬 : " + recom + " | 👍 : " + good + "\n"+\
-            "제목 : ["+ content[11] +"]("+content[1]+")" + "\n\n"+\
-            content[12]
+            "제목 : ["+ title +"]("+content[1]+")" + "\n\n"+\
+            contentTxt
 
         telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
         telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
