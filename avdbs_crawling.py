@@ -1,5 +1,6 @@
 import urllib.request
 from bs4 import BeautifulSoup as bs
+import asyncio
 
 avdbsUrl = "https://www.avdbs.com"
 avdbsWholeBoardUrl = "https://www.avdbs.com/board/t90"
@@ -10,9 +11,11 @@ headers = {
         'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/53.36'
     } 
 
+global oldList
 oldList = [] #게시판 번호 저장
 
-def get_avdbs_whole_board():
+async def get_avdbs_whole_board_asyn():
+    global oldList
     
     try:
         req = urllib.request.Request(url=avdbsWholeBoardUrl, headers=headers)

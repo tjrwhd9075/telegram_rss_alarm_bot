@@ -432,7 +432,7 @@ async def int2imoji(num : int):
     return res
 
 async def get_avdbs_crawling(chat_id):
-    newContents = await avdbs_crawling.get_avdbs_whole_board()
+    newContents = await avdbs_crawling.get_avdbs_whole_board_asyn()
 
     #content : [num,thumb,boardType,adult,date,beforeTime,writer,lvl,view,recom,good,title,contentTxt]
     #           0   1     2         3     4    5          6      7   8    9     10   11    12
@@ -453,9 +453,9 @@ async def get_avdbs_crawling(chat_id):
             "작성자 : " + content[6] + " LV : " + lvl10 + lvl1 + "\n\n"+\
             content[12]
 
-        await telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-        await telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
-        await time.sleep(4)
+        telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+        telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
+        time.sleep(4)
 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 
@@ -466,16 +466,16 @@ def alarmi():
     while True:
         schedule.run_pending()
 
+#일단 한번 에딥 크롤링 시작
+try:  asyncio.run(get_avdbs_crawling(group_id_avdbs))
+except Exception as e:
+    print("get_avdbs_crawling error : ", end="")
+    print(e)
+
 try :
     # 스레드로 while문 따로 돌림
     t = Thread(target=alarmi, daemon=True)
-    t.start()
-
-    try:
-        asyncio.run(get_avdbs_crawling(group_id_avdbs))
-    except Exception as e:
-        print("get_avdbs_crawling error : ", end="")
-        print(e)
+    t.start()    
 
     '''rssbot'''
     # 메시지 받아오는 곳
