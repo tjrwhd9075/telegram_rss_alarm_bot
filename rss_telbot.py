@@ -446,11 +446,12 @@ async def get_avdbs_crawling(chat_id):
         lvl10 = await int2imoji(int(content[7]) / 10)
         lvl1 = await int2imoji(int(content[7]) % 10)
 
-        txt= "[.]("+content[1]+")\t*AVDBS New 게시글 알림*\n\n"+\
-            "게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult + " | "  + content[4] + " | " + content[5] + "\n\n"+\
-            "제목 : "+ content[11] + "\n"+\
-            "👀" + view + " | 💬 : " + recom + " | 👍" + good + "\n"+\
-            "작성자 : " + content[6] + " LV : " + lvl10 + lvl1 + "\n\n"+\
+        txt= "[.]("+content[1]+") 📣 *AVDBS New 게시글 알림* 📣\n\n"+\
+            "게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+\
+            content[4] + " | " + content[5] + "\n\n"+\
+            "🖋 : " + content[6] + " | LV : " + lvl10 + lvl1 + "\n\n"+\
+            "👀 : " + view + " | 💬 : " + recom + " | 👍 : " + good + "\n"+\
+            "제목 : ["+ content[11] +"]("+content[1]+")" + "\n\n"+\
             content[12]
 
         telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
