@@ -465,7 +465,7 @@ async def get_avdbs_crawling(chat_id):
 
     #content : [num,thumb,boardType,adult,date,beforeTime,writer,lvl,view,recom,good,title,contentTxt]
     #           0   1     2         3     4    5          6      7   8    9     10   11    12
-    for content in newContents.reverse():
+    for content in newContents[::-1]:
         try:
             thumb, adult, view, recom, good = "-","-","-","-","-"
             if content[1] is not None : thumb = content[1]
