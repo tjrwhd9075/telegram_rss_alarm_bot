@@ -455,7 +455,7 @@ async def get_avdbs_crawling(chat_id):
         lvl10 = await int2imoji(int(int(content[7]) / 10))
         lvl1 = await int2imoji(int(content[7]) % 10)
 
-        txt= "[.]("+content[1]+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
+        txt= "[.]("+good+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
             "게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+"\n"+\
             "🕓 : "+content[4] + " | " + content[5] + "\n"+\
             "🖋 : " + writer + " | LV : " + lvl10 + lvl1 + "\n\n"+\
@@ -474,7 +474,12 @@ def alarmi():
     telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
     
     while True:
-        schedule.run_pending()
+        try:
+            schedule.run_pending()
+        except Exception as e:
+            print("스케쥴 에러 : ", end="")
+            print(e)
+            
 
 #일단 한번 에딥 크롤링 시작
 try:  asyncio.run(get_avdbs_crawling(group_id_avdbs))
