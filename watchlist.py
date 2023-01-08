@@ -2,7 +2,8 @@ import aiofile
 
 async def read_file_asyn(filename):
     async with aiofile.AIOFile(filename, 'r', encoding = 'UTF-8') as f:
-        contents = await f.read().splitlines() 
+        contents = await f.read()
+        contents = contents.splitlines()
         return contents
 
 
