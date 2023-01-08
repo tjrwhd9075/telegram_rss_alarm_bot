@@ -389,14 +389,14 @@ def get_command(bot, update):
         print(bot[tp]['text'].split('@')[1].split(' ')[0] + " : 날 부른게 아닌거 같아요")
         return
     elif chat_type =='supergroup':
-        if bot[tp]['text'].upper() == ("/GETINFO@"+myBotName.upper()) : telbot.send_message(chat_id = user_id,message_id=message_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
+        if bot[tp]['text'].upper() == ("/GETINFO@"+myBotName.upper()) : telbot.send_message(chat_id = chat_id,message_id=message_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
         else: 
             pumnum = " ".join(bot[tp]['text'].split(" ")[1:]) 
             try:
-                get_pumInfo(pumnum, chat_id=str(user_id), message_id=message_id)
+                get_pumInfo(pumnum, chat_id=str(chat_id), message_id=message_id)
             except Exception as e:
                     print(e)
-                    telbot.send_message(chat_id=user_id, message_id=message_id, txt=getinfo + " 조회 실패")
+                    telbot.send_message(chat_id=chat_id, message_id=message_id, txt=getinfo + " 조회 실패")
 
 def get_pumInfo(pumnum, chat_id, message_id=None):
     '''
@@ -495,7 +495,7 @@ async def get_avdbs_crawling(chat_id):
         #키워드 알림
         qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
         if qs != [] :
-            for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \n\[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown')
+            for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown')
             time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 

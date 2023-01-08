@@ -39,7 +39,7 @@ async def get_avdbs_whole_board_asyn():
                 #컨텐츠 썸네일
                 thumb = content.select_one('img.thumb')
                 if thumb is not None: 
-                    if thumb == "/w2017/img/ao_lst.jpg": thumb = None #19 이상 사진일때 그냥 패스
+                    if thumb.find("ao_lst.jpg") != -1: thumb = None #19 이상 사진일때 그냥 패스
                     else: thumb = avdbsUrl+thumb['src']; thumb=thumb.replace("_s","")
                 else : thumb = None
                 print(thumb, end=" | ")
