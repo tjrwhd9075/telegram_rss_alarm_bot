@@ -389,14 +389,14 @@ def get_command(bot, update):
         print(bot[tp]['text'].split('@')[1].split(' ')[0] + " : 날 부른게 아닌거 같아요")
         return
     elif chat_type =='supergroup':
-        if bot[tp]['text'].upper() == ("/GETINFO@"+myBotName.upper()) : telbot.send_message(chat_id = chat_id,message_id=message_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
+        if bot[tp]['text'].upper() == ("/GETINFO@"+myBotName.upper()) : telbot.send_message(chat_id = chat_id,reply_to_message_id=message_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
         else: 
             pumnum = " ".join(bot[tp]['text'].split(" ")[1:]) 
             try:
                 get_pumInfo(pumnum, chat_id=str(chat_id), message_id=message_id)
             except Exception as e:
                     print(e)
-                    telbot.send_message(chat_id=chat_id, message_id=message_id, txt=pumnum + " 조회 실패")
+                    telbot.send_message(chat_id=chat_id, reply_to_message_id=message_id, txt=pumnum + " 조회 실패")
 
 def get_pumInfo(pumnum, chat_id, message_id=None):
     '''
@@ -426,7 +426,7 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     missavPumnum = "-".join(pumnum.replace("fc2ppv ","fc2-ppv-").split("-")[1:])
     if pumnum.lower().find("fc2") != -1: pumnum = "fc2ppv "+pumnum.replace(" ","-").split("-")[-1]
 
-    telbot.send_message(chat_id=chat_id, message_id=message_id,
+    telbot.send_message(chat_id=chat_id, reply_to_message_id=message_id,
                         text="[.]("+str(thumb)+") `" + pumnum.upper().replace("_","\_") +  "` #" +pumnum.upper().replace("_","\_").replace(" ","\_").replace("-","\_") + "\n\n" +
                         "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "+
                         "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "+
@@ -466,37 +466,41 @@ async def get_avdbs_crawling(chat_id):
     #content : [num,thumb,boardType,adult,date,beforeTime,writer,lvl,view,recom,good,title,contentTxt]
     #           0   1     2         3     4    5          6      7   8    9     10   11    12
     for content in newContents.reverse():
-        thumb, adult, view, recom, good = "-","-","-","-","-"
-        if content[1] is not None : thumb = content[1]
-        if content[3] is not None : adult = "🔞"
-        if content[8] is not None : view = content[8]
-        if content[9] is not None : recom = content[9]
-        if content[10] is not None : good = content[10]
+        try:
+            thumb, adult, view, recom, good = "-","-","-","-","-"
+            if content[1] is not None : thumb = content[1]
+            if content[3] is not None : adult = "🔞"
+            if content[8] is not None : view = content[8]
+            if content[9] is not None : recom = content[9]
+            if content[10] is not None : good = content[10]
 
-        writer = await ForTeleReplaceTxt(content[6])
-        title = await ForTeleReplaceTxt(content[11])
-        contentTxt = await ForTeleReplaceTxt(content[12])
+            writer = await ForTeleReplaceTxt(content[6])
+            title = await ForTeleReplaceTxt(content[11])
+            contentTxt = await ForTeleReplaceTxt(content[12])
 
-        lvl10 = await int2imoji(int(int(content[7]) / 10))
-        lvl1 = await int2imoji(int(content[7]) % 10)
+            lvl10 = await int2imoji(int(int(content[7]) / 10))
+            lvl1 = await int2imoji(int(content[7]) % 10)
 
-        txt= "[.]("+thumb+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
-            "📂게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+"\n"+\
-            "🕓 : "+content[4] + " | " + content[5] + "\n"+\
-            "🖋 : " + writer + " | LV : " + lvl10 + lvl1 + "\n\n"+\
-            "👀 : " + view + " | 💬 : " + recom + " | 👍 : " + good + "\n"+\
-            "📍제목 : ["+ title +"]("+content[0]+")" + "\n\n"+\
-            contentTxt
+            txt= "[.]("+thumb+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
+                "📂게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+"\n"+\
+                "🕓 : "+content[4] + " | " + content[5] + "\n"+\
+                "🖋 : " + writer + " | LV : " + lvl10 + lvl1 + "\n\n"+\
+                "👀 : " + view + " | 💬 : " + recom + " | 👍 : " + good + "\n"+\
+                "📍제목 : ["+ title +"]("+content[0]+")" + "\n\n"+\
+                contentTxt
 
-        telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-        telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
-        time.sleep(4)
+            telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+            telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
+            time.sleep(4)
 
-        #키워드 알림
-        qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
-        if qs != [] :
-            for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown')
-            time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+            #키워드 알림
+            qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
+            if qs != [] :
+                for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown')
+                time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+        except Exception as e:
+            print("get_avdbs_crawling - content send fail : ", end="")
+            print(e)
 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 
