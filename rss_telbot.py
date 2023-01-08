@@ -149,7 +149,7 @@ def get_avrssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(pumnum + " " + txt,klistTxtFile) 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'` #'+str(pumnum.upper().replace(" ","_")).replace("-","_"))+'\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown', disable_web_page_preview=True)
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -224,7 +224,7 @@ def get_fc2rssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(txt,klistTxtFile) 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'` #'+str(pumnum.upper().replace(" ","_")).replace("-","_"))+'\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown', disable_web_page_preview=True)
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -374,10 +374,10 @@ def get_command(bot, update):
                 telbot.send_message(chat_id = user_id, text = "피드백을 전송하는데 실패했어요 ㅠㅅㅠ\n내용 : "+feedback)
 
         elif msg.upper() == "/HELP":
-            telbot.send_message(chat_id = user_id, text = helpmsg,parse_mode='Markdown' )
+            telbot.send_message(chat_id = user_id, text = helpmsg,parse_mode='Markdown' , disable_web_page_preview=True)
             return
         else :
-            telbot.send_message(chat_id = user_id, text = helpmsg,parse_mode='Markdown' )    
+            telbot.send_message(chat_id = user_id, text = helpmsg,parse_mode='Markdown' , disable_web_page_preview=True)    
             return                                 
 
         try : telbot.delete_message(chat_id= user_id, message_id=message_id)
@@ -496,7 +496,7 @@ async def get_avdbs_crawling(chat_id):
             #키워드 알림
             qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
             if qs != [] :
-                for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown')
+                for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
                 time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
         except Exception as e:
             print("get_avdbs_crawling - content send fail : ", end="")
