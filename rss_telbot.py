@@ -396,7 +396,7 @@ def get_command(bot, update):
                 get_pumInfo(pumnum, chat_id=str(chat_id), message_id=message_id)
             except Exception as e:
                     print(e)
-                    telbot.send_message(chat_id=chat_id, message_id=message_id, txt=getinfo + " 조회 실패")
+                    telbot.send_message(chat_id=chat_id, message_id=message_id, txt=pumnum + " 조회 실패")
 
 def get_pumInfo(pumnum, chat_id, message_id=None):
     '''
@@ -404,7 +404,7 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     '''
     
 
-    telbot.send_chat_action(chat_id=chat_id,message_id=message_id, action=telegram.ChatAction.TYPING)
+    telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
     pumnum = filename_set.pumnum_check(pumnum) #fc2-ppv-12345
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
