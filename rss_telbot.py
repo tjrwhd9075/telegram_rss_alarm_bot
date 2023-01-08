@@ -24,12 +24,14 @@ _italic_
 #텔레그램 봇
 myToken = '5831801489:AAHvEw74bp6zz1mhbNCsAGu9JmtVifG0AWY'
 telbot = telegram.Bot(token=myToken)
-myBotName = "fc2rss_alarmBot"
+myBotName = "fc2rss_alarm_bot"
 updater = Updater(myToken, use_context=True)
 
 my_user_id = '1706601591'
 group_id_trash = '-1001547828770'
 group_id_avdbs = '-1001870842558'
+
+klistTxtFile = 'av_list_keyword_rss.txt'
 
 # rss봇이 보낸 메시지 처리
 def get_avrssbot_text(bot, update):
@@ -136,7 +138,7 @@ def get_avrssbot_text(bot, update):
         "\[ [torrent]("+str(torrentLink)+") ]\n\n"\
         + str(actor) + " " + str(writer) + " " +highlight+ str(createDate) +highlight+ " *" + str(fileSize) + "*\n"\
         + str(translatedTitle)  +"\n"
-    mgn = "`magnet:?xt=urn:btih:" + str(infoHash) +"`"
+    mgn = "🧲`magnet:?xt=urn:btih:" + str(infoHash) +"`"
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
     telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
@@ -145,9 +147,9 @@ def get_avrssbot_text(bot, update):
     time.sleep(4)
 
     #키워드 알림
-    qs = watchlist.find_keyword_lines(pumnum + " " + txt,'av_list_keyword.txt') 
+    qs = watchlist.find_keyword_lines(pumnum + " " + txt,klistTxtFile) 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -212,7 +214,7 @@ def get_fc2rssbot_text(bot, update):
         "\[ [torrent]("+torrentLink+") ]\n\n"\
         + str(actor) + " " + str(writer) + " " +highlight+ str(createDate) +highlight+ " **" + str(fileSize) + "**\n"\
         + translatedTitle 
-    mgn = "`magnet:?xt=urn:btih:" + str(infoHash) +"`"
+    mgn = "🧲`magnet:?xt=urn:btih:" + str(infoHash) +"`"
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
     telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
     telbot.send_message(text=mgn, chat_id=chat_id, parse_mode='Markdown')
@@ -220,9 +222,9 @@ def get_fc2rssbot_text(bot, update):
     time.sleep(4)
 
     #키워드 알림
-    qs = watchlist.find_keyword_lines(txt,'av_list_keyword.txt') 
+    qs = watchlist.find_keyword_lines(txt,klistTxtFile) 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'`\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown')
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -289,7 +291,7 @@ def get_command(bot, update):
     global COMMAND
     if chat_type == 'private': # 개인챗에 메시지 전송
         helpmsg = "키워드 알림 적용 채널, 그룹\n\
-            \[ [신작&순위 채널](https://t.me/+NhDP-cnW7KA3NGM1) ]  \[ [AvRss](https://t.me/+4F1MKUjlKKQ2NWE1) ]  \[ [Fc2Rss](https://t.me/+x-HRQ8PpKI9iZTZl) ]\n\
+            \[ [AvRss](https://t.me/+4F1MKUjlKKQ2NWE1) ]  \[ [Fc2Rss](https://t.me/+x-HRQ8PpKI9iZTZl) ]\n\
             사용가능한 명령어\n\
             */kadd* \[keyword] : 키워드 등록\n\
             */klist*           : 키워드 리스트\n\
@@ -305,7 +307,7 @@ def get_command(bot, update):
             try:
                 kadd = bot[tp]['text'].split(" ")[1]
                 print("kadd : " + kadd)
-                chk = watchlist.add_keyword(str(user_id), kadd, 'av_list_keyword.txt')
+                chk = watchlist.add_keyword(str(user_id), kadd, klistTxtFile)
                 if chk == 1: telbot.send_message(chat_id = user_id, text = kadd + " 키워드 추가 완료")
                 else : telbot.send_message(chat_id = user_id, text = kadd + " 키워드 추가 실패 또는 목록에 이미 있음")
             except Exception as e:
@@ -313,7 +315,7 @@ def get_command(bot, update):
                 telbot.send_message(chat_id = user_id, text = "알림을 등록할 키워드를 입력하세요\nex) /kadd [키워드]")
             return
         elif msg.upper() == "/KLIST":
-            klist = watchlist.get_querys('av_list_keyword.txt', user_id=user_id)
+            klist = watchlist.get_querys('av_list_keyword_rss.txt', user_id=user_id)
             txt =""
             for key in klist: txt += key.split(" ")[1] +", "
             telbot.send_message(chat_id = user_id, text = "키워드 리스트\n" + txt)
@@ -324,13 +326,21 @@ def get_command(bot, update):
                 else: 
                     kdel = bot[tp]['text'].split(" ")[1]
                     print("kdel : " + kdel)
-                    chk = watchlist.del_keyword(str(user_id), kdel, 'av_list_keyword.txt')
+                    chk = watchlist.del_keyword(str(user_id), kdel, klistTxtFile)
                     if chk == 1: telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 완료")
                     else : telbot.send_message(chat_id = user_id , text = kdel + " 키워드 삭제 실패 또는 목록에 없음")
             except Exception as e:
                 print(e)
                 telbot.send_message(chat_id = user_id, text = "삭제할 키워드를 입력하세요\nex) /kdel [키워드] ")
             return
+        elif msg.upper() == "/KBACKUP":
+            klist = watchlist.get_querys(klistTxtFile)
+            txt = ""
+            for k in klist: 
+                txtTmp = txt + k +"\n"
+                if len(txtTmp) > 1000: telbot.send_message(chat_id = my_user_id, text = txt) ; txt = "" ; time.sleep(4) #1천자 넘으면 일단 전송
+                else: txt+=k +"\n"; txtTmp=""
+            telbot.send_message(chat_id = my_user_id, text = txt) ; time.sleep(4)#나머지 전송
 
         elif msg.upper().find("/GETINFO") != -1:
             if bot[tp]['text'].upper() == "/GETINFO" : telbot.send_message(chat_id = user_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
@@ -373,13 +383,28 @@ def get_command(bot, update):
         try : telbot.delete_message(chat_id= user_id, message_id=message_id)
         except Exception: pass
 
-def get_pumInfo(pumnum, chat_id):
+    elif bot[tp]['text'].find('@') == 0 :
+        return 
+    elif bot[tp]['text'].split('@')[1].split(' ')[0] != myBotName :
+        print(bot[tp]['text'].split('@')[1].split(' ')[0] + " : 날 부른게 아닌거 같아요")
+        return
+    elif chat_type =='supergroup':
+        if bot[tp]['text'].upper() == ("/GETINFO@"+myBotName.upper()) : telbot.send_message(chat_id = user_id,message_id=message_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
+        else: 
+            pumnum = " ".join(bot[tp]['text'].split(" ")[1:]) 
+            try:
+                get_pumInfo(pumnum, chat_id=str(user_id), message_id=message_id)
+            except Exception as e:
+                    print(e)
+                    telbot.send_message(chat_id=user_id, message_id=message_id, txt=getinfo + " 조회 실패")
+
+def get_pumInfo(pumnum, chat_id, message_id=None):
     '''
     pumnum : qwer-1234 또는 fc2ppv 123456, fc2-ppv-123456
     '''
     
 
-    telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+    telbot.send_chat_action(chat_id=chat_id,message_id=message_id, action=telegram.ChatAction.TYPING)
 
     pumnum = filename_set.pumnum_check(pumnum) #fc2-ppv-12345
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
@@ -401,7 +426,7 @@ def get_pumInfo(pumnum, chat_id):
     missavPumnum = "-".join(pumnum.replace("fc2ppv ","fc2-ppv-").split("-")[1:])
     if pumnum.lower().find("fc2") != -1: pumnum = "fc2ppv "+pumnum.replace(" ","-").split("-")[-1]
 
-    telbot.send_message(chat_id=chat_id, 
+    telbot.send_message(chat_id=chat_id, message_id=message_id,
                         text="[.]("+str(thumb)+") `" + pumnum.upper().replace("_","\_") +  "` #" +pumnum.upper().replace("_","\_").replace(" ","\_").replace("-","\_") + "\n\n" +
                         "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "+
                         "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "+
@@ -442,8 +467,8 @@ async def get_avdbs_crawling(chat_id):
     #           0   1     2         3     4    5          6      7   8    9     10   11    12
     for content in newContents:
         thumb, adult, view, recom, good = "-","-","-","-","-"
-        if content[1] is not None : good = content[1]
-        if content[3] is not None : adult = "1️⃣9️⃣➕"
+        if content[1] is not None : thumb = content[1]
+        if content[3] is not None : adult = "🔞"
         if content[8] is not None : view = content[8]
         if content[9] is not None : recom = content[9]
         if content[10] is not None : good = content[10]
@@ -455,17 +480,23 @@ async def get_avdbs_crawling(chat_id):
         lvl10 = await int2imoji(int(int(content[7]) / 10))
         lvl1 = await int2imoji(int(content[7]) % 10)
 
-        txt= "[.]("+good+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
-            "게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+"\n"+\
+        txt= "[.]("+thumb+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
+            "📂게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+"\n"+\
             "🕓 : "+content[4] + " | " + content[5] + "\n"+\
             "🖋 : " + writer + " | LV : " + lvl10 + lvl1 + "\n\n"+\
             "👀 : " + view + " | 💬 : " + recom + " | 👍 : " + good + "\n"+\
-            "제목 : ["+ title +"]("+content[0]+")" + "\n\n"+\
+            "📍제목 : ["+ title +"]("+content[0]+")" + "\n\n"+\
             contentTxt
 
         telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
         telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
         time.sleep(4)
+
+        #키워드 알림
+        qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
+        if qs != [] :
+            for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \n\[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown')
+            time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 

@@ -38,7 +38,7 @@ async def get_avdbs_whole_board_asyn():
                 else: oldList.append(num); num=avdbsBoardUrl+num; print(num, end=" | ")
                 #컨텐츠 썸네일
                 thumb = content.select_one('img.thumb')
-                if thumb is not None: thumb = avdbsUrl+thumb['src']
+                if thumb is not None: thumb = avdbsUrl+thumb['src']; thumb=thumb.replace("_s","")
                 else : thumb = None
                 print(thumb, end=" | ")
                 #컨텐츠 게시판 타입                

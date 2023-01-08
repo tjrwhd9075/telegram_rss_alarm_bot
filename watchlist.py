@@ -1,3 +1,11 @@
+import aiofile
+
+async def read_file_asyn(filename):
+    async with aiofile.AIOFile(filename, 'r', encoding = 'UTF-8') as f:
+        contents = await f.read().splitlines() 
+        return contents
+
+
 
 def get_querys(file, user_id=None):
     '''
@@ -6,6 +14,25 @@ def get_querys(file, user_id=None):
     '''
     with open(file, 'r', encoding = 'UTF-8') as f:
         querys = f.read().splitlines() 
+
+    if user_id is None: #전체 쿼리 리턴
+        return querys
+    else: #유저id에 해당하는 라인만 리턴
+        qs=[]
+        for q in querys:
+            if str(q.split(" ")[0]) == str(user_id):
+                qs.append(q)
+
+    return qs
+
+
+async def get_querys_asyn(file, user_id=None):
+    '''
+    user_id is None -> return [전체쿼리] 
+    user_id is not None -> return [유저에 해당하는 쿼리]
+    '''
+
+    querys = await read_file_asyn(file)
 
     if user_id is None: #전체 쿼리 리턴
         return querys
@@ -121,6 +148,19 @@ def find_keyword_lines(txt, file):
     없으면 -> []
     '''
     querys = get_querys(file)
+
+    qs=[]
+    for query in querys:
+        if txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
+            qs.append(query)
+    return qs
+
+async def find_keyword_lines_asyn(txt, file):
+    '''
+    찾으면 -> list["user_id" + " " + "keyword", ...]
+    없으면 -> []
+    '''
+    querys = await get_querys_asyn(file)
 
     qs=[]
     for query in querys:
