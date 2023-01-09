@@ -39,9 +39,8 @@ async def get_avdbs_whole_board_asyn():
                 #컨텐츠 썸네일
                 thumb = content.select_one('img.thumb')
                 if thumb is not None and thumb['src'].find("ao_lst.jpg") == -1: #19 이상 사진일때 그냥 패스
-                    thumb = avdbsUrl+thumb['src']; thumb=thumb.replace("_s","")
-                else : thumb = None
-                print(thumb, end=" | ")
+                    thumb = avdbsUrl+thumb['src']; thumb=thumb.replace("_s","") ; print(thumb, end=" | ")
+                else : thumb = None ; print(thumb, end=" | ")
                 #컨텐츠 게시판 타입                
                 boardType = content.select_one('span.mark').get_text().strip()
                 print(boardType, end=" | ")
