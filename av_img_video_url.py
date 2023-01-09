@@ -25,7 +25,7 @@ AMA = {
 }
 
 ALL_ITEMS = {
-    '1': ['shh','acme','nhdta','sdmf','mogi','stcv',"hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','sdnt','sdmu','nttr','fset','shyn','dvdm','miha'],
+    '1': ['silkbt','shh','acme','nhdta','sdmf','mogi','stcv',"hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','sdnt','sdmu','nttr','fset','shyn','dvdm','miha'],
     '2': ['ekbe','dfe','wfr','ekw','wpvr','wkd'],  '12': ['bur','lol','imo','scr'], '13': ['GVG','dsvr','gqe','ovg','yvg','rvg'],
     '18': ['mght','sprd','ntrd','spbx','mond'],  '21':['psd'],'24': ['dfbvr','vdd','ped'],  '30': ['nha','msc','msa'],
     '36': ['doks','drop','DKWT'],  '41':['pjf','ly','pmc'],'42': ['sp'],     '55': ['davk','tmavntgvr','T28'], 
@@ -40,7 +40,7 @@ ALL_ITEMS = {
     'h_244': ['saba','supa'], 'h_1575': ['sgkx'], 'h_1256': ['tpvr','tprm'], 'h_1127': ['vovs','gopj','vosf','vosm'],
     'h_1116': ['cafuku','cami','casmani','cafr','capi','cabe','caca'], 'h_019': ['acz','kck'],
     'h_1100': ['hzgb','hzgd','hzhb'], 'h_1000': ['spye'], 'h_1001': ['oyaj'], 'h_1160': ['meko','mhar'],'h_1605':["stsk"],
-    'h_1231': ['^ss$'], 'h_1300': ['mtes'],'h_1352':['knmd'], 'h_1628':['sat'],
+    'h_1231': ['^ss$'], 'h_1300': ['mtes'],'h_1352':['knmd'], 'h_1628':['sat'], 'h_1534':['grmo'],
     'h_1435': ['clo','bth'], 'h_1573': ['ftuj'], 'h_1577': ['favkh','fbcpv'], 'h_496': ['dogd'],
     'h_574': ['iqpa'], 'h_1569': ['nkkvr'], 'h_086': ['fera','keed','jrze','jura','mesu','nuka','abba','cvdx','toen','zeaa','iqqq','hima','ferax','iga','kaad','hone'],
     'h_1002': ['jgaho'], 'h_1386': ['dinm'], 'h_1492': ['siror'], 'h_1587': ['ein'], 'h_720': ['zex'],

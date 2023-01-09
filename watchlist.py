@@ -3,7 +3,7 @@ import aiofile
 async def read_file_asyn(filename):
     async with aiofile.AIOFile(filename, 'r', encoding = 'UTF-8') as f:
         contents = await f.read()
-        contents = contents.splitlines()
+        contents = contents.split("\n")
         return contents
 
 
@@ -139,7 +139,7 @@ def find_keyword_line(txt, file):
     querys = get_querys(file)
 
     for query in querys:
-        if txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
+        if query!="" and txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
             return query
     return 0
 
@@ -152,7 +152,7 @@ def find_keyword_lines(txt, file):
 
     qs=[]
     for query in querys:
-        if txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
+        if query!="" and txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
             qs.append(query)
     return qs
 

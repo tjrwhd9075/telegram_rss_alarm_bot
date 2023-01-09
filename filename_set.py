@@ -133,7 +133,7 @@ def papago(txt):
             translator = googletrans.Translator()
             source = translator.detect(txt).lang
         except Exception as e:
-            print("papago detect lang 실패: " , end="")
+            print("papago detect lang 실패: " + txt, end="" )
             print(e)
             # print(traceback.format_exc())
             source = "en"
@@ -161,7 +161,7 @@ def papago(txt):
             print("Error Code:" + rescode)
             return txt
     except Exception as e:
-        print("papago 실패: " , end="")
+        print("papago 번역실패 : " + txt , end="")
         print(e)
         # print(traceback.format_exc())
         return txt
@@ -182,12 +182,13 @@ def google_trans_free(txt):
     txtList = txt.split(" ")
     result = ""
     for t in txtList:
-        try:
-            result+= translator.translate(t, src='auto',dest='ko').text +" "
-        except Exception as e:
-            print("google_trans_free 번역실패: " + t, end=" ")
-            print(e)
-            result+=""
+        if t!="":
+            try:
+                result+= translator.translate(t, src='auto',dest='ko').text +" "
+            except Exception as e:
+                print("google_trans_free 번역실패: " + t, end=" ")
+                print(e)
+                result+=""
     return result
 
 
@@ -196,16 +197,17 @@ def translater(txt):
     # txt = replaceTxt(txt)
     
     result = google_trans_free(txt)
-    try:
-        translator = googletrans.Translator()
-        source = translator.detect(result).lang
-    except Exception as e:
-        print("translater detect lang 실패: ", end="" )
-        print(e)
-        # print(traceback.format_exc())
-        source = "en"
+    source =""
+    if result != "":
+        try:
+            translator = googletrans.Translator()
+            source = translator.detect(result).lang
+        except Exception as e:
+            print("translater detect lang 실패: ", end="" )
+            print(e)
+            # print(traceback.format_exc())
 
-    if source != "ko": result = papago(txt) 
+        if source != "ko": result = papago(result) 
 
     return result
 
@@ -323,9 +325,9 @@ def get_pumInfo_dbmsin_static(pumnum):
             actor = ""
             for at in actors:
                 if at != "" and at is not None :
-                    actor += "#"+replaceTxt(translater(at)).replace(" ","").replace("#","").replace("-","")+" "
+                    actor += "#"+translater(at).replace(" ","").replace("#","").replace("-","")+" "
         else:
-            actor = "#"+replaceTxt(translater(actor)).replace(" ","").replace("#","").replace("-","")+" "
+            actor = "#"+translater(actor).replace(" ","").replace("#","").replace("-","")+" "
     except Exception as e : actor="-"
     print(actor)
 
