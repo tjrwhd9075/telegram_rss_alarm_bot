@@ -133,7 +133,7 @@ def papago(txt):
             translator = googletrans.Translator()
             source = translator.detect(txt).lang
         except Exception as e:
-            print("papago detect lang : " , end="")
+            print("papago detect lang 실패: " , end="")
             print(e)
             # print(traceback.format_exc())
             source = "en"
@@ -146,10 +146,10 @@ def papago(txt):
             request.add_header("X-Naver-Client-Secret",client_secret)
             response = urllib.request.urlopen(request, data=data.encode("utf-8"))
         except Exception as e:
-            print("papago request : " , end="")
+            print("papago request 실패: " , end="")
             print(e)
             # print(traceback.format_exc())
-            return ""
+            return txt
         
         rescode = response.getcode()
         if(rescode==200):
@@ -159,31 +159,39 @@ def papago(txt):
             return result['message']['result']['translatedText']
         else:
             print("Error Code:" + rescode)
-            return ""
+            return txt
     except Exception as e:
-        print("papago : " , end="")
+        print("papago 실패: " , end="")
         print(e)
         # print(traceback.format_exc())
-        return ""
+        return txt
 
 def google_trans_free(txt):
     translator = googletrans.Translator()
     try:
         return translator.translate(txt, src='auto',dest='ko').text
     except Exception as e:
-        print("google_trans_free : ")
+        print("google_trans_free 번역실패: ")
         print(e)
         # print(traceback.format_exc())
         return ""
 
 def translater(txt):
-    txt = replaceTxt(txt)
-    result = papago(txt)
-    if result == "" :
-        print("파파고 번역 실패")
-        result = google_trans_free(txt)
-    if result == "": result = txt
-    # result = txt
+    txt = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", txt) #특수문자 제거
+    # txt = replaceTxt(txt)
+    
+    result = google_trans_free(txt)
+    try:
+        translator = googletrans.Translator()
+        source = translator.detect(result).lang
+    except Exception as e:
+        print("translater detect lang 실패: ", end="" )
+        print(e)
+        # print(traceback.format_exc())
+        source = "en"
+
+    if source != "ko": result = papago(txt) 
+
     return result
 
 def pumnum_check(pumnum):
@@ -195,6 +203,7 @@ def pumnum_check(pumnum):
     elif pumnum.find("-1pon") != -1: pumnum = "1pon-"+pumnum.replace("-1pon","")# 010323_001-1PON
     elif pumnum.find("10musume") != -1: pumnum = pumnum.replace("10musume ","10mu-") #10musume 010323_01 -> 10mu-010323_01
     elif pumnum.find("pacopacomama ") != -1: pumnum = pumnum.replace("pacopacomama ","paco-") #Pacopacomama 010323_770 -> paco-010323_770
+    elif pumnum.find("pacopacomama-") != -1: pumnum = pumnum.replace("pacopacomama-","paco-") #Pacopacomama-010323_770 -> paco-010323_770
     elif pumnum.find("fc2ppv ") != -1 : pumnum = pumnum.replace("fc2ppv ", "fc2-ppv-")
     elif pumnum.find("fc2ppv-") != -1 : pumnum = pumnum.replace("fc2ppv-", "fc2-ppv-")
     elif pumnum.find("fc2-ppv ") != -1 : pumnum = pumnum.replace("fc2-ppv ", "fc2-ppv-")
@@ -213,6 +222,10 @@ def get_pumInfo_dbmsin_static(pumnum):
     
     avfc2=""
     pumnum = pumnum_check(pumnum)
+
+    # 품번뒤 넘버가 3자리수 미만일 경우
+    if pumnum.find("carb") ==-1 and pumnum.split("-")[-1].isdigit() and len(pumnum.split("-")[-1]) < 3: 
+        pumnum = "-".join(pumnum.split("-")[0:-1]) + pumnum.split("-")[-1].zfill(3)
     
     if pumnum.find("fc2") != -1 or pumnum.find("carib") != -1 or pumnum.find("10mu") != -1 or pumnum.find("paco") != -1 or pumnum.find("1pon") != -1 or pumnum.find("heyzo") != -1: 
         url = f'https://db.msin.jp/search/movie?str=' + parse.quote(pumnum); avfc2="fc2"
@@ -271,11 +284,17 @@ def get_pumInfo_dbmsin_static(pumnum):
     print(title)
 
     try: 
-        if avfc2=="fc2": writer=soup.select_one("div.mv_writer").get_text()
-        elif avfc2=="av": writer=soup.select_one("div.mv_series").get_text() #시리즈
+        writer = "-"
+        if soup.select_one("div.mv_writer") is not None : writer=soup.select_one("div.mv_writer").get_text().strip()
+        elif soup.select_one("div.mv_series") is not None : writer=soup.select_one("div.mv_series").get_text().strip()
+        elif soup.select_one("div.mv_label") is not None : writer=soup.select_one("div.mv_label").get_text().strip()
 
-        writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]","", replaceWriterTxt(writer)) #특수문자 제거
-        writer = "#"+translater(writer).replace(" ","")
+        if writer != "-":
+            if avfc2=="fc2": 
+                writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]","", replaceWriterTxt(writer)) #특수문자 제거
+            elif avfc2=="av": 
+                writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]","", writer) #특수문자 제거
+            writer = "#"+translater(writer).replace(" ","")
     except Exception as e : writer="-"
     print(writer)
 

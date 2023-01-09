@@ -127,7 +127,7 @@ def get_avrssbot_text(bot, update):
     else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
 
     missavPumnum = "-".join(pumnum.split("-")[1:])
-    txt = "[.](" +str(thumb1)+ ") `" + str(pumnum.upper().replace("_","\_")) + "` #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
+    txt = "[.](" +str(thumb1)+ ") `" + str(pumnum.upper()) + "` #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
         + "\[ [trailer]("+str(trailer)+") ]  "+\
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/search/{missavPumnum}"+") ]  "+\
@@ -149,7 +149,7 @@ def get_avrssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(pumnum + " " + txt,klistTxtFile) 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'` #'+str(pumnum.upper().replace(" ","_").replace("-","_"))+'\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown', disable_web_page_preview=True)
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'` #'+str(pumnum.upper().replace(" ","\_").replace("-","\_"))+'\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown', disable_web_page_preview=True)
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -224,7 +224,7 @@ def get_fc2rssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(txt,klistTxtFile) 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +"` \n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum) + "` #FC2PPV\_" + str(pumnum)+" \n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
