@@ -166,7 +166,7 @@ def papago(txt):
         # print(traceback.format_exc())
         return txt
 
-def google_trans_free(txt):
+def google_trans_free_old(txt):
     translator = googletrans.Translator()
     try:
         return translator.translate(txt, src='auto',dest='ko').text
@@ -174,7 +174,22 @@ def google_trans_free(txt):
         print("google_trans_free 번역실패: ")
         print(e)
         # print(traceback.format_exc())
-        return ""
+        return txt
+
+def google_trans_free(txt):
+    translator = googletrans.Translator()
+
+    txtList = txt.split(" ")
+    result = ""
+    for t in txtList:
+        try:
+            result+= translator.translate(t, src='auto',dest='ko').text +" "
+        except Exception as e:
+            print("google_trans_free 번역실패: " + t, end=" ")
+            print(e)
+            result+=""
+    return result
+
 
 def translater(txt):
     txt = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", txt) #특수문자 제거

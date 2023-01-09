@@ -33,7 +33,7 @@ async def get_avdbs_whole_board_asyn():
                 #컨텐츠 번호
                 num = content.select_one('li.no').get_text().strip()
                 if num in oldList: 
-                    if len(oldList) >= 100 : oldList = oldList[70:] #너무 쌓이면 목록삭제
+                    if len(oldList) >= 100 : oldList[0:50]=[] #너무 쌓이면 목록삭제
                     continue # 이미 목록에 있으면 건너뜀
                 else: oldList.append(num); num=avdbsBoardUrl+num; print(num, end=" | ")
                 #컨텐츠 썸네일
