@@ -428,7 +428,7 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     if pumnum.lower().find("fc2") != -1: pumnum = "fc2ppv "+pumnum.replace(" ","-").split("-")[-1]
 
     telbot.send_message(chat_id=chat_id, reply_to_message_id=message_id,
-                        text="[.]("+str(thumb)+") `" + pumnum.upper().replace("_","\_") +  "` #" +pumnum.upper().replace("_","\_").replace(" ","\_").replace("-","\_") + "\n\n" +
+                        text="[.]("+str(thumb)+") `" + pumnum.upper() +  "` #" +pumnum.upper().replace("_","\_").replace(" ","\_").replace("-","\_") + "\n\n" +
                         "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "+
                         "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "+
                         "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "+
@@ -498,14 +498,19 @@ async def get_avdbs_crawling(chat_id):
             telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
             telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
             time.sleep(4)
+            oldList.append(content[0]) #전송 성공하면 목록에 저장
 
             #키워드 알림
-            qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
-            if qs != [] :
-                for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
-                time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+            try:
+                qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
+                if qs != [] :
+                    for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
+                    time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+            except Exception as e:
+                print("get_avdbs_crawling - keword send error : ", end="")
+                print(e)
 
-            oldList.append(content[0]) #전송 성공하면 목록에 저장
+            
         except Exception as e:
             print("get_avdbs_crawling - content send fail : ", end="")
             print(e)

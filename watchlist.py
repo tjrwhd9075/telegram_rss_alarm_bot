@@ -107,7 +107,7 @@ def add_keyword(user_id, keyword, file):
             return 0 # 저장안하고 종료
 
     with open(file, 'a', encoding = 'UTF-8') as f:         # 목록에 없습니다. 추가합니다.")
-        f.write(user_id + " " + keyword + "\n") 
+        f.write("\n"+user_id + " " + keyword) 
         return 1 # 저장함
 
 def del_keyword(user_id, keyword, file):
