@@ -28,7 +28,7 @@ async def get_avdbs_whole_board_asyn():
 
             res = response.read().decode('utf-8')
             soup = bs(res,'html.parser')
-            contents = soup.select('#contants > div.brd_lst > div > div.lst_wrp > ul.lst.normal')
+            contents = soup.select('#contants > div.brd_lst > div > div.lst_wrp > ul.lst.normal, #contants > div.brd_lst > div > div.lst_wrp > ul.lst.hlight')
 
             newList=[]
             for content in contents:

@@ -506,8 +506,11 @@ async def get_avdbs_crawling(chat_id):
             print(e)
         
         #키워드 알림
-        
-        qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
+        try:
+            qs = await watchlist.find_keyword_lines_asyn(txt, klistTxtFile) 
+        except Exception as e:
+            print("get_avdbs_crawling - find keword error : ", end="")
+            print(e)
         try:
             if qs != [] :
                 print(qs)

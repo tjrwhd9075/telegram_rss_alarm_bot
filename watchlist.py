@@ -161,10 +161,18 @@ async def find_keyword_lines_asyn(txt, file):
     찾으면 -> list["user_id" + " " + "keyword", ...]
     없으면 -> []
     '''
-    querys = await get_querys_asyn(file)
-
+    try: 
+        querys = await get_querys_asyn(file)
+    except Exception as e:
+            print("find_keyword_lines_asyn - get_querys_asyn error : ", end="")
+            print(e)
     qs=[]
-    for query in querys:
-        if txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
-            qs.append(query)
+    try:
+        for query in querys:
+            if txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
+                qs.append(query)
+    except Exception as e:
+            print("find_keyword_lines_asyn - find same keyword error : ", end="")
+            print(e)
     return qs
+    
