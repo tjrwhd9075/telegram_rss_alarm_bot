@@ -497,22 +497,21 @@ async def get_avdbs_crawling(chat_id):
 
             telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
             telbot.send_message(chat_id=chat_id, text=txt, parse_mode='Markdown')
-            time.sleep(4)
             oldList.append(content[0]) #전송 성공하면 목록에 저장
-
-            #키워드 알림
-            try:
-                qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
-                if qs != [] :
-                    for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
-                    time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
-            except Exception as e:
-                print("get_avdbs_crawling - keword send error : ", end="")
-                print(e)
-
-            
+            time.sleep(4)
         except Exception as e:
             print("get_avdbs_crawling - content send fail : ", end="")
+            print(e)
+        
+        #키워드 알림
+        try:
+            qs = await watchlist.find_keyword_lines_asyn(txt,klistTxtFile) 
+            if qs != [] :
+                for q in qs: 
+                    if len(q.split(" ")) == 2 : telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
+                time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+        except Exception as e:
+            print("get_avdbs_crawling - keword send error : ", end="")
             print(e)
 
 
