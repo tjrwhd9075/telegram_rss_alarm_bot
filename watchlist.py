@@ -164,15 +164,17 @@ async def find_keyword_lines_asyn(txt, file):
     try: 
         querys = await get_querys_asyn(file)
     except Exception as e:
-            print("find_keyword_lines_asyn - get_querys_asyn error : ", end="")
-            print(e)
+        print("find_keyword_lines_asyn - get_querys_asyn error : ", end="")
+        print(e)
     qs=[]
     try:
-        for query in querys:
-            if txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
-                qs.append(query)
+        if querys != []:
+            for query in querys:
+                if len(query.split(" "))==2:
+                    if txt.find(query.split(" ")[1]) != -1 : #키워드와 같은 문자열이 존재하면
+                        qs.append(query)
     except Exception as e:
-            print("find_keyword_lines_asyn - find same keyword error : ", end="")
-            print(e)
+        print("find_keyword_lines_asyn - find same keyword error : ", end="")
+        print(e)
     return qs
     
