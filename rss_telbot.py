@@ -149,7 +149,7 @@ def get_avrssbot_text(bot, update):
     #키워드 알림
     qs = watchlist.find_keyword_lines(pumnum + " " + txt,klistTxtFile) 
     if qs != [] :
-        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'` #'+str(pumnum.upper().replace(" ","\_").replace("-","\_"))+'\n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown', disable_web_page_preview=True)
+        for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'` #'+str(pumnum.upper().replace(" ","\_").replace("-","\_"))+'\n\[ [AvRssTorrent](https://t.me/+4F1MKUjlKKQ2NWE1) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown', disable_web_page_preview=True)
         time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
     
@@ -239,6 +239,7 @@ def get_message(bot, update):
     else : print(bot)
 
     chat_type = bot[tp]['chat']['type'] 
+    msgFrom =""
     # print("채널타입 : " + chat_type)
     if chat_type == 'private' or chat_type == 'channel': # 개인채팅, 채널일 경우
         user_id = bot[tp]['chat']['id']
@@ -460,8 +461,11 @@ async def ForTeleReplaceTxt(txt : str):
     txt = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)(\[)(\])]", "", txt)
     return txt.replace("[","|").replace("]","| ")
 
+from avdbs_crawling import oldList
+avdbsBoardUrl = "https://www.avdbs.com/board/"
 async def get_avdbs_crawling(chat_id):
     newContents = await avdbs_crawling.get_avdbs_whole_board_asyn()
+    if newContents == [] : return #할거 없으면 그냥 종료
 
     #content : [num,thumb,boardType,adult,date,beforeTime,writer,lvl,view,recom,good,title,contentTxt]
     #           0   1     2         3     4    5          6      7   8    9     10   11    12
@@ -474,6 +478,8 @@ async def get_avdbs_crawling(chat_id):
             if content[9] is not None : recom = content[9]
             if content[10] is not None : good = content[10]
 
+            boardUrl = avdbsBoardUrl + content[0]
+
             writer = await ForTeleReplaceTxt(content[6])
             title = await ForTeleReplaceTxt(content[11])
             contentTxt = await ForTeleReplaceTxt(content[12])
@@ -482,7 +488,7 @@ async def get_avdbs_crawling(chat_id):
             lvl1 = await int2imoji(int(content[7]) % 10)
 
             txt= "[.]("+thumb+")   📣  *AVDBS New 게시글 알림*  📣\n\n"+\
-                "📂게시판 : ["+ content[2] + "]("+content[0]+") | "  + adult+"\n"+\
+                "📂게시판 : ["+ content[2] + "]("+boardUrl+") | "  + adult+"\n"+\
                 "🕓 : "+content[4] + " | " + content[5] + "\n"+\
                 "🖋 : " + writer + " | LV : " + lvl10 + lvl1 + "\n\n"+\
                 "👀 : " + view + " | 💬 : " + recom + " | 👍 : " + good + "\n"+\
@@ -498,16 +504,15 @@ async def get_avdbs_crawling(chat_id):
             if qs != [] :
                 for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
                 time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+
+            oldList.append(content[0]) #전송 성공하면 목록에 저장
         except Exception as e:
             print("get_avdbs_crawling - content send fail : ", end="")
             print(e)
 
-schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
+
 
 def alarmi():
-    print("쓰레딩이이잉")
-    telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
-    
     while True:
         try:
             schedule.run_pending()
@@ -515,18 +520,25 @@ def alarmi():
             print("스케쥴 에러 : ", end="")
             print(e)
             
-
+schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 #일단 한번 에딥 크롤링 시작
 try:  asyncio.run(get_avdbs_crawling(group_id_avdbs))
 except Exception as e:
     print("get_avdbs_crawling error : ", end="")
     print(e)
 
+print("쓰레딩이이잉")
+telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
+
 try :
     # 스레드로 while문 따로 돌림
     t = Thread(target=alarmi, daemon=True)
     t.start()    
+except Exception as e:  
+    print("스레드 생성 실패 : " , end="")             
+    print(e)
 
+try:
     '''rssbot'''
     # 메시지 받아오는 곳
     message_handler = MessageHandler(Filters.text & (~Filters.command), get_message)
@@ -539,5 +551,5 @@ try :
     updater.idle()
     
 except Exception as e:               # 에러 발생시 예외 발생
+    print("텔레그램 봇 에러 : ", end="")
     print(e)
-    # telbot.send_message(chat_id=group_id_trash, text="rssbot 에러 발생")

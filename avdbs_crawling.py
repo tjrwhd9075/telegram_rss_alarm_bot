@@ -4,7 +4,6 @@ import asyncio
 
 avdbsUrl = "https://www.avdbs.com"
 avdbsWholeBoardUrl = "https://www.avdbs.com/board/t90"
-avdbsBoardUrl = "https://www.avdbs.com/board/"
 
 headers = {
         "Cookie":"age=off",
@@ -35,7 +34,7 @@ async def get_avdbs_whole_board_asyn():
                 if num in oldList: 
                     if len(oldList) >= 100 : oldList[0:50]=[] #너무 쌓이면 목록삭제
                     continue # 이미 목록에 있으면 건너뜀
-                else: oldList.append(num); num=avdbsBoardUrl+num; print(num, end=" | ")
+                else: print(num, end=" | ")
                 #컨텐츠 썸네일
                 thumb = content.select_one('img.thumb')
                 if thumb is not None and thumb['src'].find("ao_lst.jpg") == -1: #19 이상 사진일때 그냥 패스
