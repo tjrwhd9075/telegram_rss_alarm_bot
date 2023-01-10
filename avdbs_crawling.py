@@ -5,8 +5,11 @@ import asyncio
 avdbsUrl = "https://www.avdbs.com"
 avdbsWholeBoardUrl = "https://www.avdbs.com/board/t90"
 
+# adult_chk=1 로 넣으면 성인인증한것처럼 나온다.
+# user_nickname=ddd   로 넣으면 로그인 한것 처럼나온다.
+# member_idx=111      의미 없어보이지만 회원시퀀스로 보여진다.
 headers = {
-        "Cookie":"age=off",
+        "Cookie":"age=off; adult_chk=1; user_nickname=dd; member_idx= 11;",
         'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/53.36'
     } 
 
@@ -101,4 +104,5 @@ async def get_avdbs_whole_board_asyn():
         print(e)
         return []
 
-# get_avdbs_whole_board()
+asyncio.run(get_avdbs_whole_board_asyn())
+
