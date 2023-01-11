@@ -64,10 +64,7 @@ def get_message(bot, update):
     if msgFrom == 'Fc2RssTorrent': get_fc2rssbot_text(bot[tp], update); return
 
     news_group = ['🦔한국뉴스_그룹', '🦔해외뉴스_그룹', '🦔코인뉴스_그룹', '🦔사회경제 이슈_그룹']
-    if msgTo in news_group  : 
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(resend_with_hashtag(bot[tp],update))
-        return 
+    if msgTo in news_group  :  resend_with_hashtag(bot[tp],update); return 
 
 def get_command(bot, update):
     if bot.channel_post is not None : tp = "channel_post"   #채널일 경우
@@ -469,7 +466,7 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     time.sleep(4)
 
 from news_tagger import Keywords
-async def resend_with_hashtag(bot, update):
+def resend_with_hashtag(bot, update):
     chat_id = bot['chat']['id']
     msg = bot['text'].upper()
     message_id = bot['message_id']
@@ -481,7 +478,7 @@ async def resend_with_hashtag(bot, update):
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
     telbot.send_message(chat_id=chat_id, text=txt)
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
-    await asyncio.sleep(4)
+    time.sleep(4)
 
 
 
