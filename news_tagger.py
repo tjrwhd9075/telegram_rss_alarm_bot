@@ -62,8 +62,9 @@ class Keywords():
         self.add_keywords(hashtag_list)
 
         for keyword in self.get_keywords():
-            if keyword in text:
-                text = text.replace(keyword, '#'+keyword.replace(" ","_")+" ")
+            if keyword in text and keyword != "":
+                to = '#'+keyword.replace(" ","_")+" "
+                text = text.replace(keyword, to)
         return text.replace("##","#")
 
 
