@@ -104,5 +104,5 @@ async def get_avdbs_whole_board_asyn():
         print(e)
         return []
 
-asyncio.run(get_avdbs_whole_board_asyn())
+# asyncio.run(get_avdbs_whole_board_asyn())
 
