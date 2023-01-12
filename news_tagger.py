@@ -62,13 +62,17 @@ class Keywords():
     def tag_keywords(self, text: str) -> str:
         text = text.upper()
         hashtag_list = [word.replace("#","").replace("_"," ") for word in text.split() if word.startswith("#")]
+        del_hashtag_list = [word.replace("!","").replace("_"," ") for word in text.split() if word.startswith("!")]
         self.add_keywords(hashtag_list)
 
         for keyword in self.get_keywords():
             if keyword != "" and keyword in text :
                 to = '#'+keyword.replace(" ","_")+" "
                 text = text.replace(keyword, to)
-        self.del_keyword("")
+                
+        if del_hashtag_list == [] : self.del_keyword("")
+        else: 
+            for dk in del_hashtag_list: self.del_keyword(dk)
         return text.replace("##","#").replace("###","#")
 
 

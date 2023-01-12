@@ -480,7 +480,7 @@ def resend_with_hashtag(bot, update):
 
         txt = tagKewords.tag_keywords(msg)
 
-        for url in urls: txt+="\n\n"+url #메시지에 다시 url 입력
+        for url in urls: txt+="\n"+url #메시지에 다시 url 입력
 
         telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
         telbot.send_message(chat_id=chat_id,reply_to_message_id=reply_message_id, text=txt)
