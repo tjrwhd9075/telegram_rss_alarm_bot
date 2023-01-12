@@ -476,7 +476,7 @@ def resend_with_hashtag(bot, update):
     reply_message_id = bot['reply_to_message']['message_id']
     print(reply_forward_from_message_id, reply_message_id)
 
-    telbot.send_message(chat_id=chat_id, reply_to_message_id=reply_forward_from_message_id, text="to reply_forward_from_message_id")
+    # telbot.send_message(chat_id=chat_id, reply_to_message_id=reply_forward_from_message_id, text="to reply_forward_from_message_id")
     telbot.send_message(chat_id=chat_id, reply_to_message_id=reply_message_id,text="to reply_message_id")
 
     # print(bot)
