@@ -471,7 +471,7 @@ def resend_with_hashtag(bot, update):
     msg = bot['text'].upper()
     message_id = bot['message_id']
 
-    # print(bot)
+    print(bot)
 
 
     # tagKewords = Keywords()
