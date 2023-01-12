@@ -20,7 +20,7 @@ class Keywords():
         if keywordsTxtFile is None: keywordsTxtFile=self.keywordsTxtFile
 
         with open(keywordsTxtFile, 'r+', encoding = 'UTF-8') as f:
-            keywords = f.read().split(",").sort()
+            keywords = sorted(f.read().split(","))
         return keywords
 
     def add_keyword(self, keyword:str, keywordsTxtFile=None) -> bool:
@@ -52,7 +52,7 @@ class Keywords():
         if keywordsTxtFile is None: keywordsTxtFile=self.keywordsTxtFile
         keywords = self.get_keywords(keywordsTxtFile)
 
-        if keyword.upper() not in keywords and keyword != "": return False # 목록에 없습니다 종료
+        if keyword != "" and keyword.upper() not in keywords : return False # 목록에 없습니다 종료
         
         with open(keywordsTxtFile, 'w+', encoding = 'UTF-8') as f: # 목록에 있습니다 삭제
             keywords = [x for x in keywords if x != keyword.upper()]
