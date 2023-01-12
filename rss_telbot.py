@@ -468,70 +468,28 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
 from news_tagger import Keywords
 def resend_with_hashtag(bot, update):
     chat_id = bot['chat']['id']
-    msg = bot['text'].upper()
-    message_id = bot['message_id']
+    msg = bot['text']
+    message_id = bot['message_id'] # 방금 입력받은 메시지의 id
+    reply_message_id = bot['reply_to_message']['message_id'] # 답장걸어야 하는 메시지의 id
 
-    # 답장걸어야 하는 메시지의 id
-    reply_forward_from_message_id = bot['reply_to_message']['forward_from_message_id']
-    reply_message_id = bot['reply_to_message']['message_id']
-    print(reply_forward_from_message_id, reply_message_id)
+    if reply_message_id is not None:
+        tagKewords = Keywords()
 
-    # telbot.send_message(chat_id=chat_id, reply_to_message_id=reply_forward_from_message_id, text="to reply_forward_from_message_id")
-    telbot.send_message(chat_id=chat_id, reply_to_message_id=reply_message_id,text="to reply_message_id")
+        urls = find_urls(msg)
+        for url in urls: msg=msg.replace(url, "")  #메시지에서 url 임시 제거
 
-    # print(bot)
-    '''
-    
-from : 🦔해외뉴스_그룹 -1001539875664 -> to : 🦔해외뉴스_그룹 -1001539875664
-{'chat': {'title': '🦔해외뉴스_그룹', 'id': -1001539875664, 'username': 'signalmaker_chat', 'type': 'supergroup'}, 
-'entities': [{'length': 48, 'type': 'url', 'offset': 31}], 
-'message_id': 14069, 
-'photo': [], 
-'date': 1673497317, 
-'group_chat_created': False, 
-'reply_to_message': {'chat': {'title': '🦔해외뉴스_그룹', 'id': -1001539875664, 'username': 'signalmaker_chat', 'type': 'supergroup'},
-                    'forward_date': 1673336723, 
-                    'entities': [{'length': 4, 'type': 'hashtag', 'offset': 16}, {'length': 3, 'type': 'hashtag', 'offset': 21},{'length': 3, 'type': 'hashtag', 'offset': 25},{'length': 5, 'type': 'hashtag', 'offset': 29}], 
-                    'forward_from_chat': {'title': '🦔해외뉴스_채널', 'id': -1001435297956, 'username': 'ha_alarm', 'type': 'channel'}, 
-                    'forward_from_message_id': 69917, 
-                    'message_id': 14036, 
-                    'photo': [], 
-                    'date': 1673336726, 
-                    'group_chat_created': False, 
-                    'new_chat_photo': [], 
-                    'is_automatic_forward': True, 
-                    'text': '[ 바이오엔텍 (BNTX)]\n#바이오 #제약 #백신 #mRNA', 
-                    'channel_chat_created': False, 
-                    'forward_signature': '. .', 
-                    'caption_entities': [], 
-                    'sender_chat': {'title': '🦔해외뉴스_채널', 'id': -1001435297956, 'username': 'ha_alarm', 'type': 'channel'}, 
-                    'supergroup_chat_created': False, 
-                    'delete_chat_photo': False, 
-                    'new_chat_members': [], 
-                    'edit_date': 1673336758, 
-                    'from': {'first_name': 'Telegram', 'id': 777000, 'is_bot': False}
-                    }, 
-'new_chat_photo': [], 
-'text': '‘카트라이더: 드리프트’, 기대감 입증…애플 인기 1위\nhttp://game.mk.co.kr/view.php?year=2023&no=32779', 
-'channel_chat_created': False, 
-'caption_entities': [], 
-'sender_chat':{'title': '🦔해외뉴스_그룹', 'id': -1001539875664, 'username': 'signalmaker_chat', 'type': 'supergroup'}, 
-'supergroup_chat_created': False, 
-'delete_chat_photo': False, 
-'new_chat_members': [], 
-'from': {'first_name': 'Group', 'id': 1087968824, 'is_bot': True, 'username': 'GroupAnonymousBot'}
-}
-    '''
+        txt = tagKewords.tag_keywords(msg)
 
+        for url in urls: txt+="\n\n"+url #메시지에 다시 url 입력
 
-    # tagKewords = Keywords()
-    # txt = tagKewords.tag_keywords(msg)
-    # telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-    # telbot.send_message(chat_id=chat_id, text=txt)
-    # telbot.delete_message(chat_id=chat_id, message_id=message_id)
-    # time.sleep(4)
+        telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+        telbot.send_message(chat_id=chat_id,reply_to_message_id=reply_message_id, text=txt)
+        telbot.delete_message(chat_id=chat_id, message_id=message_id)
+        time.sleep(4)
 
-
+def find_urls(string) -> list:
+    urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$\-@\.&+:/?=]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', string)
+    return urls
 
 
 async def int2imoji(num : int):

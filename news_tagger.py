@@ -20,7 +20,7 @@ class Keywords():
         if keywordsTxtFile is None: keywordsTxtFile=self.keywordsTxtFile
 
         with open(keywordsTxtFile, 'r+', encoding = 'UTF-8') as f:
-            keywords = f.read().split(",")
+            keywords = f.read().split(",").sort()
         return keywords
 
     def add_keyword(self, keyword:str, keywordsTxtFile=None) -> bool:
@@ -31,29 +31,32 @@ class Keywords():
 
         with open(keywordsTxtFile, 'a+', encoding = 'UTF-8') as f: # 목록에 없습니다. 추가합니다.")
             f.write(keyword.upper()+",") 
+            self.del_keyword("")
             return True # 저장함
 
     def add_keywords(self, keywordL:list, keywordsTxtFile=None) -> list:
         if keywordsTxtFile is None: keywordsTxtFile=self.keywordsTxtFile
 
         keywords = self.get_keywords(keywordsTxtFile)
-        res = []
+        added = []
         for kl in keywordL:
             if kl.upper() not in keywords : 
                 with open(keywordsTxtFile, 'a+', encoding = 'UTF-8') as f: # 목록에 없습니다. 추가합니다.")
                     f.write(kl.upper()+",") 
-                    res.append(kl.upper())
-        return res # 저장함
+                    added.append(kl.upper())
+        self.del_keyword("")
+        return added # 저장한 키워드 목록 반환
     
     def del_keyword(self, keyword, keywordsTxtFile=None) -> bool:
+        ''' del_keyword("") -> 중복제거, 공백문자 제거'''
         if keywordsTxtFile is None: keywordsTxtFile=self.keywordsTxtFile
         keywords = self.get_keywords(keywordsTxtFile)
 
-        if keyword.upper() not in keywords: return False # 목록에 없습니다 종료
+        if keyword.upper() not in keywords and keyword != "": return False # 목록에 없습니다 종료
         
         with open(keywordsTxtFile, 'w+', encoding = 'UTF-8') as f: # 목록에 있습니다 삭제
             keywords = [x for x in keywords if x != keyword.upper()]
-            for kw in keywords: f.write(kw.upper()+",") 
+            for kw in list(set(keywords)): f.write(kw.upper()+",") 
             return True # 저장함
 
     def tag_keywords(self, text: str) -> str:
@@ -62,10 +65,11 @@ class Keywords():
         self.add_keywords(hashtag_list)
 
         for keyword in self.get_keywords():
-            if keyword in text and keyword != "":
+            if keyword != "" and keyword in text :
                 to = '#'+keyword.replace(" ","_")+" "
                 text = text.replace(keyword, to)
-        return text.replace("##","#")
+        self.del_keyword("")
+        return text.replace("##","#").replace("###","#")
 
 
 class News:
@@ -83,7 +87,7 @@ class News:
         return self.keywords.tag_keywords(news_text)
 
 
-
+#테스트
 if __name__ == "__main__":
     keywords = Keywords()
 
