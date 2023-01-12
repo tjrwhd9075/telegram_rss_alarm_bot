@@ -471,14 +471,15 @@ def resend_with_hashtag(bot, update):
     msg = bot['text'].upper()
     message_id = bot['message_id']
 
-    tagKewords = Keywords()
+    # print(bot)
 
-    txt = tagKewords.tag_keywords(msg)
 
-    telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-    telbot.send_message(chat_id=chat_id, text=txt)
-    telbot.delete_message(chat_id=chat_id, message_id=message_id)
-    time.sleep(4)
+    # tagKewords = Keywords()
+    # txt = tagKewords.tag_keywords(msg)
+    # telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+    # telbot.send_message(chat_id=chat_id, text=txt)
+    # telbot.delete_message(chat_id=chat_id, message_id=message_id)
+    # time.sleep(4)
 
 
 
