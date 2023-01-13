@@ -229,11 +229,18 @@ def get_avrssbot_text(bot, update):
         if p.find("-") != -1 : pumnum=p; break #품번이 존재하면
     
     try:
-        if title.find("カリビアンコム") != -1 and title.find("-CARIB") == -1  : pumnum = "carib-"+pumnum # 010323-001-CARIB カリビアンコム , カリビアンコム 102517-525
-        elif title.find("Caribbeancom") != -1 : pumnum = "carib-"+pumnum # [Uncensored] Caribbeancom 010323-001 旅館の生き残りに賭ける美人女将 , (UNCENSORED )Caribbeancom 加勒比 010323-001
-        elif title.find("-carib-1080p") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] ## 010423-001-carib-1080p-進撃の青山 ～欲求不満で止まらない～青山はな
-        elif title.find("-CARIB ") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] #010423-001-CARIB
-        elif title.find("加勒比") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] #加勒比
+        caribs = ['カリビアンコム', 'Caribbeancom', 'carib', 'CARIB', '加勒比']
+        if any(carib in title for carib in caribs):
+            fpumnum = re.findall(r'\d+[-_]\d+', title) # [숫자_숫자] 또는 [숫자-숫자] 문자열을 찾아냄 
+            pumnum = "carib-"+fpumnum[0]
+
+        # if title.find("カリビアンコム") != -1 and title.find("-CARIB") == -1  : pumnum = "carib-"+pumnum # 010323-001-CARIB カリビアンコム , カリビアンコム 102517-525
+        # elif title.find("Caribbeancom") != -1 : 
+        #     fpumnum = re.findall(r'\d+[-_]\d+', title) # [숫자_숫자] [숫자-숫자] 문자열을 찾아냄 
+        #     pumnum = "carib-"+fpumnum[0] # [Uncensored] Caribbeancom 010323-001 旅館の生き残りに賭ける美人女将 , (UNCENSORED )Caribbeancom 加勒比 010323-001
+        # elif title.find("-carib-1080p") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] ## 010423-001-carib-1080p-進撃の青山 ～欲求不満で止まらない～青山はな
+        # elif title.find("-CARIB ") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] #010423-001-CARIB
+        # elif title.find("加勒比") != -1 : pumnum = "carib-"+pumnum.split("-")[0]+"-"+pumnum.split("-")[1] #加勒比
 
         elif title.find('HEYZO') != -1 and pumnum=="": # [HD/720p] HEYZO 2951 おしゃぶり上手なギャルのカラダを余すところなくいただきました！ – 羽月まい 
             for i,p in enumerate(pumnumTmpList) : 
@@ -264,7 +271,6 @@ def get_avrssbot_text(bot, update):
         elif title.find("Kin8tengoku") !=-1 : 
             for i, t in enumerate(title.split(" ")):
                 if t=="Kin8tengoku": pumnum = "kin8-"+title.split(" ")[i+2] #[HD/720p] Kin8tengoku 金8天国 3659 小柄ボディー可愛いナタちゃんのお
-            
     except : pass
 
     if pumnum == "" or pumnum == "-" : #품번이 없으면 삭제 후 종료
@@ -305,13 +311,14 @@ def get_avrssbot_text(bot, update):
 
     missavPumnum = "-".join(pumnum.split("-")[1:])
     txt = "[.](" +str(thumb1)+ ") `" + str(pumnum.upper()) + "` #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
-        + "\[ [trailer]("+str(trailer)+") ]  "+\
+        "\[ [javdb]("+f"https://javdb.com/search?q={pumnum}&f=all) ]  "+\
+        "\[ [trailer]("+str(trailer)+") ]  "+\
+        "\[ [avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2) ]  "+\
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/search/{missavPumnum}"+") ]  "+\
-        "\[ [avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2) ]  "+\
-        "\[ [javdb]("+f"https://javdb.com/search?q={pumnum}&f=all) ]  "+\
         "\[ [dbmsin]("+dburl+") ]  "+\
         "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
+        "\[ [bt4g](https://kr.bt4g.org/search/"+str(pumnum)+") ]  "+\
         "\[ [torrent]("+str(torrentLink)+") ]\n\n"\
         + str(actor) + " " + str(writer) + " " +highlight+ str(createDate) +highlight+ " *" + str(fileSize) + "*\n"\
         + str(translatedTitle)  +"\n"
@@ -338,7 +345,7 @@ def get_avrssbot_text(bot, update):
             time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
 
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ\n")
-    
+
 def get_fc2rssbot_text(bot, update):
     chat_id = bot['chat']['id']
     message_id = bot['message_id']
@@ -397,6 +404,7 @@ def get_fc2rssbot_text(bot, update):
         "\[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}"+") ]  "+\
         "\[ [dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}"+") ]  "+\
         "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
+        "\[ [bt4g](https://kr.bt4g.org/search/"+str(pumnum)+") ]  "+\
         "\[ [torrent]("+torrentLink+") ]\n\n"\
         + str(actor) + " " + str(writer) + " " +highlight+ str(createDate) +highlight+ " **" + str(fileSize) + "**\n"\
         + translatedTitle 
@@ -456,10 +464,11 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     telbot.send_message(chat_id=chat_id, reply_to_message_id=message_id,
                         text="[.]("+str(thumb)+") `" + pumnum.upper() +  "` #" +pumnum.upper().replace("_","\_").replace(" ","\_").replace("-","\_") + "\n\n" +
                         "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "+
+                        "\[ [trailer]("+str(trailer)+") ]  "+
                         "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "+
                         "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "+
                         "\[ [missav](https://missav.com/ko/search/"+missavPumnum+") ]  "+
-                        "\[ [trailer]("+str(trailer)+") ]  "+
+                        "\[ [bt4g](https://kr.bt4g.org/search/"+pumnum.replace("fc2ppv ","")+") ]  "+
                         "\[ [dbmsin]("+ dburl +") ]\n\n"+
                         writer+" "+actor+" "+highlight+createDate+highlight+"\n"+ title
                         ,parse_mode='Markdown' )
@@ -481,6 +490,7 @@ def resend_with_hashtag(bot, update):
         txt = tagKewords.tag_keywords(msg)
 
         for url in urls: txt+="\n"+url #메시지에 다시 url 입력
+        txt=txt.replace("\n\n\n","\n").replace("\n\n","\n") #줄간격 너무 떨어져있는거 제거
 
         telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
         telbot.send_message(chat_id=chat_id,reply_to_message_id=reply_message_id, text=txt)
