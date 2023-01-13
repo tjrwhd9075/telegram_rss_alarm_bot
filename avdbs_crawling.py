@@ -128,6 +128,8 @@ async def get_avdbs_twit_asyn():
 
             newList=[]
             for content in contents:
+                twitNum, actorIdx, actorUrl, actorNm, twitUrl, twitID, beforeTime, txt, = "-","-","-","-","-","-","-","-"
+                imgUrls, videoUrls=[],[]
                 try:
                     #컨텐츠 번호
                     twitNum = content.select_one('li.twit_item')['data-twit_id']
