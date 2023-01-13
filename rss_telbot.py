@@ -1,9 +1,11 @@
+import os
 import re
 import time
 from threading import Thread
 from datetime import datetime
 import schedule
 import asyncio
+import urllib.request
 
 import telegram  # pip install python-telegram-bot --upgrade
 from telegram.ext import Updater, MessageHandler, Filters
@@ -520,10 +522,24 @@ async def int2imoji(num : int):
     return res
 
 async def ForTeleReplaceTxt(txt : str):
-    txt = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)(\[)(\])]", "", txt)
+    txt = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)(\[)(\])(\?)(\!))]", "", txt)
     return txt.replace("[","|").replace("]","| ")
 
-from avdbs_crawling import oldList
+# 파일 용량 단위 변환
+async def convert_size(size_bytes):
+    '''
+    return 용량(float), 단위(str)
+    '''
+    import math
+    if size_bytes == 0:
+        return "0B"
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    return s, size_name[i]
+
+from avdbs_crawling import oldList, twtOldList
 avdbsBoardUrl = "https://www.avdbs.com/board/"
 async def get_avdbs_crawling(chat_id):
     print("ㅡㅡㅡㅡㅡㅡㅡㅡget_avdbs_crawlingㅡㅡㅡㅡㅡㅡㅡㅡ")
@@ -590,9 +606,103 @@ async def get_avdbs_crawling(chat_id):
             print(e)
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
 
+async def get_avdbs_twit_crawling(chat_id):
+    print("ㅡㅡㅡㅡㅡㅡㅡget_avdbs_twit_crawlingㅡㅡㅡㅡㅡㅡㅡ")
+    newContents = await avdbs_crawling.get_avdbs_twit_asyn()
+    if newContents == [] : print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ"); return #할거 없으면 그냥 종료
+
+    #content : [twitNum, actorIdx, actorUrl, actorNm, twitUrl, twitID, beforeTime, txt, imgUrls, videoUrls]
+    #           0       1         2         3        4        5       6           7    8        9     
+    for content in newContents[::-1]:
+        try:
+            twitNum, actorIdx, actorUrl, actorNm = content[0],content[1],content[2],content[3]
+            twitUrl, twitID, beforeTime, twitTxt = content[4],content[5],content[6],content[7]
+            imgUrls, videoUrls = content[8],content[9] #리스트
+
+            twitTxt = await ForTeleReplaceTxt(twitTxt)
+            txt=f"\[ [{actorNm}]({actorUrl}) ] [{twitID}]({twitUrl}) | {beforeTime}\n"+twitTxt
+
+
+            # 이미지, 영상 다운로드 -> 텔레 업로드 -> 삭제
+            imgs=[]
+            if imgUrls != []:
+                for i, img in enumerate(imgUrls):
+                    imgfile = f"img_{actorIdx}_{i}.jpg"
+                    urllib.request.urlretrieve(img, imgfile)
+                    imgs.append(telegram.InputMediaPhoto(open(imgfile,'rb')))
+                try:
+                    telbot.send_media_group(chat_id=chat_id, reply_to_message_id='1418', media=imgs, timeout=1000)
+                    asyncio.sleep(4)
+                    for i, img in enumerate(imgUrls): os.remove(imgfile) #삭제
+                except telegram.error.RetryAfter as e:
+                    print(e)
+                    time.sleep(60)
+                    telbot.send_media_group(chat_id=chat_id, reply_to_message_id='1418', media=imgs, timeout=1000)
+                    asyncio.sleep(4)
+                    for i, img in enumerate(imgUrls): os.remove(imgfile) #삭제
+                except Exception as e:
+                    print("get_avdbs_twit_crawling img send fail : ", end="")
+                    print(e)
+
+            if videoUrls != []:
+                videofile = f"video_{actorIdx}.mp4"
+                urllib.request.urlretrieve(videoUrls[0], videofile)
+
+                if os.path.exists(videofile) :
+                    file_size, size_name = convert_size(os.path.getsize(videofile))
+                    if size_name == "MB" and file_size >= 50 : #50mb 이상이면 스킵
+                        print("video "+str(file_size) + size_name, end=" > 50MB ")
+                    else : 
+                        video = telegram.InputMediaVideo(open(videofile,'rb'))
+                        try:
+                            telbot.send_video(chat_id=chat_id, reply_to_message_id='1418', video=video, timeout=1000)
+                            asyncio.sleep(4)
+                            os.remove(videofile)
+                        except telegram.error.RetryAfter as e:
+                            print(e)
+                            time.sleep(60)
+                            telbot.send_media_group(chat_id=chat_id, reply_to_message_id='1418', media=imgs, timeout=1000)
+                            asyncio.sleep(4)
+                            for i, img in enumerate(imgUrls): os.remove(imgfile) #삭제
+                        except Exception as e:
+                            print("get_avdbs_twit_crawling video send fail : ", end="")
+                            print(e)
+            
+            #키워드 알림
+            try:
+                qs = await watchlist.find_keyword_lines_asyn(txt, klistTxtFile) 
+                banedKey = [bk for bk in qs if bk.find("!") != -1] # 금지 키워드 목록
+                if banedKey != [] : #하나라도 존재하면 
+                    twtOldList.append(twitNum) # 목록에 그냥 넣어버리고 패스
+                    continue 
+            except Exception as e:
+                print("get_avdbs_twit_crawling - find keword error : ", end="")
+                print(e)
+
+            telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
+            telbot.send_message(chat_id=chat_id, reply_to_message_id='1418', text=txt, parse_mode='Markdown')
+            twtOldList.append(twitNum) #전송 성공하면 목록에 저장
+            time.sleep(4)
+        except Exception as e:
+            print("get_avdbs_twit_crawling - content send fail : ", end="")
+            print(e)
+        
+        try:
+            if qs != [] :
+                for q in qs: 
+                    print("chat_id : " + str(q.split(" ")[0]), end=" | ")
+                    print("키워드 : " + q.split(" ")[1])
+                    telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1418) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
+                    time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+        except Exception as e:
+            print("get_avdbs_twit_crawling - keword send error : ", end="")
+            print(e)
+    print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+
 async def backup_klist(chat_id:str, txtFile:str):
     klist = watchlist.get_querys(txtFile)
-    txt = ""
+    if txtFile == newsKlistTxtFile : klist=klist[0].split(",")
+    txt = txtFile+ " backup"
     for k in klist: 
         txtTmp = txt + k +","
         if len(txtTmp) > 1000: telbot.send_message(chat_id = chat_id, text = txt) ; txt = "" ; time.sleep(4) #1천자 넘으면 일단 전송
@@ -609,7 +719,11 @@ def alarmi():
             print(e)
             
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
+schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))) 
 schedule.every().day.at("00:00").do(lambda:asyncio.run(backup_klist(group_id_trash, newsKlistTxtFile))) 
+
+print("쓰레딩이이잉")
+telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
 
 #일단 한번 에딥 크롤링 시작
 try:  asyncio.run(get_avdbs_crawling(group_id_avdbs))
@@ -617,8 +731,11 @@ except Exception as e:
     print("get_avdbs_crawling error : ", end="")
     print(e)
 
-print("쓰레딩이이잉")
-telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
+#일단 한번 에딥 크롤링 시작
+try:  asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))
+except Exception as e:
+    print("get_avdbs_twit_crawling error : ", end="")
+    print(e)
 
 try :
     # 스레드로 while문 따로 돌림
