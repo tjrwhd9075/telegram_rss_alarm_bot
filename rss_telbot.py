@@ -271,7 +271,10 @@ def get_avrssbot_text(bot, update):
         elif title.find("-paco-1080p") != -1 :  # 010423_771-paco-1080p-人妻マンコ図鑑 149
             for i, p in enumerate(pumnumTmpList):
                 if p.find("paco") != -1 : pumnum = "paco-" + pumnumTmpList[i-1] + "_" + p.split("-")[0] ; break
-
+        elif title.find("pacopacomama") != -1 : # pacopacomama-121022_754 イキナリ亀甲縛り 〜鈴木里奈〜
+            fpumnum = re.findall(r'\d+[_]\d+', title)
+            pumnum = "paco-"+fpumnum[0]
+                
         elif title.find("H4610-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] #H4610-gol211-FHD-綺麗な肌全身で感じまくって
         elif title.find("kin8-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] # kin8-3656-FHD-2022
         elif title.find("Kin8tengoku") !=-1 : 
@@ -669,7 +672,8 @@ async def get_avdbs_twit_crawling(chat_id):
                     if size_name == "MB" and file_size >= 50 : #50mb 이상이면 스킵
                         print("video "+str(file_size) + size_name, end=" > 50MB ")
                     else : 
-                        video = telegram.InputMediaVideo(open(videofile,'rb'))
+                        # video = telegram.InputMediaVideo(open(videofile,'rb'))
+                        video=open(videofile,'rb')
                         try:
                             telbot.send_video(chat_id=chat_id, reply_to_message_id='1418', video=video, timeout=1000)
                             await asyncio.sleep(4)
@@ -677,12 +681,14 @@ async def get_avdbs_twit_crawling(chat_id):
                         except telegram.error.RetryAfter as e:
                             print(e)
                             await asyncio.sleep(60)
-                            telbot.send_media_group(chat_id=chat_id, reply_to_message_id='1418', media=imgs, timeout=1000)
+                            telbot.send_video(chat_id=chat_id, reply_to_message_id='1418', video=video, timeout=1000)
                             await asyncio.sleep(4)
                             for i, img in enumerate(imgUrls): os.remove(imgfile) #삭제
                         except Exception as e:
                             print("get_avdbs_twit_crawling video send fail : ", end="")
                             print(e)
+                        video.close()
+                os.remove(videofile)
             
 
             telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
