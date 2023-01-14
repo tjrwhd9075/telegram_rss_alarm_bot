@@ -33,8 +33,9 @@ my_user_id = '1706601591'
 group_id_trash = '-1001547828770'
 group_id_avdbs = '-1001870842558'
 
-channel_fc2rss = "-1001740439937"
-channel_avrss = "-1001647660721"
+channel_fc2rss = "-1001831133794"
+channel_avrss = "-1001851191415"
+
 
 klistTxtFile = 'av_list_keyword_rss.txt'
 newsKlistTxtFile = 'news_keywords.txt'
@@ -48,7 +49,7 @@ def get_message(bot, update):
     else : print(bot)
 
     chat_type = bot[tp]['chat']['type'] 
-    msgFrom =""
+    msgFrom =""; msgTo=""
     # print("채널타입 : " + chat_type)
     if chat_type == 'private' or chat_type == 'channel': # 개인채팅, 채널일 경우
         user_id = bot[tp]['chat']['id']
@@ -339,7 +340,7 @@ def get_avrssbot_text(bot, update):
         return 
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-    telbot.send_message(text=txt, parse_mode='Markdown', chat_id=channel_avrss)
+    telbot.send_message(text=txt, chat_id=channel_avrss, parse_mode='Markdown')
     telbot.send_message(text=mgn, chat_id=channel_avrss, parse_mode='Markdown')
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     time.sleep(4)
