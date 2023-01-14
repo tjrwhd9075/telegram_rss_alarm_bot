@@ -128,13 +128,13 @@ async def get_avdbs_twit_asyn():
 
             newList=[]
             for content in contents:
-                twitNum, actorIdx, actorUrl, actorNm, twitUrl, twitID, beforeTime, txt, = "-","-","-","-","-","-","-","-"
-                imgUrls, videoUrls=[],[]
                 try:
+                    twitNum, actorIdx, actorUrl, actorNm, twitUrl, twitID, beforeTime, txt = "-","-","-","-","-","-","-","-"
+                    imgUrls, videoUrls=[],[]
                     #컨텐츠 번호
                     twitNum = content.select_one('li.twit_item')['data-twit_id']
                     if twitNum in twtOldList: 
-                        if len(twtOldList) >= 100 : twtOldList[0:50]=[] #너무 쌓이면 목록삭제
+                        if len(twtOldList) >= 200 : twtOldList[0:100]=[] #너무 쌓이면 목록삭제
                         continue # 이미 목록에 있으면 건너뜀
                     else: print(twitNum, end=" | ")
                     #여배우 번호
@@ -160,14 +160,15 @@ async def get_avdbs_twit_asyn():
                     txt = content.select_one('div.ct_txt').get_text().strip()
                     print(txt)
                     #이미지 또는 비디오
+                    mediaP = content.select_one('div.img_box')
                     media = content.select_one('div.img_box').div
                     imgUrls, videoUrls = [], []
                     if media is not None: 
-                        for i, img in enumerate(media.find_all('img')):
+                        for i, img in enumerate(mediaP.find_all('img')):
                             if img['src'] != '/w2017/img/twitter-play.png':
                                 imgUrls.append(img['src'].replace(":small",""))
                                 # urllib.request.urlretrieve(img['src'], f"img_{actorIdx}_{i}.jpg")
-                        for video in media.find_all('source-tag'):
+                        for video in mediaP.find_all('source-tag'):
                             videoUrls.append(video['src'])
                         # if videoUrls != []: urllib.request.urlretrieve(videoUrls[0], f"video_{actorIdx}.mp4")
                     print(imgUrls)
@@ -184,7 +185,6 @@ async def get_avdbs_twit_asyn():
         print("url open fail")
         print(e)
         return []
-
 
 def get_puminfo(pumnum:str):
     ''' return title, actor, date, up, down'''

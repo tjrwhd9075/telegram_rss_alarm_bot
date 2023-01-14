@@ -33,6 +33,9 @@ my_user_id = '1706601591'
 group_id_trash = '-1001547828770'
 group_id_avdbs = '-1001870842558'
 
+channel_fc2rss = "-1001740439937"
+channel_avrss = "-1001647660721"
+
 klistTxtFile = 'av_list_keyword_rss.txt'
 newsKlistTxtFile = 'news_keywords.txt'
 
@@ -336,8 +339,8 @@ def get_avrssbot_text(bot, update):
         return 
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-    telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
-    telbot.send_message(text=mgn, chat_id=chat_id, parse_mode='Markdown')
+    telbot.send_message(text=txt, parse_mode='Markdown', chat_id=channel_avrss)
+    telbot.send_message(text=mgn, chat_id=channel_avrss, parse_mode='Markdown')
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     time.sleep(4)
 
@@ -422,8 +425,8 @@ def get_fc2rssbot_text(bot, update):
         return 
 
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-    telbot.send_message(text=txt, parse_mode='Markdown', chat_id=chat_id)
-    telbot.send_message(text=mgn, chat_id=chat_id, parse_mode='Markdown')
+    telbot.send_message(text=txt, chat_id=channel_fc2rss, parse_mode='Markdown')
+    telbot.send_message(text=mgn, chat_id=channel_fc2rss, parse_mode='Markdown')
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     time.sleep(4)
     
@@ -623,7 +626,17 @@ async def get_avdbs_twit_crawling(chat_id):
 
             twitTxt = await ForTeleReplaceTxt(twitTxt)
             txt=f"\[ [{actorNm}]({actorUrl}) ] [{twitID}]({twitUrl}) | {beforeTime}\n\n"+twitTxt
-
+            
+            #키워드 알림
+            try:
+                qs = await watchlist.find_keyword_lines_asyn(txt, klistTxtFile) 
+                banedKey = [bk for bk in qs if bk.find("!") != -1] # 금지 키워드 목록
+                if banedKey != [] : #하나라도 존재하면 
+                    twtOldList.append(twitNum) # 목록에 그냥 넣어버리고 패스
+                    continue 
+            except Exception as e:
+                print("get_avdbs_twit_crawling - find keword error : ", end="")
+                print(e)
 
             # 이미지, 영상 다운로드 -> 텔레 업로드 -> 삭제
             imgs=[]
@@ -651,7 +664,7 @@ async def get_avdbs_twit_crawling(chat_id):
                 urllib.request.urlretrieve(videoUrls[0], videofile)
 
                 if os.path.exists(videofile) :
-                    file_size, size_name = convert_size(os.path.getsize(videofile))
+                    file_size, size_name = await convert_size(os.path.getsize(videofile))
                     if size_name == "MB" and file_size >= 50 : #50mb 이상이면 스킵
                         print("video "+str(file_size) + size_name, end=" > 50MB ")
                     else : 
@@ -670,35 +683,27 @@ async def get_avdbs_twit_crawling(chat_id):
                             print("get_avdbs_twit_crawling video send fail : ", end="")
                             print(e)
             
-            #키워드 알림
-            try:
-                qs = await watchlist.find_keyword_lines_asyn(txt, klistTxtFile) 
-                banedKey = [bk for bk in qs if bk.find("!") != -1] # 금지 키워드 목록
-                if banedKey != [] : #하나라도 존재하면 
-                    twtOldList.append(twitNum) # 목록에 그냥 넣어버리고 패스
-                    continue 
-            except Exception as e:
-                print("get_avdbs_twit_crawling - find keword error : ", end="")
-                print(e)
 
             telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
-            telbot.send_message(chat_id=chat_id, reply_to_message_id='1418', text=txt, parse_mode='Markdown')
+            telbot.send_message(chat_id=chat_id, reply_to_message_id='1418', text=txt, parse_mode='Markdown', disable_web_page_preview=True)
             twtOldList.append(twitNum) #전송 성공하면 목록에 저장
             await asyncio.sleep(4)
+
+            try:
+                if qs != [] :
+                    for q in qs: 
+                        print("chat_id : " + str(q.split(" ")[0]), end=" | ")
+                        print("키워드 : " + q.split(" ")[1])
+                        telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1418) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
+                        await asyncio.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+            except Exception as e:
+                print("get_avdbs_twit_crawling - keword send error : ", end="")
+                print(e)
         except Exception as e:
             print("get_avdbs_twit_crawling - content send fail : ", end="")
             print(e)
         
-        try:
-            if qs != [] :
-                for q in qs: 
-                    print("chat_id : " + str(q.split(" ")[0]), end=" | ")
-                    print("키워드 : " + q.split(" ")[1])
-                    telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → \[ [에딥톡방](https://t.me/c/1870842558/1418) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
-                    await asyncio.sleep(4) # 1분에 20개 이상 보내면 에러뜸
-        except Exception as e:
-            print("get_avdbs_twit_crawling - keword send error : ", end="")
-            print(e)
+        
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
 
 async def backup_klist(chat_id:str, txtFile:str):
