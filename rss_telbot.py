@@ -682,18 +682,21 @@ async def get_avdbs_twit_crawling(chat_id):
                         try:
                             telbot.send_video(chat_id=chat_id, reply_to_message_id='1418', video=video, timeout=1000)
                             await asyncio.sleep(4)
+                            video.close()
                             os.remove(videofile)
                         except telegram.error.RetryAfter as e:
                             print(e)
                             await asyncio.sleep(60)
                             telbot.send_video(chat_id=chat_id, reply_to_message_id='1418', video=video, timeout=1000)
                             await asyncio.sleep(4)
-                            for i, img in enumerate(imgUrls): os.remove(imgfile) #삭제
+                            video.close()
+                            os.remove(videofile)
                         except Exception as e:
                             print("get_avdbs_twit_crawling video send fail : ", end="")
                             print(e)
-                        video.close()
-                    os.remove(videofile)
+                        if not video.closed : video.close()
+                        
+                    
             
 
             telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
