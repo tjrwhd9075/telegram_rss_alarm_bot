@@ -124,35 +124,41 @@ async def get_avdbs_twit_asyn():
 
             res = response.read().decode('utf-8')
             soup = bs(res,'html.parser')
-            contents = soup.select('li.twit_item')
+            contents = soup.find_all('li', class_='twit_item')
+            # contents = soup.select('ul > li.twit_item')
 
             newList=[]
             for content in contents:
+                # print(content)
                 try:
                     twitNum, actorIdx, actorUrl, actorNm, twitUrl, twitID, beforeTime, txt = "-","-","-","-","-","-","-","-"
                     imgUrls, videoUrls=[],[]
                     #컨텐츠 번호
-                    twitNum = content.select_one('li.twit_item')['data-twit_id']
+                    twitNum = content['data-twit_id']
                     if twitNum in twtOldList: 
                         if len(twtOldList) >= 200 : twtOldList[0:100]=[] #너무 쌓이면 목록삭제
                         continue # 이미 목록에 있으면 건너뜀
                     else: print(twitNum, end=" | ")
-                    #여배우 번호
-                    actorIdx = content.select_one('li.twit_item')['data-actor_idx']
-                    print(actorIdx, end=" | ")
-                    actorUrl = avdbsActorUrl+actorIdx
-                    #여배우 이름
-                    actorNm = content.select_one('span.actor_nm').get_text().strip()
-                    print(actorNm, end=" | ")
                     #트윗url
-                    twitUrl = content.select_one('li.twit_item')['data-twit_url']
+                    twitUrl = content['data-twit_url']
                     print(twitUrl, end=" | ")
                     #트윗프로필
                     twitPf = content.select_one('div.pf_thumb').a.img['src']
-                    print(twitPf, end=" | ")
+                    # print(twitPf, end=" | ")
                     #트윗id
                     twitID = content.select_one('span.twitter_id').get_text().strip()
                     print(twitID, end=" | ")
+
+                    #여배우 번호
+                    actorIdx = content['data-actor_idx']
+                    print(actorIdx, end=" | ")
+                    #avdbs 여배우 url
+                    actorUrl = avdbsActorUrl+actorIdx
+                    print(actorUrl, end=" | ")
+                    #여배우 이름
+                    actorNm = content.select_one('span.actor_nm').get_text().strip()
+                    print(actorNm, end=" | ")
+                    
                     #n분전
                     beforeTime = content.select_one('span.time').get_text().strip()
                     print(beforeTime, end=" | ")

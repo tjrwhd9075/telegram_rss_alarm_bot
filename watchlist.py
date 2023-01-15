@@ -161,6 +161,7 @@ async def find_keyword_lines_asyn(txt, file):
     찾으면 -> list["user_id" + " " + "keyword", ...]
     없으면 -> []
     '''
+    querys=[]
     try: 
         querys = await get_querys_asyn(file)
     except Exception as e:
