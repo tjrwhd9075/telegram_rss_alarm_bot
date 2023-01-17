@@ -272,7 +272,7 @@ def get_avrssbot_text(bot, update):
             for i, p in enumerate(pumnumTmpList):
                 if p.find("paco") != -1 : pumnum = "paco-" + pumnumTmpList[i-1] + "_" + p.split("-")[0] ; break
         elif title.find("pacopacomama") != -1 : # pacopacomama-121022_754 イキナリ亀甲縛り 〜鈴木里奈〜
-            fpumnum = re.findall(r'\d+[_]\d+', title)
+            fpumnum = re.findall(r'\d+[_]\d+', title) 
             pumnum = "paco-"+fpumnum[0]
                 
         elif title.find("H4610-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] #H4610-gol211-FHD-綺麗な肌全身で感じまくって
@@ -348,6 +348,7 @@ def get_avrssbot_text(bot, update):
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     time.sleep(4)
 
+    qs = list(set(qs) - set(banedKey))
     if qs != [] :
         for q in qs: 
             telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper().replace("_","\_")) +'` #'+str(pumnum.upper().replace(" ","\_").replace("-","\_"))+'\n\[ [AvRssTorrent](https://t.me/+4F1MKUjlKKQ2NWE1) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]', parse_mode = 'Markdown', disable_web_page_preview=True)
@@ -434,6 +435,7 @@ def get_fc2rssbot_text(bot, update):
     telbot.delete_message(chat_id=chat_id, message_id=message_id)
     time.sleep(4)
     
+    qs = list(set(qs) - set(banedKey))
     if qs != [] :
         for q in qs: 
             telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum) + "` #FC2PPV\_" + str(pumnum)+" \n\[ [Fc2RssTorrent](https://t.me/+x-HRQ8PpKI9iZTZl) ]  \[ [신작&순위](https://t.me/+NhDP-cnW7KA3NGM1) ]", parse_mode = 'Markdown', disable_web_page_preview=True)
@@ -585,7 +587,7 @@ async def get_avdbs_crawling(chat_id):
             qs = []
             try:
                 qs = await watchlist.find_keyword_lines_asyn(txt, klistTxtFile) 
-
+                
                 banedKey = [bk for bk in qs if "!" in bk] # 금지 키워드 목록
                 if banedKey != [] : #하나라도 존재하면 
                     oldList.append(content[0]) # 목록에 그냥 넣어버리고 패스
@@ -602,6 +604,7 @@ async def get_avdbs_crawling(chat_id):
             await asyncio.sleep(4)
 
             try:
+                qs = list(set(qs) - set(banedKey))
                 if qs != [] :
                     for q in qs: 
                         print("chat_id : " + str(q.split(" ")[0]), end=" | ")
@@ -705,6 +708,7 @@ async def get_avdbs_twit_crawling(chat_id):
             await asyncio.sleep(4)
 
             try:
+                qs = list(set(qs) - set(banedKey))
                 if qs != [] :
                     for q in qs: 
                         print("chat_id : " + str(q.split(" ")[0]), end=" | ")

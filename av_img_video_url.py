@@ -26,10 +26,10 @@ AMA = {
 
 ALL_ITEMS = {
     '1': ['nag','gs','atom','sdmua','msfh','svvrt','mist','silkbt','shh','acme','nhdta','sdmf','mogi','stcv',"hunta",'drpt','mgold','votan','noskn','paioh','bkynb','mtall','hunt','sdfk','silku','star','stars','sdjs','sdnm','kmhr','sdth','kuse','sdab','sdmm','danuhd','nyh','zozo','ftht','akdl','silks','sdam','sdde','kire','shn','fsdss','fsvss','nhdtb','svdvd','iesp','piyo','dldss','sun','dandy','rctd','hawa','sw','ienf','gs','hbad','okb','dandan','nhvr','havd','mtvr','iesm','ftdss','okp','oks','svomn','hypn','sdnt','sdmu','nttr','fset','shyn','dvdm','miha'],
-    '2': ['wpom','ekbe','dfe','wfr','ekw','wpvr','wkd'],  '12': ['bur','lol','imo','scr'], '13': ['gbd','gvg','dsvr','gqe','ovg','yvg','rvg'],
-    '17':['mkd'],'18': ['mght','sprd','ntrd','spbx','mond'],  '21':['psd'],'24': ['dtsl','dfbvr','vdd','ped'],  '30': ['nha','msc','msa'],'33':['dph'],
+    '2': ['wzen','wpom','ekbe','dfe','wfr','ekw','wpvr','wkd'],  '12': ['bur','lol','imo','scr'], '13': ['gbd','gvg','dsvr','gqe','ovg','yvg','rvg'],
+    '17':['mkd'],'18': ['mght','sprd','ntrd','spbx','mond'],  '21':['psd'],'24': ['cmd','dyd','dtsl','dfbvr','vdd','ped'],  '30': ['nha','msc','msa'],'33':['dph'],
     '36': ['doks','drop','DKWT'],  '41':['om','pjf','ly','pmc'],'42': ['sp'],'49':['mgdv'],     '55': ['davk','tmavntgvr','T28'], 
-    '57': ['jksr','mcsr','itsr','bdsr','husr','sgsr'], '71': ['gas'],    '84': ['mdtm','mkmp','kmvr','umso'], 
+    '57': ['jksr','mcsr','itsr','bdsr','husr','sgsr'],'61':['mds'], '71': ['gas'],    '84': ['mdtm','mkmp','kmvr','umso'], 
     '86': ['axdvd'], '100': ['tv','yen'],'118':['giro','yzf'],     '125': ['umd'], '143': ['mom','shm'],     '149': ['rd'],    '171': ['lhtd'], '172': ['xrw'], '189': ['hsf'], '301': ['mbdd'],
     '422': ['kagd'], '433': ['gun','neo'], '436': ['bubb','yas'], '5013': ['tsds'], '504': ['ibw'],'540':['yst','wpe','bcm','tmg'],
     '5443': ['loota'], '5448': ['mwkd'], '5561': ['brth','flvr11','lvid','ftsh','vntg','shmo'], 
@@ -40,17 +40,17 @@ ALL_ITEMS = {
     'h_244': ['saba','supa'], 'h_1575': ['sgkx'], 'h_1256': ['tpvr','tprm'], 'h_1127': ['vovs','gopj','vosf','vosm'],
     'h_1116': ['cafuku','cami','casmani','cafr','capi','cabe','caca'], 'h_019': ['acz','kck'],'h_305':['bagbd'],
     'h_1100': ['hzgb','hzgd','hzhb'], 'h_1000': ['spye'], 'h_1001': ['oyaj'], 'h_1160': ['meko','mhar'],'h_1605':["stsk"],
-    'h_1231': ['^ss$'], 'h_1300': ['mtes'],'h_1352':['knmd'], 'h_1628':['sat'], 'h_1534':['grmo'],
+    'h_1231': ['ss'], 'h_1300': ['mtes'],'h_1352':['knmd'], 'h_1628':['sat'], 'h_1534':['grmo'],'h_127':['ysn'],
     'h_1435': ['clo','bth'], 'h_1573': ['ftuj'], 'h_1577': ['favkh','fbcpv'], 'h_496': ['dogd'],'h_213':['ageom'],
     'h_574': ['iqpa'], 'h_1569': ['nkkvr'], 'h_086': ['hthd','xmom','fera','keed','jrze','jura','mesu','nuka','abba','cvdx','toen','zeaa','iqqq','hima','ferax','iga','kaad','hone'],
     'h_1002': ['jgaho'], 'h_1386': ['dinm'], 'h_1492': ['siror'], 'h_1587': ['ein'], 'h_720': ['zex'],
-    'h_1416': ['^ad$'], 'h_1563': ['mol'], 'h_094': ['ktra'], 'h_796': ['much'],'h_1609':['spivr'],'h_1615':['beaf'],
-    'h_458': ['hsm'], 'h_1304': ['^tg$'], 'h_1526': ['pm'], 'h_1342': ['nsm'], 'h_1440': ['fgan'],
-    'h_1594': ['spro'], 'h_1096': ['bdsm'], 'h_113': ['^(bbacos','cb','ek','kpp','spo','sw)$','syk','sy','izm'],
-    'h_1165': ['goju'], 'h_1553': ['ftvr'], 'h_1560': ['shind'],'h_452':["tmcy"],'h_1068':['ftom'],
-    'h_1345': ['gnax'], 'h_1558': ['csdx'], 'h_1593': ['cubex','fanq','fanx','papak'], 'h_172': ['HMNF'], 'h_1631': ['krs'],
-    'h_173': ['ghmt','giro','ghkr','gtrl','ryoj','tbb','thp'], 'h_1454':['smdy'], 'h_1359':['swdf'],
-    'h_189': ['cha','milf','pc','tsm','uta','vio'], 'h_237': ['find','ambi','ambs','clot','hdka','nacr','nacx','zmar'],
+    'h_1416': ['ad'], 'h_1563': ['mol'], 'h_094': ['ktra'], 'h_796': ['san','much'],'h_1609':['spivr'],'h_1615':['beaf'],
+    'h_458': ['hsm'], 'h_1304': ['tg'], 'h_1526': ['pm'], 'h_1342': ['nsm'], 'h_1440': ['fgan'],'h_1639':['wpsl'],
+    'h_1594': ['spro'], 'h_1096': ['bdsm'], 'h_113': ['bbacos','cb','ek','kpp','spo','sw','syk','sy','izm'],
+    'h_1165': ['goju'], 'h_1553': ['ftvr'], 'h_1560': ['shind'],'h_452':["tmcy"],'h_1068':['ftom'],'h_422':['sero'],
+    'h_1345': ['gnax'], 'h_1558': ['csdx'], 'h_1593': ['cubex','fanq','fanx','papak'], 'h_172': ['hmgl','hmnf'], 'h_1631': ['krs'],
+    'h_173': ['ghmt','giro','ghkr','gtrl','ryoj','tbb','thp'], 'h_1454':['smdy'], 'h_1359':['swdf'],'h_066':["fax"],
+    'h_189': ['cha','milf','pc','tsm','uta','vio'], 'h_237': ['emot','find','ambi','ambs','clot','hdka','nacr','nacx','zmar'],
     'h_897': ['nmk','hict'], 'h_101': ['gs'], 'h_227': ['jukf'], 'h_1324': ['skmj'], 'h_1240': ['milk'],'h_1112':['nubi'],
     'h_1472': ['hmvf','stvf','instv'], 'h_1378': ['arso'], 'h_580': ['tms'], 'h_1533': ['can'], 'h_1321': ['pydvr'],'h_1133':['gogo','pais','pako','honb'],
     'h_1155': ['crvr'], 'h_910': ['VRTM'], 'h_921': ['^hj$'], 'h_346': ['rebd'], 'h_1495': ['bank'],'h_1596':['gns'],
@@ -63,7 +63,7 @@ DBMSIN_IMG = {
 
 # MGS 품번에는 숫자가 없는데, 링크에는 숫자가 있는것 / 앞에 숫자 알아내기
 DBMSIN_NUM_AMA_IMG =[
-    '298GOGO','298PAIS','077GBD','324SRTD','271GS','390JNT','326KFNE','446KHOM','554SPIVR','107MSFH','563PPZ','390JAC','112SVVRT','224DTSL','201FONE','298PAKO','201CIEL','201DORI','002HODV','336KNB','595CHNYM','118RCTD','278GNAB','435MFC','300MAAN','480FRIN','277DCV','300NTK','259LUXU','230ORECO','726ANKK','702NOSKN','558KRS','520SSK','223EKBE','043PYM','278GIRO','005AOZ','352KNMD','107SDMUA','026MOND','109IENE','116SHH','307SHIC','1073DSVR','258DTSG','116ACME','336KBI','116NHDTA','107MOGI','336ASI','534IND','107SDMF','336ASI','003T28','201TDMN'
+    '298GOGO','223WPSL','001HMGL','169MDS','420STH','224DYD','263EMOT','224CMD','336DTT','225YSN','223WZEN','298PAIS','077GBD','324SRTD','271GS','390JNT','326KFNE','446KHOM','554SPIVR','107MSFH','563PPZ','390JAC','112SVVRT','224DTSL','201FONE','298PAKO','201CIEL','201DORI','002HODV','336KNB','595CHNYM','118RCTD','278GNAB','435MFC','300MAAN','480FRIN','277DCV','300NTK','259LUXU','230ORECO','726ANKK','702NOSKN','558KRS','520SSK','223EKBE','043PYM','278GIRO','005AOZ','352KNMD','107SDMUA','026MOND','109IENE','116SHH','307SHIC','1073DSVR','258DTSG','116ACME','336KBI','116NHDTA','107MOGI','336ASI','534IND','107SDMF','336ASI','003T28','201TDMN'
     ]
 # matching = [s for s in DBMSIN_NUM_AMA_IMG if "베리" in s] 
 # print(matching) #리스트
