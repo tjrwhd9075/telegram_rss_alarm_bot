@@ -1,6 +1,9 @@
 import urllib.request
 from bs4 import BeautifulSoup as bs
 import asyncio
+import pandas as pd
+
+import av_img_video_url as avurl
 
 avdbsUrl = "https://www.avdbs.com"
 avdbsWholeBoardUrl = "https://www.avdbs.com/board/t90"
@@ -224,11 +227,74 @@ def get_puminfo(pumnum:str):
 
     return title, actor, date, up, down
     
+def get_avdbs_rank(period):
+    '''
+    period : week, month, year, all
+    '''
+    # pumdf = pd.DataFrame(columns=['period','rank','pumnum','actor','title','date','avdbslink','thumb','up','down','oldrank'])
 
+    pumdf = pd.read_csv(f"av_list_avdbs_{period}.csv",header=0, index_col=0)
+    pumdf['oldrank'] = pumdf.index  # 이전 인덱스는 랭크로 이동
+    pumdf = pumdf.astype({'oldrank':'int'})
+    pumdf['rank'] = 50
+    
+    #에딥 랭킹
+    
+    url = f'https://www.avdbs.com/menu/dvd_ranking.php?tab={period}'
+    req = urllib.request.Request(url=url, headers=headers)
+    response = urllib.request.urlopen(req)
+    res = response.read().decode('utf-8')
+    soup = bs(res,'html.parser')
+
+    pums = soup.find('ul', class_='lst').find_all('li')
+    
+    cnt = 0
+    for pum in pums :
+        pumnum = pum.select_one('span.snum').get_text().strip()
+        print(pumnum)
+        avdbslink = 'https://www.avdbs.com/menu/dvd.php?dvd_idx=' + pum['data-idx']
+        rank = int(pum.select_one('span.rnk_no').get_text().replace("위",""))
+
+        #에딥에서 상세정보
+        title, actor, date, up, down = get_puminfo(pum['data-idx'])
+        if title == "": title = pum.select_one('a.title').get_text().strip(); print(title)
+
+        thumb = avurl.makeImageURL(pumnum)
+        if isinstance(thumb, list):
+            thumb1 = thumb[0]
+            thumb2 = thumb[1]
+        else: thumb1 = thumb; thumb2="-"
+        trailer = avurl.makeVideoURL(pumnum)
+
+        i = pumdf.index[pumdf['pumnum'] == pumnum].tolist()   # 중복된 품번이 있는 곳의 인덱스 찾기
+        if i == [] : # 새로운 품번이면 그대로 추가
+            tmp = pd.DataFrame(data=[[period,rank,pumnum,actor,title,date,avdbslink,thumb1,thumb2,trailer,up,down,0]], columns=['period','rank','pumnum','actor','title','date','avdbslink','thumb1','thumb2','trailer','up','down','oldrank'])
+            pumdf = pd.concat([pumdf,tmp])
+        else:
+            pumdf.loc[pumdf['pumnum']==pumnum,'rank'] = rank # 품번이 같은 행의, 랭크 수정
+            pumdf.loc[pumdf['pumnum']==pumnum,'up'] = up # 품번이 같은 행의, up 수정
+            pumdf.loc[pumdf['pumnum']==pumnum,'down'] = down # 품번이 같은 행의, down 수정
+
+        cnt=cnt+1
+        if cnt == 30: break
+    
+    pumdf['date'] = pd.to_datetime(pumdf['date'], format="%Y/%m/%d")
+    pumdf = pumdf.sort_values(['period','rank'],ascending=True) # 오름차순 정렬
+    pumdf = pumdf.reset_index(drop=True) # 인덱스 = 순위
+    pumdf.index = pumdf.index +1
+    # pumdf['rank'] = 0
+
+    print("새로 저장중")
+    pumdf = pumdf[:30]
+    pumdf.to_csv(f"av_list_avdbs_{period}.csv")
+    print(pumdf)
+    
+    return pumdf
 
 # asyncio.run(get_avdbs_whole_board_asyn())
 if __name__ == "__main__":
-    asyncio.run(get_avdbs_twit_asyn())
+    # asyncio.run(get_avdbs_twit_asyn())
+    get_avdbs_rank("week")
 
     # pumnum = "SSIS-308"
     # get_puminfo(pumnum)

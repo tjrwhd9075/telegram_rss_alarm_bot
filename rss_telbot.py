@@ -35,6 +35,7 @@ group_id_avdbs = '-1001870842558'
 
 channel_fc2rss = "-1001831133794"
 channel_avrss = "-1001851191415"
+channel_id_av = '-1001635569220'
 
 
 klistTxtFile = 'av_list_keyword_rss.txt'
@@ -157,6 +158,22 @@ def get_command(bot, update):
                 if len(txtTmp) > 1000: telbot.send_message(chat_id = my_user_id, text = txt) ; txt = "" ; time.sleep(4) #1천자 넘으면 일단 전송
                 else: txt+=k +"\n"; txtTmp=""
             telbot.send_message(chat_id = my_user_id, text = txt) ; time.sleep(4)#나머지 전송
+        elif msg.upper() == "/AVDBSRANKBACKUP":
+            csvfiles = ['avdbs_list.txt','av_list_avdbs_all.csv','av_list_avdbs_month.csv','av_list_avdbs_year.csv','av_list_avdbs_week.csv']
+            for csvfile in csvfiles:
+                doc = open(csvfile , 'rb')
+                telbot.send_document(chat_id=chat_id, document=doc, filename=csvfile, timeout=1000)
+                doc.close()
+                time.sleep(4)
+            print("avdbs rank 백업 완료")
+            telbot.send_message(chat_id=chat_id, text="avdbs rank 백업 완료")
+        elif msg.upper().find("/AVDBS"):
+            if bot[tp]['text'].upper() == "/AVDBS": telbot.send_message(chat_id = user_id, text = "기간을 입력하세요.(week, month, year, all)")
+            else: 
+                period = bot[tp]['text'].split(" ")[1].lower()
+                if period in ['week','month','year','all']:
+                    get_avdbs_rank("avdbs "+period, group_id_trash)
+                else: telbot.send_message(chat_id = user_id, text = "잘못된 입력입니다..(week, month, year, all)")
 
         elif msg.upper().find("/GETINFO") != -1:
             if bot[tp]['text'].upper() == "/GETINFO" : telbot.send_message(chat_id = user_id, text = "품번을 입력해주세요\n ex) /getinfo abc-123 또는 /getinfo fc2-ppv-123456 ")
@@ -736,6 +753,144 @@ async def backup_klist(chat_id:str, txtFile:str):
     telbot.send_message(chat_id = chat_id, text = txt)
     await asyncio.sleep(4)#나머지 전송
 
+def get_avdbs_rank(avdbs_period, chat_id):
+    ''''
+    avdbs_period : "avdbs week", "avdbs month", "avdbs year", "avdbs all"
+    '''
+    msg=avdbs_period
+
+    reply_to_message_id=""
+    if msg.lower().find("week") != -1 : reply_to_message_id = '1305' #에딥톡방-에딥주간순위
+    elif msg.lower().find("month") != -1 : reply_to_message_id = '1303' #에딥톡방-에딥월간순위
+    elif msg.lower().find("year") != -1 : reply_to_message_id = '1332' #에딥톡방-에딥연간순위
+    elif msg.lower().find("all") != -1 : reply_to_message_id = '1334' #에딥톡방-에딥연간순위
+    
+    try:
+        telbot.send_message(chat_id=chat_id, text=msg+ " 가져오는중")
+        pumdf = avdbs_crawling.get_avdbs_rank(msg.split(" ")[1].lower()) 
+        # [index ,period(0),rank(1),pumnum(2),actor(3),title(4),date(5),avdbslink(6),thumb1(7),thumb2(8),trailer(9),up(10),down(11),oldrank(12)]
+
+        txtfile = 'avdbs_list.txt'
+        # 기존 데이터 불러오기
+        with open(txtfile, 'rt', encoding = 'UTF-8') as f:
+            oldtxt = f.read().splitlines() 
+
+        df2str = ''
+        for idx, pum in pumdf.iterrows():
+            # print(pum[2])
+            ok = False
+            if pum[12] == 0 : # 새로 등장한 녀석이면
+                df2str += str(idx) + " (new) [" + pum[2] + "](https://evojav.pro/en/?s="+pum[2]+") " + str(pum[10]) + " up " + str(datetime.strftime(pum[5],"%Y-%m-%d")) +"\n"
+                if int(idx) <= 15 : #15위 안에 들면
+                    ok = True
+                    updown = "(new)"
+            elif idx < pum[12] : # 순위가 올라가면
+                df2str += str(idx) + " ("+ str(pum[12]-idx) + "↑) [" + pum[2] + "](https://evojav.pro/en/?s="+pum[2]+") " + str(pum[10]) + " up " + str(datetime.strftime(pum[5],"%Y-%m-%d")) +"\n"
+                if int(idx) <= 15 : #15위 안에 들면
+                    ok = True
+                    updown = "("+ str(pum[12]-idx) + "↑)"
+            elif idx > pum[12] : # 순위가 내려가면
+                df2str += str(idx) + " ("+ str(idx - pum[12]) + "↓) [" + pum[2] + "](https://evojav.pro/en/?s="+pum[2]+") " + str(pum[10]) + " up " + str(datetime.strftime(pum[5],"%Y-%m-%d")) +"\n"
+            else: # 순위변동 없으면
+                df2str += str(idx) + " [" + pum[2] + "](https://evojav.pro/en/?s="+pum[2]+") " + str(pum[10]) + " up " + str(datetime.strftime(pum[5],"%Y-%m-%d")) +"\n"
+            
+            highlight=""
+            if datetime.strftime(pum[5],"%Y-%m-%d") != "-":
+                diffDate = datetime.now() - datetime.strptime(datetime.strftime(pum[5],"%Y-%m-%d"), "%Y-%m-%d") # 날짜차이 계산
+                if diffDate.days <= 7 : highlight="`"
+
+            # 새로운 데이터 입력
+            if pum[2] not in oldtxt: #중복검사
+                title = filename_set.replaceTxt(str(pum[4]))
+                title = title.replace("_","\\_")
+                pumnum = pum[2].replace("_","\\_")
+                actor = filename_set.replaceTxt(str(pum[3]))
+                dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
+
+                txt="[.]("+str(pum[7])+") [.]("+str(pum[8])+") `" + pumnum + "` #" +pumnum.replace(" ","\\_").replace("-","\\_") + "\n\n"\
+                    "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "\
+                    "\[ [trailer]("+str(pum[9])+") ]  "\
+                    "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum+"&seq=214407610&tab=2) ]  "\
+                    "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "\
+                    "\[ [missav](https://missav.com/ko/search/"+pumnum+") ]  "\
+                    "\[ [bt4g](https://kr.bt4g.org/search/"+pumnum+") ]  "\
+                    "\[ [dbmsin]("+ dburl +") ]\n\n"\
+                    "#"+actor.replace(" "," #").replace("("," #").replace(")","") + "\n" + title+"\n\n"\
+                    "#"+str(idx)+"위 (new) #"+msg.replace(" ","\\_")+ " "+highlight+ str(datetime.strftime(pum[5],"%Y-%m-%d")) +highlight+ " " + str(pum[10]) + " up"
+
+                qs = watchlist.find_keyword_lines(pumnum + " " + txt,'av_list_keyword.txt') 
+
+                banedKey = [bk for bk in qs if "!" in bk] # 금지 키워드 목록
+                if banedKey != [] : #하나라도 존재하면 스킵
+                    with open(txtfile, 'a', encoding = 'UTF-8') as f:          
+                        f.write(pum[2] + "\n")
+                    continue
+
+                telbot.send_message(chat_id=channel_id_av, text=txt,parse_mode='Markdown' )
+                if reply_to_message_id != "":
+                    time.sleep(4)
+                    telbot.send_message(chat_id=group_id_avdbs, reply_to_message_id=reply_to_message_id, text=txt,parse_mode='Markdown' )
+                with open(txtfile, 'a', encoding = 'UTF-8') as f:          
+                    f.write(pum[2] + "\n")
+                time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+
+                qs = list(set(qs) - set(banedKey))
+                #키워드 알림
+                if qs != [] :
+                    for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : `" + q.split(" ")[1] + "` → `" + str(pumnum.upper()) +'` #'+str(pumnum.upper().replace(" ","\_").replace("-","\_"))+' [신작&순위 채널](https://t.me/+Y7PSYJPViXFiZTY1)', parse_mode = 'Markdown', disable_web_page_preview=True); time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+                    
+                
+            elif ok is True :
+                title = filename_set.replaceTxt(str(pum[4]))
+                title = title.replace("_","\\_")
+                pumnum = pum[2].replace("_","\\_")
+                actor = filename_set.replaceTxt(str(pum[3]))
+                dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
+
+                txt="[.]("+pum[7]+") [.]("+pum[8]+") `" + pumnum + "` #" +pumnum.replace(" ","\\_").replace("-","\\_") + "\n\n"\
+                    "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "\
+                    "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum+"&seq=214407610&tab=2) ]  "\
+                    "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "\
+                    "\[ [trailer]("+str(pum[9])+") ]  "\
+                    "\[ [bt4g](https://kr.bt4g.org/search/"+pumnum+") ]  "\
+                    "\[ [dbmsin]("+ dburl +") ]\n\n"\
+                    "#"+actor.replace(" "," #").replace("("," #").replace(")","") + "\n" + title+"\n\n"\
+                    "#"+str(idx)  + "위 "+updown+ " #"+ msg.replace(" ","\\_") + " "+highlight+ str(datetime.strftime(pum[5],"%Y-%m-%d")) +highlight+ " " + str(pum[10]) + " up"
+
+                qs = watchlist.find_keyword_lines(pumnum + " " + txt,'av_list_keyword.txt') 
+
+                banedKey = [bk for bk in qs if "!" in bk] # 금지 키워드 목록
+                if banedKey != [] : #하나라도 존재하면 스킵
+                    continue
+
+                telbot.send_message(chat_id=channel_id_av, text=txt,parse_mode='Markdown' )
+                time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+                if reply_to_message_id != "":
+                    telbot.send_message(chat_id=group_id_avdbs, reply_to_message_id=reply_to_message_id, text=txt,parse_mode='Markdown' )
+                    time.sleep(4)
+
+                qs = list(set(qs) - set(banedKey))
+                #키워드 알림 
+                if qs != [] :
+                    for q in qs: telbot.send_message(chat_id= q.split(" ")[0], text="⏰ 키워드 : " + q.split(" ")[1] + " → `" + str(pumnum.upper()) +'` #'+str(pumnum.upper().replace(" ","\_").replace("-","\_"))+' [신작&순위 채널](https://t.me/+Y7PSYJPViXFiZTY1)', parse_mode = 'Markdown', disable_web_page_preview=True); time.sleep(4) # 1분에 20개 이상 보내면 에러뜸
+                    
+                
+        print(df2str)
+        telbot.send_message(chat_id=chat_id, text="※ "+msg.upper()+" / 품번 / UP ※\n\n" + df2str,parse_mode='Markdown',disable_web_page_preview=True)
+    except Exception as e:
+        print("get_avdbs_rank : ")
+        print(e)
+        telbot.send_message(chat_id=chat_id, text="순위 가져오기 실패")
+
+async def get_avdbs_rank_week():
+    get_avdbs_rank('avdbs week',group_id_trash)
+
+async def get_avdbs_rank_month():
+    get_avdbs_rank('avdbs month',group_id_trash)
+
+
+
+
 def alarmi():
     while True:
         try:
@@ -744,6 +899,10 @@ def alarmi():
             print("스케쥴 에러 : ", end="")
             print(e)
             
+
+schedule.every().day.at("21:30").do(lambda:asyncio.run(get_avdbs_rank_month()))
+schedule.every().day.at("21:45").do(lambda:asyncio.run(get_avdbs_rank_week()))
+
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))) 
 schedule.every().day.at("00:00").do(lambda:asyncio.run(backup_klist(group_id_trash, newsKlistTxtFile))) 
