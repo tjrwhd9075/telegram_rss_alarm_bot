@@ -11,5 +11,5 @@ aiohttp==3.8.1
 pymongo[srv]==3.12.3
 nest-asyncio
 aiofile==3.8.1
-pandas @ file:///C:/ci/pandas_1650373491186/work
+pandas
 pandas-datareader==0.10.0
