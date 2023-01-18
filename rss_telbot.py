@@ -18,11 +18,11 @@ import avdbs_crawling
 ''' version 23.1.5.18'''
 
 from pytz import timezone
-# 한국 시간대로 설정
-KST = timezone('Asial/Seoul')
-today = datetime.now().astimezone(KST)
-
-
+#한국 시간대로 설정
+KST = timezone('Asia/Seoul')
+current_time = datetime.now()
+kst_time = current_time.astimezone(KST)
+print(kst_time)
 
 
 #텔레그램 봇
