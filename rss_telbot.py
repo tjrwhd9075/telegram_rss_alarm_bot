@@ -167,7 +167,7 @@ def get_command(bot, update):
                 time.sleep(4)
             print("avdbs rank 백업 완료")
             telbot.send_message(chat_id=chat_id, text="avdbs rank 백업 완료")
-        elif msg.upper().find("/AVDBS"):
+        elif msg.upper().find("/AVDBS") != -1: 
             if bot[tp]['text'].upper() == "/AVDBS": telbot.send_message(chat_id = user_id, text = "기간을 입력하세요.(week, month, year, all)")
             else: 
                 period = bot[tp]['text'].split(" ")[1].lower()
