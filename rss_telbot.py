@@ -17,11 +17,13 @@ import avdbs_crawling
 
 ''' version 23.1.5.18'''
 
-'''
-*bold*
-_italic_
-`inline monospaced text`
-'''
+from pytz import timezone
+# 한국 시간대로 설정
+KST = timezone('Asial/Seoul')
+today = datetime.now().astimezone(KST)
+
+
+
 
 #텔레그램 봇
 myToken = '5831801489:AAHvEw74bp6zz1mhbNCsAGu9JmtVifG0AWY'
