@@ -5,6 +5,7 @@ from threading import Thread
 from datetime import datetime
 import schedule
 import asyncio
+import aiofile
 import urllib.request
 
 import telegram  # pip install python-telegram-bot --upgrade
@@ -763,7 +764,8 @@ async def get_avdbs_twit_crawling(chat_id):
 
 async def backup_klist(chat_id:str, txtFile:str):
     async with aiofile.AIOFile(txtFile, 'rb') as f:
-        telbot.send_document(chat_id=chat_id, document=f, filename=txtFile, timeout=1000)
+        data = await f.read()
+        telbot.send_document(chat_id=chat_id, document=data, filename=txtFile, timeout=1000)
         f.close()
     print(f"{txtFile} 백업 완료")
     # klist = watchlist.get_querys(txtFile)
@@ -776,17 +778,19 @@ async def backup_klist(chat_id:str, txtFile:str):
     # telbot.send_message(chat_id = chat_id, text = txt)
     # await asyncio.sleep(4)#나머지 전송
 
-import aiofile
+
 async def backup_avdbs(chat_id, file):
     # csvfiles = ['avdbs_list.txt','av_list_avdbs_all.csv','av_list_avdbs_month.csv','av_list_avdbs_year.csv','av_list_avdbs_week.csv']
     # for csvfile in csvfiles:
     async with aiofile.AIOFile(file, 'rb') as f:
-        telbot.send_document(chat_id=chat_id, document=f, filename=file, timeout=1000)
+        data = await f.read()
+        telbot.send_document(chat_id=chat_id, document=data, filename=file, timeout=1000)
         f.close()
     await asyncio.sleep(4)
 
     async with aiofile.AIOFile('avdbs_list.txt', 'rb') as f:
-        telbot.send_document(chat_id=chat_id, document=f, filename='avdbs_list.txt', timeout=1000)
+        data = await f.read()
+        telbot.send_document(chat_id=chat_id, document=data, filename='avdbs_list.txt', timeout=1000)
         f.close()
     await asyncio.sleep(4)
     print(f"{file} 백업 완료")
@@ -851,6 +855,7 @@ def get_avdbs_rank(avdbs_period, chat_id):
                     "\[ [trailer]("+str(pum[9])+") ]  "\
                     "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum+"&seq=214407610&tab=2) ]  "\
                     "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "\
+                    "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+\
                     "\[ [missav](https://missav.com/ko/search/"+pumnum+") ]  "\
                     "\[ [bt4g](https://kr.bt4g.org/search/"+pumnum+") ]  "\
                     "\[ [dbmsin]("+ dburl +") ]\n\n"\
@@ -888,9 +893,11 @@ def get_avdbs_rank(avdbs_period, chat_id):
 
                 txt="[.]("+pum[7]+") [.]("+pum[8]+") `" + pumnum + "` #" +pumnum.replace(" ","\\_").replace("-","\\_") + "\n\n"\
                     "\[ [javdb](https://javdb.com/search?q="+pumnum+"&f=all) ]  "\
+                    "\[ [trailer]("+str(pum[9])+") ]  "\
                     "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum+"&seq=214407610&tab=2) ]  "\
                     "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "\
-                    "\[ [trailer]("+str(pum[9])+") ]  "\
+                    "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+\
+                    "\[ [missav](https://missav.com/ko/search/"+pumnum+") ]  "\
                     "\[ [bt4g](https://kr.bt4g.org/search/"+pumnum+") ]  "\
                     "\[ [dbmsin]("+ dburl +") ]\n\n"\
                     "#"+actor.replace(" "," #").replace("("," #").replace(")","") + "\n" + title+"\n\n"\
