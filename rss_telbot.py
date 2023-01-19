@@ -22,7 +22,8 @@ from pytz import timezone
 KST = timezone('Asia/Seoul')
 current_time = datetime.now()
 kst_time = current_time.astimezone(KST)
-print(kst_time)
+diff_hour = kst_time.hour - current_time.hour
+diff_min = kst_time.minute - current_time.minute
 
 
 #텔레그램 봇
@@ -175,6 +176,8 @@ def get_command(bot, update):
                 period = bot[tp]['text'].split(" ")[1].lower()
                 if period in ['week','month','year','all']:
                     get_avdbs_rank("avdbs "+period, group_id_trash)
+                    asyncio.run(backup_avdbs(group_id_trash, f'av_list_avdbs_{period}.csv'))
+                    asyncio.run(backup_avdbs(group_id_trash, f'avdbs_list.txt'))
                 else: telbot.send_message(chat_id = user_id, text = "잘못된 입력입니다..(week, month, year, all)")
 
         elif msg.upper().find("/GETINFO") != -1:
@@ -755,6 +758,22 @@ async def backup_klist(chat_id:str, txtFile:str):
     telbot.send_message(chat_id = chat_id, text = txt)
     await asyncio.sleep(4)#나머지 전송
 
+import aiofile
+async def backup_avdbs(chat_id, file):
+    # csvfiles = ['avdbs_list.txt','av_list_avdbs_all.csv','av_list_avdbs_month.csv','av_list_avdbs_year.csv','av_list_avdbs_week.csv']
+    # for csvfile in csvfiles:
+    async with aiofile.open(file, 'rb') as f:
+        telbot.send_document(chat_id=chat_id, document=f, filename=file, timeout=1000)
+        f.close()
+    await asyncio.sleep(4)
+
+    async with aiofile.open('avdbs_list.txt', 'rb') as f:
+        telbot.send_document(chat_id=chat_id, document=f, filename='avdbs_list.txt', timeout=1000)
+        f.close()
+    await asyncio.sleep(4)
+    print(f"{file} 백업 완료")
+    telbot.send_message(chat_id=chat_id, text=f"{file} 백업 완료")
+
 def get_avdbs_rank(avdbs_period, chat_id):
     ''''
     avdbs_period : "avdbs week", "avdbs month", "avdbs year", "avdbs all"
@@ -886,9 +905,11 @@ def get_avdbs_rank(avdbs_period, chat_id):
 
 async def get_avdbs_rank_week():
     get_avdbs_rank('avdbs week',group_id_trash)
+    await backup_avdbs(group_id_trash,'av_list_avdbs_week.csv')
 
 async def get_avdbs_rank_month():
     get_avdbs_rank('avdbs month',group_id_trash)
+    await backup_avdbs(group_id_trash,'av_list_avdbs_month.csv')
 
 
 
@@ -901,12 +922,15 @@ def alarmi():
             print("스케쥴 에러 : ", end="")
             print(e)
             
-
-schedule.every().day.at("21:30").do(lambda:asyncio.run(get_avdbs_rank_month()))
-schedule.every().day.at("21:45").do(lambda:asyncio.run(get_avdbs_rank_week()))
+sch_hour = (21 - diff_hour)%24 # 21시 -> 09시 = ??
+sch_min30 = (30 + diff_min)%60 # 30분 - 28분 = 2분
+sch_min45 = (45 + diff_min)%60 # 30분 - 28분 = 2분
+print(f"{sch_hour}:{sch_min30}, {sch_min45}")
+schedule.every().day.at(f"{sch_hour}:{sch_min30}").do(lambda:asyncio.run(get_avdbs_rank_month()))
+schedule.every().day.at(f"{sch_hour}:{sch_min45}").do(lambda:asyncio.run(get_avdbs_rank_week()))
 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
-schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))) 
+schedule.every(15).minutes.do(lambda:asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))) 
 schedule.every().day.at("00:00").do(lambda:asyncio.run(backup_klist(group_id_trash, newsKlistTxtFile))) 
 
 print("쓰레딩이이잉")
