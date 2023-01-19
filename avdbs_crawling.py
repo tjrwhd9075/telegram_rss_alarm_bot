@@ -141,33 +141,33 @@ async def get_avdbs_twit_asyn():
                     if twitNum in twtOldList: 
                         if len(twtOldList) >= 200 : twtOldList[0:100]=[] #너무 쌓이면 목록삭제
                         continue # 이미 목록에 있으면 건너뜀
-                    else: print(twitNum, end=" | ")
+                    # else: print(twitNum, end=" | ")
                     #트윗url
                     twitUrl = content['data-twit_url']
-                    print(twitUrl, end=" | ")
+                    # print(twitUrl, end=" | ")
                     #트윗프로필
                     twitPf = content.select_one('div.pf_thumb').a.img['src']
                     # print(twitPf, end=" | ")
                     #트윗id
                     twitID = content.select_one('span.twitter_id').get_text().strip()
-                    print(twitID, end=" | ")
+                    # print(twitID, end=" | ")
 
                     #여배우 번호
                     actorIdx = content['data-actor_idx']
-                    print(actorIdx, end=" | ")
+                    # print(actorIdx, end=" | ")
                     #avdbs 여배우 url
                     actorUrl = avdbsActorUrl+actorIdx
-                    print(actorUrl, end=" | ")
+                    # print(actorUrl, end=" | ")
                     #여배우 이름
                     actorNm = content.select_one('span.actor_nm').get_text().strip()
-                    print(actorNm, end=" | ")
+                    # print(actorNm, end=" | ")
                     
                     #n분전
                     beforeTime = content.select_one('span.time').get_text().strip()
-                    print(beforeTime, end=" | ")
+                    # print(beforeTime, end=" | ")
                     #텍스트
                     txt = content.select_one('div.ct_txt').get_text().strip()
-                    print(txt)
+                    # print(txt)
                     #이미지 또는 비디오
                     mediaP = content.select_one('div.img_box')
                     media = content.select_one('div.img_box').div
@@ -180,8 +180,8 @@ async def get_avdbs_twit_asyn():
                         for video in mediaP.find_all('source-tag'):
                             videoUrls.append(video['src'])
                         # if videoUrls != []: urllib.request.urlretrieve(videoUrls[0], f"video_{actorIdx}.mp4")
-                    print(imgUrls)
-                    print(videoUrls)
+                    # print(imgUrls)
+                    # print(videoUrls)
                     newList.append([twitNum, actorIdx, actorUrl, actorNm, twitUrl, twitID, beforeTime, txt, imgUrls, videoUrls])
 
                 except Exception as e: print("twit 읽기 실패")

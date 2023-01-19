@@ -24,6 +24,8 @@ current_time = datetime.now()
 kst_time = current_time.astimezone(KST)
 diff_hour = kst_time.hour - current_time.hour
 diff_min = kst_time.minute - current_time.minute
+print(current_time)
+print(kst_time)
 
 
 #텔레그램 봇
@@ -340,13 +342,15 @@ def get_avrssbot_text(bot, update):
         dburl=f"https://db.msin.jp/search/movie?str={uncPumnum}"
     else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
 
-    missavPumnum = "-".join(pumnum.split("-")[1:])
+    missavPumnum = pumnum.upper().replace("FC2PPV ","FC2-PPV-").replace("10MU-","").replace("PACO-","").replace("1PON-","").replace("CARIB-","")
     txt = "[.](" +str(thumb1)+ ") `" + str(pumnum.upper()) + "` #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
         "\[ [javdb]("+f"https://javdb.com/search?q={pumnum}&f=all) ]  "+\
         "\[ [trailer]("+str(trailer)+") ]  "+\
         "\[ [avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2) ]  "+\
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
+        "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/search/{missavPumnum}"+") ]  "+\
+        "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "\
         "\[ [dbmsin]("+dburl+") ]  "+\
         "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
         "\[ [bt4g](https://kr.bt4g.org/search/"+str(pumnum)+") ]  "+\
@@ -433,7 +437,9 @@ def get_fc2rssbot_text(bot, update):
     txt = "[.](" +f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"+ ") `FC2PPV " + str(pumnum) + "` #FC2PPV\_"+str(pumnum) +"\n"\
         + "\[ [trailer]("+f"https://db.msin.jp/sampleplay?id=fc2-ppv-{pumnum}"+") ]  "+\
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}"+") ]  "+\
+        "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}"+") ]  "+\
+        "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "\
         "\[ [dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}"+") ]  "+\
         "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
         "\[ [bt4g](https://kr.bt4g.org/search/"+str(pumnum)+") ]  "+\
@@ -660,7 +666,9 @@ async def get_avdbs_twit_crawling(chat_id):
 
             twitTxt = await ForTeleReplaceTxt(twitTxt)
             txt=f"\[ [{actorNm}]({actorUrl}) ] [{twitID}]({twitUrl}) | {beforeTime}\n\n"+twitTxt
-            
+            print(f"{actorNm} | {actorIdx} | {twitID} | {beforeTime} | {twitTxt}")
+            print(imgUrls, videoUrls)
+
             #키워드 알림
             try:
                 qs = await watchlist.find_keyword_lines_asyn(txt, klistTxtFile) 
@@ -720,10 +728,7 @@ async def get_avdbs_twit_crawling(chat_id):
                             print("get_avdbs_twit_crawling video send fail : ", end="")
                             print(e)
                         if not video.closed : video.close()
-                        
                     
-            
-
             telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
             telbot.send_message(chat_id=chat_id, reply_to_message_id='1418', text=txt, parse_mode='Markdown')
             twtOldList.append(twitNum) #전송 성공하면 목록에 저장
@@ -744,30 +749,43 @@ async def get_avdbs_twit_crawling(chat_id):
             print("get_avdbs_twit_crawling - content send fail : ", end="")
             print(e)
         
+    # 잔류하는 이미지, 영상파일 삭제
+    mediaFiles = os.listdir(os.getcwd())
+
+    for mf in mediaFiles:
+        if mf.endswith("jpg") or mf.endswith("png") or mf.endswith("mp4") :
+            try: os.remove(mf); print(f"removed : {mf}")
+            except Exception as e:
+                print("get_avdbs_twit_crawling - remove media file fail : ",end="")
+                print(e)
         
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
 
 async def backup_klist(chat_id:str, txtFile:str):
-    klist = watchlist.get_querys(txtFile)
-    if txtFile == newsKlistTxtFile : klist=klist[0].split(",")
-    txt = txtFile+ " backup"
-    for k in klist: 
-        txtTmp = txt + k +","
-        if len(txtTmp) > 1000: telbot.send_message(chat_id = chat_id, text = txt) ; txt = "" ; time.sleep(4) #1천자 넘으면 일단 전송
-        else: txt+=k +","; txtTmp=""
-    telbot.send_message(chat_id = chat_id, text = txt)
-    await asyncio.sleep(4)#나머지 전송
+    async with aiofile.AIOFile(txtFile, 'rb') as f:
+        telbot.send_document(chat_id=chat_id, document=f, filename=txtFile, timeout=1000)
+        f.close()
+    print(f"{txtFile} 백업 완료")
+    # klist = watchlist.get_querys(txtFile)
+    # if txtFile == newsKlistTxtFile : klist=klist[0].split(",")
+    # txt = txtFile+ " backup"
+    # for k in klist: 
+    #     txtTmp = txt + k +","
+    #     if len(txtTmp) > 1000: telbot.send_message(chat_id = chat_id, text = txt) ; txt = "" ; time.sleep(4) #1천자 넘으면 일단 전송
+    #     else: txt+=k +","; txtTmp=""
+    # telbot.send_message(chat_id = chat_id, text = txt)
+    # await asyncio.sleep(4)#나머지 전송
 
 import aiofile
 async def backup_avdbs(chat_id, file):
     # csvfiles = ['avdbs_list.txt','av_list_avdbs_all.csv','av_list_avdbs_month.csv','av_list_avdbs_year.csv','av_list_avdbs_week.csv']
     # for csvfile in csvfiles:
-    async with aiofile.open(file, 'rb') as f:
+    async with aiofile.AIOFile(file, 'rb') as f:
         telbot.send_document(chat_id=chat_id, document=f, filename=file, timeout=1000)
         f.close()
     await asyncio.sleep(4)
 
-    async with aiofile.open('avdbs_list.txt', 'rb') as f:
+    async with aiofile.AIOFile('avdbs_list.txt', 'rb') as f:
         telbot.send_document(chat_id=chat_id, document=f, filename='avdbs_list.txt', timeout=1000)
         f.close()
     await asyncio.sleep(4)
