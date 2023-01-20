@@ -1,6 +1,7 @@
 import urllib.request
 from bs4 import BeautifulSoup as bs
 import asyncio
+import re
 import pandas as pd
 
 import av_img_video_url as avurl
@@ -63,6 +64,9 @@ async def get_avdbs_whole_board_asyn():
                 print(date, end=" | ")
                 #컨텐츠 작성시간
                 beforeTime = content.select_one('span.float-right > span.margin-left-10').get_text().strip()
+                if beforeTime.find("일") != -1: continue
+                elif beforeTime.find("시간") != -1: continue
+                elif beforeTime.find("분") != -1 and int(re.search(r'\d+', beforeTime).group()) > 15: continue
                 print(beforeTime, end=" | ")
                 #컨텐츠 작성자
                 writer = content.select_one('span.writer').get_text().strip()
@@ -164,6 +168,9 @@ async def get_avdbs_twit_asyn():
                     
                     #n분전
                     beforeTime = content.select_one('span.time').get_text().strip()
+                    if beforeTime.find("일") != -1: continue
+                    elif beforeTime.find("시간") != -1: continue
+                    elif beforeTime.find("분") != -1 and int(re.search(r'\d+', beforeTime).group()) > 15: continue
                     # print(beforeTime, end=" | ")
                     #텍스트
                     txt = content.select_one('div.ct_txt').get_text().strip()
