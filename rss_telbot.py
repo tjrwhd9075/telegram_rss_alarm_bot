@@ -498,7 +498,7 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     if pumnum.find("fc2") != -1 or pumnum.find("carib") != -1 or pumnum.find("1pon") != -1 or pumnum.find("10mu") != -1 or pumnum.find("paco") != -1 : 
         dburl=f"https://db.msin.jp/search/movie?str={pumnum}"
     else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
-    missavPumnum = "-".join(pumnum.replace("fc2ppv ","fc2-ppv-").split("-")[1:])
+    missavPumnum = pumnum.replace("fc2ppv ","fc2-ppv-")
     if pumnum.lower().find("fc2") != -1: pumnum = "fc2ppv "+pumnum.replace(" ","-").split("-")[-1]
 
     telbot.send_message(chat_id=chat_id, reply_to_message_id=message_id,
@@ -507,6 +507,7 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
                         "\[ [trailer]("+str(trailer)+") ]  "+
                         "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "+
                         "\[ [evojav](https://evojav.pro/en/?s="+pumnum+") ]  "+
+                        "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+
                         "\[ [missav](https://missav.com/ko/search/"+missavPumnum+") ]  "+
                         "\[ [bt4g](https://kr.bt4g.org/search/"+pumnum.replace("fc2ppv ","")+") ]  "+
                         "\[ [dbmsin]("+ dburl +") ]\n\n"+

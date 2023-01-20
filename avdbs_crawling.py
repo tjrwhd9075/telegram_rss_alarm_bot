@@ -175,7 +175,7 @@ async def get_avdbs_twit_asyn():
                     if media is not None: 
                         for i, img in enumerate(mediaP.find_all('img')):
                             if img['src'] != '/w2017/img/twitter-play.png':
-                                imgUrls.append(img['src'].replace(":small",""))
+                                imgUrls.append(img['src'].replace(":small","").replace(":thumb",""))
                                 # urllib.request.urlretrieve(img['src'], f"img_{actorIdx}_{i}.jpg")
                         for video in mediaP.find_all('source-tag'):
                             videoUrls.append(video['src'])
