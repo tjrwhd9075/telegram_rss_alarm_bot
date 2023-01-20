@@ -38,11 +38,11 @@ updater = Updater(myToken, use_context=True)
 my_user_id = '1706601591'
 group_id_trash = '-1001547828770'
 group_id_avdbs = '-1001870842558'
+group_id_memo = '-1001651190351'
 
 channel_fc2rss = "-1001831133794"
 channel_avrss = "-1001851191415"
 channel_id_av = '-1001635569220'
-
 
 klistTxtFile = 'av_list_keyword_rss.txt'
 newsKlistTxtFile = 'news_keywords.txt'
@@ -60,13 +60,13 @@ def get_message(bot, update):
     # print("채널타입 : " + chat_type)
     if chat_type == 'private' or chat_type == 'channel': # 개인채팅, 채널일 경우
         user_id = bot[tp]['chat']['id']
-        print("유저id : " + str(user_id))
+        msgTo = bot[tp]['chat']['title']
+        print(f"{msgTo} - 유저id : {user_id}")
     elif  chat_type == 'supergroup':
         # print(bot[tp])
         if bot[tp]['sender_chat'] is not None:
             msgFrom = bot[tp]['sender_chat']['title']
             msgFromId = bot[tp]['sender_chat']['id']
-
             print("from : " + msgFrom + " " + str(msgFromId), end=" -> ")
         else: msgFrom = ""
         msgTo = bot[tp]['chat']['title']
@@ -937,6 +937,20 @@ async def get_avdbs_rank_month():
     get_avdbs_rank('avdbs month',group_id_trash)
     await backup_avdbs(group_id_trash,'av_list_avdbs_month.csv')
 
+global LINKS
+LINKS=[]
+async def get_twidouga():
+    print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡget_twidougaㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+    links = avdbs_crawling.get_twidouga_rank()
+    for link in links :
+        try:
+            telbot.send_video(chat_id=group_id_memo, video=link); time.sleep(3)
+            LINKS.append(link)
+        except Exception as e:
+            print("get_twidouga - send video fail : ",end="")
+            print(e)
+    print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
+        
 
 
 
@@ -955,6 +969,7 @@ print(f"{sch_hour}:{sch_min30}, {sch_min45}")
 schedule.every().day.at(f"{sch_hour}:{sch_min30}").do(lambda:asyncio.run(get_avdbs_rank_month()))
 schedule.every().day.at(f"{sch_hour}:{sch_min45}").do(lambda:asyncio.run(get_avdbs_rank_week()))
 
+schedule.every(3).hours.do(lambda:asyncio.run(get_twidouga())) 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 schedule.every(15).minutes.do(lambda:asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))) 
 schedule.every().day.at("00:00").do(lambda:asyncio.run(backup_klist(group_id_trash, newsKlistTxtFile))) 
@@ -973,6 +988,12 @@ try:  asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))
 except Exception as e:
     print("get_avdbs_twit_crawling error : ", end="")
     print(e)
+
+#일단 한번 에딥 크롤링 시작
+try:  asyncio.run(get_twidouga())
+except Exception as e:
+    print("get_avdbs_twit_crawling error : ", end="")
+    print(e)    
 
 try :
     # 스레드로 while문 따로 돌림

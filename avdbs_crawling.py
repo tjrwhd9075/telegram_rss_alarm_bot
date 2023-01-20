@@ -298,10 +298,39 @@ def get_avdbs_rank(period):
     
     return pumdf
 
+global LINKS
+LINKS=[]
+def get_twidouga_rank():
+    # https://www.twidouga.net/ko/ranking_t.php  1~10
+    # https://www.twidouga.net/ko/ranking_t2.php 11~20
+
+    urls = ['https://www.twidouga.net/ko/ranking_t.php', 'https://www.twidouga.net/ko/ranking_t2.php']
+
+    for url in urls:
+        try:
+            req = urllib.request.Request(url=url, headers=headers)
+            response = urllib.request.urlopen(req)
+            res = response.read().decode('utf-8')
+            soup = bs(res,'html.parser')
+
+            hrefs = soup.find_all(href=re.compile("https://video.twimg.com"))
+
+            links=[]
+            for href in hrefs:
+                if href['href'] not in LINKS: links.append(href['href']); print(href['href'])
+        except Exception as e:
+            print('get_twidouga_rank - get url fail : ',end="")
+            print(e)
+
+    if len(LINKS) >= 100 : LINKS[0:50] = [] #너무 쌓이면 삭제
+    return links
+
+
 # asyncio.run(get_avdbs_whole_board_asyn())
 if __name__ == "__main__":
     # asyncio.run(get_avdbs_twit_asyn())
-    get_avdbs_rank("week")
+    # get_avdbs_rank("week")
+    get_twidouga_rank()
 
     # pumnum = "SSIS-308"
     # get_puminfo(pumnum)
