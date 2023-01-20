@@ -303,9 +303,12 @@ LINKS=[]
 def get_twidouga_rank():
     # https://www.twidouga.net/ko/ranking_t.php  1~10
     # https://www.twidouga.net/ko/ranking_t2.php 11~20
+    # https://www.twidouga.net/ko/ranking_tweek.php  주간 1~10
+    # https://www.twidouga.net/ko/ranking_tweek2.php  주간 11~20
 
-    urls = ['https://www.twidouga.net/ko/ranking_t.php', 'https://www.twidouga.net/ko/ranking_t2.php']
+    urls = ['https://www.twidouga.net/ko/ranking_t.php', 'https://www.twidouga.net/ko/ranking_t2.php', 'https://www.twidouga.net/ko/ranking_tweek.php', 'https://www.twidouga.net/ko/ranking_tweek2.php']
 
+    links=[]
     for url in urls:
         try:
             req = urllib.request.Request(url=url, headers=headers)
@@ -314,10 +317,9 @@ def get_twidouga_rank():
             soup = bs(res,'html.parser')
 
             hrefs = soup.find_all(href=re.compile("https://video.twimg.com"))
-
-            links=[]
+            
             for href in hrefs:
-                if href['href'] not in LINKS: links.append(href['href']); print(href['href'])
+                if href['href'] not in LINKS and href['href'] not in links: links.append(href['href'])
         except Exception as e:
             print('get_twidouga_rank - get url fail : ',end="")
             print(e)

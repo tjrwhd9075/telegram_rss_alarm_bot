@@ -944,8 +944,11 @@ async def get_twidouga():
     links = avdbs_crawling.get_twidouga_rank()
     for link in links :
         try:
-            telbot.send_video(chat_id=group_id_memo, video=link); time.sleep(3)
-            LINKS.append(link)
+            if link not in LINKS: 
+                LINKS.append(link)
+                telbot.send_video(chat_id=group_id_memo, video=link); time.sleep(3)
+                print(link)
+            
         except Exception as e:
             print("get_twidouga - send video fail : ",end="")
             print(e)
