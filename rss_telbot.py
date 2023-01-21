@@ -981,19 +981,26 @@ print("쓰레딩이이잉")
 telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))
 
 #일단 한번 에딥 크롤링 시작
-try:  asyncio.run(get_avdbs_crawling(group_id_avdbs))
+try:
+    telbot.send_message(chat_id=group_id_avdbs, text="ㅡㅡㅡㅡㅡㅡㅡㅡrestartㅡㅡㅡㅡㅡㅡㅡㅡ")  
+    asyncio.run(get_avdbs_crawling(group_id_avdbs))
 except Exception as e:
     print("get_avdbs_crawling error : ", end="")
     print(e)
 
 #일단 한번 에딥 크롤링 시작
-try:  asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))
+try:
+    telbot.send_message(chat_id=group_id_avdbs, reply_to_message_id='1418', text="ㅡㅡㅡㅡㅡㅡㅡㅡrestartㅡㅡㅡㅡㅡㅡㅡㅡ")  
+    asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))
 except Exception as e:
     print("get_avdbs_twit_crawling error : ", end="")
     print(e)
 
 #일단 한번 에딥 크롤링 시작
-try:  asyncio.run(get_twidouga())
+try:  
+    telbot.send_message(chat_id=group_id_memo, text="ㅡㅡㅡㅡㅡㅡㅡㅡrestartㅡㅡㅡㅡㅡㅡㅡㅡ")
+    asyncio.run(get_twidouga())
+
 except Exception as e:
     print("get_avdbs_twit_crawling error : ", end="")
     print(e)    
