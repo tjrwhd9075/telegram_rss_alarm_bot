@@ -250,11 +250,11 @@ def get_avrssbot_text(bot, update):
     if msg.find("https://sukebei.nyaa.si/download/") == -1 : return #rss 피드가 아니면 종료
     print("ㅡㅡㅡㅡㅡㅡ get_avrssbot_text ㅡㅡㅡㅡㅡㅡ" )
 
-    msg = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)(\n)(\t)(\r)(#)(.)(\-)(|)(:)(/)]", " ", msg)
+    msg = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)(\n)(\t)(\r)(#)(.)(\-)(_)(|)(:)(/)]", " ", msg)
     title = msg.split(" | ")[1]
 
     pumnumTmp = re.sub(r"[^a-zA-Z0-9(\-)(\_)]", "?", title) # 숫자랑 영어, '-' 빼고 전부 제거
-    pumnumTmpList = pumnumTmp.split("?")
+    pumnumTmpList = pumnumTmp.split("?")        
     pumnum = ""
     for p in pumnumTmpList: 
         if p.find("-") != -1 : pumnum=p; break #품번이 존재하면
@@ -296,16 +296,17 @@ def get_avrssbot_text(bot, update):
         elif title.find("-paco-1080p") != -1 :  # 010423_771-paco-1080p-人妻マンコ図鑑 149
             for i, p in enumerate(pumnumTmpList):
                 if p.find("paco") != -1 : pumnum = "paco-" + pumnumTmpList[i-1] + "_" + p.split("-")[0] ; break
-        elif title.find("pacopacomama") != -1 : # pacopacomama-121022_754 イキナリ亀甲縛り 〜鈴木里奈〜
+        elif title.lower().find("paco") != -1 : # pacopacomama-121022_754 イキナリ亀甲縛り 〜鈴木里奈〜
             fpumnum = re.findall(r'\d+[_]\d+', title) 
             pumnum = "paco-"+fpumnum[0]
                 
         elif title.find("H4610-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] #H4610-gol211-FHD-綺麗な肌全身で感じまくって
-        elif title.find("kin8-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] # kin8-3656-FHD-2022
-        elif title.find("Kin8tengoku") !=-1 : 
-            for i, t in enumerate(title.split(" ")):
-                if t=="Kin8tengoku": pumnum = "kin8-"+title.split(" ")[i+2] #[HD/720p] Kin8tengoku 金8天国 3659 小柄ボディー可愛いナタちゃんのお
-    except : pass
+        # elif title.find("kin8-") !=-1 and title.find("HD-") != -1: pumnum = pumnum.split("-")[0] + "-" + pumnum.split("-")[1] # kin8-3656-FHD-2022
+        elif title.lower().find("kin8") !=-1 : 
+            match = re.search(r'\b\d{4}\b', title) #4자리 숫자 찾기
+            if match: pumnum = "kin8-"+str(match.group())
+    except:
+        pass
 
     if pumnum == "" or pumnum == "-" : #품번이 없으면 삭제 후 종료
         telbot.delete_message(chat_id=chat_id, message_id=message_id); 
@@ -763,12 +764,19 @@ async def get_avdbs_twit_crawling(chat_id):
         
     print("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ")
 
-async def backup_klist(chat_id:str, txtFile:str):
-    async with aiofile.AIOFile(txtFile, 'rb') as f:
-        data = await f.read()
-        telbot.send_document(chat_id=chat_id, document=data, filename=txtFile, timeout=1000)
-        f.close()
-    print(f"{txtFile} 백업 완료")
+async def backup_klist(chat_id:str):
+    txtFile = [klistTxtFile, 'avdbs_list.txt','av_list_avdbs_all.csv','av_list_avdbs_month.csv','av_list_avdbs_year.csv','av_list_avdbs_week.csv' ]
+
+    for tf in txtFile :
+        async with aiofile.AIOFile(tf, 'rb') as f:
+            data = await f.read()
+            try:
+                telbot.send_document(chat_id=chat_id, document=data, filename=tf, timeout=1000)
+            except Exception as e:
+                telbot.send_message(chat_id=chat_id, text=f"backup fail : {tf}")
+                print("backup_klist - send doc fail : ", end="")
+                print(e)
+    print(f"백업 완료")
     # klist = watchlist.get_querys(txtFile)
     # if txtFile == newsKlistTxtFile : klist=klist[0].split(",")
     # txt = txtFile+ " backup"
@@ -975,7 +983,7 @@ schedule.every().day.at(f"{sch_hour}:{sch_min45}").do(lambda:asyncio.run(get_avd
 schedule.every(3).hours.do(lambda:asyncio.run(get_twidouga())) 
 schedule.every(10).minutes.do(lambda:asyncio.run(get_avdbs_crawling(group_id_avdbs))) 
 schedule.every(15).minutes.do(lambda:asyncio.run(get_avdbs_twit_crawling(group_id_avdbs))) 
-schedule.every().day.at("00:00").do(lambda:asyncio.run(backup_klist(group_id_trash, newsKlistTxtFile))) 
+schedule.every().day.at("00:00").do(lambda:asyncio.run(backup_klist(group_id_trash))) 
 
 print("쓰레딩이이잉")
 telbot.sendMessage(chat_id=group_id_trash, text=("rss봇 실행됨"))

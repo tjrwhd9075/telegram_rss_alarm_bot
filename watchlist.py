@@ -143,6 +143,18 @@ def find_keyword_line(txt, file):
             return query
     return 0
 
+def find_series_line(txt, file):
+    '''
+    찾으면 -> "user_id" + " " + "keyword"
+    없으면 -> 0
+    '''
+    querys = get_querys(file)
+
+    for query in querys:
+        if query!="" and query.split(" ")[1] == txt: #키워드와 같은 문자열이 존재하면
+            return query
+    return 0
+
 def find_keyword_lines(txt, file):
     '''
     찾으면 -> list["user_id" + " " + "keyword", ...]
