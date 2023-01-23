@@ -216,7 +216,7 @@ def makeVideoURL(pumnum):
     if ('heyzo' or '1pondo' or 'pacopaco' or 'carib' or '10musume') in maker:
         return 0
     elif ('fc2') in maker:
-        return f'https://db.msin.jp/sampleplay?id=fc2-ppv-{num}'
+        return f'https://adult.contents.fc2.com/embed/{num}'
 
     for key in PRESTIGE_ITEMS:
         if maker in PRESTIGE_ITEMS[key]:

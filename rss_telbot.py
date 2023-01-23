@@ -436,13 +436,13 @@ def get_fc2rssbot_text(bot, update):
         if diffDate.days <= 7 : highlight="`"
     
     txt = "[.](" +f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"+ ") `FC2PPV " + str(pumnum) + "` #FC2PPV\_"+str(pumnum) +"\n"\
-        + "\[ [trailer]("+f"https://db.msin.jp/sampleplay?id=fc2-ppv-{pumnum}"+") ]  "+\
-        "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}"+") ]  "+\
+        + "\[ [trailer]("+f"https://adult.contents.fc2.com/embed/{pumnum}) ]  "+\
+        "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
         "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+\
-        "\[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}"+") ]  "+\
+        "\[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}) ]  "+\
         "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "\
-        "\[ [dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}"+") ]  "+\
-        "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
+        "\[ [dbmsin]("+f"https://db.msin.jp/search/movie?str={pumnum}) ]  "+\
+        "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}) ]  "+\
         "\[ [bt4g](https://kr.bt4g.org/search/"+str(pumnum)+") ]  "+\
         "\[ [torrent]("+torrentLink+") ]\n\n"\
         + str(actor) + " " + str(writer) + " " +highlight+ str(createDate) +highlight+ " **" + str(fileSize) + "**\n"\
