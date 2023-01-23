@@ -352,7 +352,6 @@ def get_avrssbot_text(bot, update):
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
         "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/search/{missavPumnum}"+") ]  "+\
-        "\[ [avdbs](https://www.avdbs.com/menu/search.php?kwd="+pumnum.replace("fc2ppv ","")+"&seq=214407610&tab=2) ]  "\
         "\[ [dbmsin]("+dburl+") ]  "+\
         "\[ [sukebei](" +f"https://sukebei.nyaa.si/view/{sukebeiNum}" +") ]  "+\
         "\[ [bt4g](https://kr.bt4g.org/search/"+str(pumnum)+") ]  "+\

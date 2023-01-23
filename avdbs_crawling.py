@@ -324,7 +324,7 @@ def get_twidouga_rank():
             print('get_twidouga_rank - get url fail : ',end="")
             print(e)
 
-    if len(LINKS) >= 100 : LINKS[0:50] = [] #너무 쌓이면 삭제
+    if len(LINKS) >= 200 : LINKS[0:100] = [] #너무 쌓이면 삭제
     return links
 
 

@@ -62,7 +62,7 @@ DBMSIN_IMG = {
 
 # MGS 품번에는 숫자가 없는데, 링크에는 숫자가 있는것 / 앞에 숫자 알아내기
 DBMSIN_NUM_AMA_IMG =[
-    '223ECB','168RS','052VNDS','107SDMT','052PES','052OFKU','052NXGS','052NXG','052KIR','118RCT','110FSET','107STARS','298GOGO','223WPSL','001HMGL','169MDS','420STH','224DYD','263EMOT','224CMD','336DTT','225YSN','223WZEN','298PAIS','077GBD','324SRTD','271GS','390JNT','326KFNE','446KHOM','554SPIVR','107MSFH','563PPZ','390JAC','112SVVRT','224DTSL','201FONE','298PAKO','201CIEL','201DORI','002HODV','336KNB','595CHNYM','118RCTD','278GNAB','435MFC','300MAAN','480FRIN','277DCV','300NTK','259LUXU','230ORECO','726ANKK','702NOSKN','558KRS','520SSK','223EKBE','043PYM','278GIRO','005AOZ','352KNMD','107SDMUA','026MOND','109IENE','116SHH','307SHIC','1073DSVR','258DTSG','116ACME','336KBI','116NHDTA','107MOGI','336ASI','534IND','107SDMF','336ASI','003T28','201TDMN'
+    '278GZAP','223ECB','168RS','052VNDS','107SDMT','052PES','052OFKU','052NXGS','052NXG','052KIR','118RCT','110FSET','107STARS','298GOGO','223WPSL','001HMGL','169MDS','420STH','224DYD','263EMOT','224CMD','336DTT','225YSN','223WZEN','298PAIS','077GBD','324SRTD','271GS','390JNT','326KFNE','446KHOM','554SPIVR','107MSFH','563PPZ','390JAC','112SVVRT','224DTSL','201FONE','298PAKO','201CIEL','201DORI','002HODV','336KNB','595CHNYM','118RCTD','278GNAB','435MFC','300MAAN','480FRIN','277DCV','300NTK','259LUXU','230ORECO','726ANKK','702NOSKN','558KRS','520SSK','223EKBE','043PYM','278GIRO','005AOZ','352KNMD','107SDMUA','026MOND','109IENE','116SHH','307SHIC','1073DSVR','258DTSG','116ACME','336KBI','116NHDTA','107MOGI','336ASI','534IND','107SDMF','336ASI','003T28','201TDMN'
     ]
 # matching = [s for s in DBMSIN_NUM_AMA_IMG if "베리" in s] 
 # print(matching) #리스트
@@ -77,6 +77,7 @@ DBMSIN_UNCEN_IMG = {
     '1pon':["1pon"]
     # https://db.msin.jp/images/cover/carib/carib-010323-001.jpg
 }
+
 DBMSIN_AMA_IMG ={
     'FANZA' : ['60xv','sth','frin',"scute","pow","sqb","hmdnc","oreco","ankk",'ssk','mgmr'], #https://db.msin.jp/jp.images/cover/FANZA/scute1306.jpg
     'MGS' : ["229scute",'bkynb'],#https://db.msin.jp/jp.images/cover/MGS/229SCUTE-1288.jpg
@@ -113,16 +114,20 @@ def makeImageURL(pumnum):
     '''
     [maker, num] = purifyPumnum(pumnum)
     print(maker, num, end=" ")
+    maker = check_and_encode_for_url(maker)
+    num = check_and_encode_for_url(num)
 
     for key in DBMSIN_IMG:
         if maker in DBMSIN_IMG[key]:
             url = 'https://db.msin.jp/jp.images/cover/'+key+'/'+maker.upper()+'-'+num+'.jpg'
+            
             print(key, url) 
             return url
             
     for key in DBMSIN_UNCEN_IMG:
         if maker in DBMSIN_UNCEN_IMG[key]:
             url = 'https://db.msin.jp/images/cover/'+key+'/'+maker.lower()+'-'+num+'.jpg'
+            
             print(key, url) 
             return url
             
@@ -131,6 +136,7 @@ def makeImageURL(pumnum):
             digitMaker = [s for s in DBMSIN_NUM_AMA_IMG if maker.upper() in s] #숫자 찾아내기
             if digitMaker != []: 
                 url = 'https://db.msin.jp/jp.images/cover/MGS/'+digitMaker[0].upper()+'-'+num+'.jpg'
+                
                 req = urllib.request.Request(url=url, headers=headers)
                 res = urllib.request.urlopen(req).geturl()
                 if res != "https://db.msin.jp/404": print(digitMaker[0], url); return url
@@ -146,6 +152,7 @@ def makeImageURL(pumnum):
             
             if maker[0:3].isdigit() :  #229scute 일경우
                 url = 'https://db.msin.jp/jp.images/cover/FANZA/'+maker[3:].lower()+num+'.jpg'
+                
                 req = urllib.request.Request(url=url, headers=headers)
                 res = urllib.request.urlopen(req).geturl()
                 if res != "https://db.msin.jp/404": print(key, url); return url
@@ -153,12 +160,14 @@ def makeImageURL(pumnum):
                 digitMaker = [s for s in DBMSIN_NUM_AMA_IMG if maker.upper() in s]
                 if digitMaker != []: 
                     url = 'https://db.msin.jp/jp.images/cover/MGS/'+digitMaker[0].upper()+'-'+num+'.jpg'
+                    
                     req = urllib.request.Request(url=url, headers=headers)
                     res = urllib.request.urlopen(req).geturl()
                     if res != "https://db.msin.jp/404": print(digitMaker[0], url); return url
         
         if key == '':
             url = 'https://db.msin.jp/jp.images/cover/MGS/'+maker.upper()+'-'+num+'.jpg'
+            
             req = urllib.request.Request(url=url, headers=headers)
             res = urllib.request.urlopen(req).geturl()
             if res != "https://db.msin.jp/404":  print(key, url); return url
@@ -167,7 +176,8 @@ def makeImageURL(pumnum):
         if maker in PRESTIGE_ITEMS[key] : 
             url = [f'https://image.mgstage.com/images/'+key+'/'+maker+'/'+num+'/pb_e_'+maker+'-'+num+'.jpg',  #신작?
                f'https://www.prestige-av.com/api/media/goods/'+key+'/'+maker+'/'+num+'/pb_'+maker+'-'+num+'.jpg']
-                
+                        
+
             print(key, url)
             return url
 
@@ -189,6 +199,7 @@ def makeImageURL(pumnum):
         if key=='':
             url = [f'https://pics.r18.com/digital/video/'+maker+num.zfill(5)+'/'+maker+num.zfill(5)+'pl.jpg', #작은 이미지 
                    f'https://pics.dmm.co.jp/mono/movie/adult/'+maker+num+'/'+maker+num+'pl.jpg']
+     
             req = urllib.request.Request(url=url[0], headers=headers)
             res1 = urllib.request.urlopen(req).geturl()
             if res1.find("now_printing") == -1: print(key, url); return url[0]
@@ -211,12 +222,14 @@ def makeVideoURL(pumnum):
         if maker in PRESTIGE_ITEMS[key]:
             url = f'https://www.prestige-av.com/api/media/movie/'+maker.upper()+'-'+num+'.mp4'
             # print(key, url)  
+            
             return url
             
     for key in AMA:
         if maker in AMA[key]:
             url = 'https://sample.mgstage.com/sample/'+key+'/'+maker+'/'+num+'/'+maker+'-'+num+'_sample.mp4'
             # print(key, url)  
+            
             return url
     
     for key in ALL_ITEMS: 
@@ -237,6 +250,7 @@ def makeVideoURL(pumnum):
                 firstLetter = newID[0]
                 threeLetter = newID[0:3]
                 url = 'https://cc3001.dmm.co.jp/litevideo/freepv/'+firstLetter+'/'+threeLetter+'/'+newID+'/'+newID+'_dmb_w.mp4'
+                
                 res = urllib.request.urlopen(url) 
                 return url
             except: #죽어있으면 zfill(5)
@@ -244,6 +258,20 @@ def makeVideoURL(pumnum):
                 firstLetter = newID[0]
                 threeLetter = newID[0:3]
                 url = 'https://cc3001.dmm.co.jp/litevideo/freepv/'+firstLetter+'/'+threeLetter+'/'+newID+'/'+newID+'_dmb_w.mp4'
+                
                 return url
     print("video url 없음")
     return 0
+
+
+import urllib.parse
+
+def check_and_encode_for_url(txt):
+    return urllib.parse.quote(txt)
+
+if __name__ == "__main__":
+    url = "한글/샘플"
+    res = check_and_encode_for_url(url)
+    print(res)
+
+    print(urllib.parse.unquote(res))
