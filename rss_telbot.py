@@ -341,10 +341,10 @@ def get_avrssbot_text(bot, update):
         if res['img'] != [] : thumb = res['img'][0]
 
     if thumb == '' or thumb == '-' or thumb is None:
-        thumb = av_img_video_url.makeImageURL(pumnum)
-        if isinstance(thumb, list) : thumb1 = thumb[0]
-        else: thumb1 = thumb
-    else : thumb1 = res['thumb']
+        thumb_s = av_img_video_url.makeImageURL(pumnum)
+        if isinstance(thumb_s, list) : thumb = thumb_s[0]
+        else: thumb = thumb_s
+        
     if trailer == '' or trailer is None:
         trailer = av_img_video_url.makeVideoURL(pumnum)
 
@@ -359,7 +359,7 @@ def get_avrssbot_text(bot, update):
     else : dburl=f"https://db.msin.jp/jp.search/movie?str={pumnum}"
 
     missavPumnum = pumnum.upper().replace("FC2PPV ","FC2-PPV-").replace("10MU-","").replace("PACO-","").replace("1PON-","").replace("CARIB-","")
-    txt = "[.](" +str(thumb1)+ ") `" + str(pumnum.upper()) + "` #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
+    txt = "[.](" +str(thumb)+ ") `" + str(pumnum.upper()) + "` #"+str(pumnum.upper().replace("_","\_").replace("-","\_")) +"\n"\
         "\[ [javdb]("+f"https://javdb.com/search?q={pumnum}&f=all) ]  "+\
         "\[ [trailer]("+str(trailer)+") ]  "+\
         "\[ [avdbs]("+f"https://www.avdbs.com/menu/search.php?kwd={pumnum}&seq=214407610&tab=2) ]  "+\
