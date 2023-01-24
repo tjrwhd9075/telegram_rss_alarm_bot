@@ -349,7 +349,7 @@ def get_avrssbot_text(bot, update):
         trailer = av_img_video_url.makeVideoURL(pumnum)
 
     highlight=""
-    if createDate != "-" or createDate != "":
+    if createDate != "-" and createDate != "":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
 
@@ -460,7 +460,7 @@ def get_fc2rssbot_text(bot, update):
         if res['img'] != []: thumb = res['img'][0]
 
     highlight=""
-    if createDate != "-" or createDate != "":
+    if createDate != "-" and createDate != "":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
     
