@@ -234,15 +234,13 @@ def get_pumInfo_dbmsin_static(pumnum):
     국내 https://db.msin.jp/jp.search/movie?str={}
     해외 https://db.msin.jp/search/movie?str={}
 
-    # return [title, writer, actor, createDate]
+    # return puminfo = {"title":"-","writer":"-","actor":"-","createDate":"-","thumb":"-"}
     '''
-    
+    puminfo = {"title":"-","writer":"-","actor":"-","createDate":"-","thumb":"-"}
+
+
     avfc2=""
     pumnum = pumnum_check(pumnum)
-
-    # 품번뒤 넘버가 3자리수 미만일 경우
-    if pumnum.find("carb") ==-1 and pumnum.split("-")[-1].isdigit() and len(pumnum.split("-")[-1]) < 3: 
-        pumnum = "-".join(pumnum.split("-")[0:-1]) + pumnum.split("-")[-1].zfill(3)
     
     if pumnum.find("fc2") != -1 or pumnum.find("carib") != -1 or pumnum.find("10mu") != -1 or pumnum.find("paco") != -1 or pumnum.find("1pon") != -1 or pumnum.find("heyzo") != -1: 
         url = f'https://db.msin.jp/search/movie?str=' + parse.quote(pumnum); avfc2="fc2"
@@ -259,12 +257,12 @@ def get_pumInfo_dbmsin_static(pumnum):
         response = urllib.request.urlopen(req).read().decode('utf-8')
         soup = bs(response,'html.parser')
     except Exception as e:
-        print("url open fail")
-        print(e)
-        return "-","-","-","-"
+        print("get_pumInfo_dbmsin_static - url open fail : ",end=""); print(e)
+        print(puminfo)
+        return puminfo
     
     try:
-        if soup.select_one("#content > p:nth-child(4)").get_text() == "No Resutls": 
+        if soup.select_one("#content > p:nth-child(4)").get_text().strip() == "No Resutls": 
             if pumnum[0:3].isdigit() is True:  #품번앞에 숫자가 붙어있는지 확인, 숫자 떼고 한번더 써치
                 pumnum = pumnum[3:]
                 try:
@@ -273,12 +271,13 @@ def get_pumInfo_dbmsin_static(pumnum):
                     response = urllib.request.urlopen(req).read().decode('utf-8')
                     soup = bs(response,'html.parser')
                 except Exception as e:
-                    print("url open fail")
-                    print(e)
-                    return "-","-","-","-"
+                    print("get_pumInfo_dbmsin_static - url open fail : ",end=""); print(e)
+                    print(puminfo)
+                    return puminfo
             else:
-                print("dbmsin 검색결과 없음")
-                return "-","-","-","-"
+                print("get_pumInfo_dbmsin_static - dbmsin 검색결과 없음 : ")
+                print(puminfo)
+                return puminfo
     except: pass
 
     try: #여러개 검색되는 경우 한번더
@@ -294,11 +293,11 @@ def get_pumInfo_dbmsin_static(pumnum):
     elif avfc2 == "av": print(str(pumnum), end=" ")
 
     try: 
-        title=soup.select_one("div.mv_title").get_text()
+        title=soup.select_one("div.mv_title").get_text().strip()
         title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", title) #특수문자 제거
         title = replaceTxt(translater(title)) #수정
-    except Exception as e : title="-"
-    print(title)
+        puminfo['title']=title
+    except Exception as e : puminfo['title']="-"
 
     try: 
         writer = "-"
@@ -311,12 +310,12 @@ def get_pumInfo_dbmsin_static(pumnum):
                 writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]","", replaceWriterTxt(writer)) #특수문자 제거
             elif avfc2=="av": 
                 writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]","", writer) #특수문자 제거
-            writer = "#"+translater(writer).replace(" ","")
-    except Exception as e : writer="-"
-    print(writer)
+            writer = "#"+translater(writer).replace(" ","")+" "
+        puminfo['writer']=writer
+    except Exception as e : puminfo['writer']="-"
 
     try: 
-        actor = soup.select_one("div.mv_artist").get_text()
+        actor = soup.select_one("div.mv_artist").get_text().strip()
         actor = actor.replace("（FC2動画）","")
         actor = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", actor) #특수문자 제거
         
@@ -328,14 +327,30 @@ def get_pumInfo_dbmsin_static(pumnum):
                     actor += "#"+translater(at).replace(" ","").replace("#","").replace("-","")+" "
         else:
             actor = "#"+translater(actor).replace(" ","").replace("#","").replace("-","")+" "
-    except Exception as e : actor="-"
-    print(actor)
+        puminfo['actor']=actor
+    except Exception as e : puminfo['actor']="-"
 
-    try: createDate=soup.select_one("div.mv_createDate").get_text()
-    except Exception as e : createDate="-"
-    print(createDate)
+    try: 
+        createDate=soup.select_one("div.mv_createDate").get_text().strip()
+        puminfo['createDate']=createDate
+    except Exception as e : puminfo['createDate']="-"
 
-    return title, writer, actor, createDate
+    try: 
+        thumb=soup.select_one("div.mv_coverUrl")
+        if thumb is not None: thumb = thumb.get_text().strip()
+        else:
+            thumb = soup.find("img", class_="movie_img")
+            if thumb is not None: 
+                if thumb['src'].find("https://db.msin.jp") == -1 and thumb['src'].find("../") != -1 : # ../images/cover/fc2/fc2-ppv-1234568.jpg
+                    thumb = thumb['src'].replace("../","https://db.msin.jp/")
+                else: thumb = thumb['src']
+            else: thumb = "-"
+
+        puminfo['thumb']=thumb
+    except Exception as e : puminfo['thumb']="-"
+    
+    print(puminfo)
+    return puminfo
 
 def get_pumInfo_fc2_from_fc2hub_static(pumnum):
     ''' 

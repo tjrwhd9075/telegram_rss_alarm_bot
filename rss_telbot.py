@@ -180,7 +180,6 @@ def get_command(bot, update):
                 if period in ['week','month','year','all']:
                     get_avdbs_rank("avdbs "+period, group_id_trash)
                     asyncio.run(backup_avdbs(group_id_trash, f'av_list_avdbs_{period}.csv'))
-                    asyncio.run(backup_avdbs(group_id_trash, f'avdbs_list.txt'))
                 else: telbot.send_message(chat_id = user_id, text = "잘못된 입력입니다..(week, month, year, all)")
 
         elif msg.upper().find("/GETINFO") != -1:
@@ -325,8 +324,13 @@ def get_avrssbot_text(bot, update):
     print('torrentLink : ' + str(torrentLink))
 
     translatedTitle = filename_set.replaceTxt(filename_set.translater(title))
-    title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
-    thumb = ''; trailer =''
+    res = filename_set.get_pumInfo_dbmsin_static(pumnum)
+    title = res['title']
+    writer = res['writer']
+    actor = res['actor']
+    createDate = res['createDate']
+    thumb = res['thumb']
+    trailer =''
 
     if writer =="-" and actor=="-" and createDate=="-" : #fc2 제외한 품번들
         res = filename_set.get_pumInfo_from_javdb_static(pumnum)
@@ -336,15 +340,16 @@ def get_avrssbot_text(bot, update):
         trailer = res['trailer']
         if res['img'] != [] : thumb = res['img'][0]
 
-    if thumb == '' or thumb is None:
+    if thumb == '' or thumb == '-' or thumb is None:
         thumb = av_img_video_url.makeImageURL(pumnum)
         if isinstance(thumb, list) : thumb1 = thumb[0]
         else: thumb1 = thumb
+    else : thumb1 = res['thumb']
     if trailer == '' or trailer is None:
         trailer = av_img_video_url.makeVideoURL(pumnum)
 
     highlight=""
-    if createDate != "-":
+    if createDate != "-" or createDate != "":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
 
@@ -440,8 +445,13 @@ def get_fc2rssbot_text(bot, update):
     print('torrentLink : ' + str(torrentLink))
 
     translatedTitle = filename_set.replaceTxt(filename_set.translater(title))
-    title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static("fc2-ppv-"+str(pumnum))
-    thumb = ''; trailer = ''
+    res = filename_set.get_pumInfo_dbmsin_static("fc2-ppv-"+str(pumnum))
+    title = res['title']
+    writer = res['writer']
+    actor = res['actor']
+    createDate = res['createDate']
+    thumb = res['thumb']
+    trailer = ''
 
     if writer =="-" and actor =="-" and createDate =="-" : 
         res = filename_set.get_pumInfo_fc2_from_fc2hub_static(pumnum.split("-")[-1])
@@ -450,11 +460,11 @@ def get_fc2rssbot_text(bot, update):
         if res['img'] != []: thumb = res['img'][0]
 
     highlight=""
-    if createDate != "-":
+    if createDate != "-" or createDate != "":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
     
-    if thumb == '' or thumb is None:
+    if thumb == '-' or thumb is None:
         thumb = f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"
     if trailer == '' or trailer is None:
         trailer = f"https://adult.contents.fc2.com/embed/{pumnum}"
@@ -504,8 +514,13 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
     pumnum = filename_set.pumnum_check(pumnum) #fc2-ppv-12345
-    title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
-    trailer=''; thumb=''
+    res = filename_set.get_pumInfo_dbmsin_static(pumnum)
+    title = res['title']
+    writer = res['writer']
+    actor = res['actor']
+    createDate = res['createDate']
+    thumb = res['thumb']
+    trailer=''
 
     if title != "-": 
         title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", title) #특수문자 제거
@@ -527,12 +542,12 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
             if res['img'] != []: thumb = res['img'][0]
 
     highlight=""
-    if createDate != "-":
+    if createDate != "-" or createDate != "":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
     
     title = title.replace("_","\\_")
-    if thumb =='' or thumb is None:
+    if thumb =='' or thumb =='-' or thumb is None:
         thumb = av_img_video_url.makeImageURL(pumnum)
         if isinstance(thumb, list): thumb = thumb[1]
     if trailer =='' or trailer is None:    
