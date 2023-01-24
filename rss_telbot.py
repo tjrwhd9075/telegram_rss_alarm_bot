@@ -191,7 +191,7 @@ def get_command(bot, update):
                     get_pumInfo(getinfo, str(user_id))
                 except Exception as e:
                     print(e)
-                    telbot.send_message(chat_id=user_id, txt=getinfo + " 조회 실패")
+                    telbot.send_message(chat_id=user_id, text=getinfo + " 조회 실패")
 
         elif msg.upper().find("/FEEDBACK") != -1:
             txtfile = "habot_feedback.txt"
@@ -332,7 +332,7 @@ def get_avrssbot_text(bot, update):
     thumb = res['thumb']
     trailer =''
 
-    if writer =="-" and actor=="-" and createDate=="-" : #fc2 제외한 품번들
+    if writer =="-" and actor=="-" and createDate=="-" : 
         res = filename_set.get_pumInfo_from_javdb_static(pumnum)
         writer = res['writer']
         actor = res['actor']
@@ -344,7 +344,7 @@ def get_avrssbot_text(bot, update):
         thumb_s = av_img_video_url.makeImageURL(pumnum)
         if isinstance(thumb_s, list) : thumb = thumb_s[0]
         else: thumb = thumb_s
-        
+
     if trailer == '' or trailer is None:
         trailer = av_img_video_url.makeVideoURL(pumnum)
 
@@ -542,7 +542,7 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
             if res['img'] != []: thumb = res['img'][0]
 
     highlight=""
-    if createDate != "-" or createDate != "":
+    if createDate != "-" and createDate != "":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
     
