@@ -325,15 +325,24 @@ def get_avrssbot_text(bot, update):
     print('torrentLink : ' + str(torrentLink))
 
     translatedTitle = filename_set.replaceTxt(filename_set.translater(title))
-
-    trailer = av_img_video_url.makeVideoURL(pumnum)
-    thumb = av_img_video_url.makeImageURL(pumnum)
-    if isinstance(thumb, list) :
-        thumb1 = thumb[0]
-        thumb2 = thumb[1]
-    else: thumb1 = thumb
-
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
+    thumb = ''; trailer =''
+
+    if writer =="-" and actor=="-" and createDate=="-" : #fc2 제외한 품번들
+        res = filename_set.get_pumInfo_from_javdb_static(pumnum)
+        writer = res['writer']
+        actor = res['actor']
+        createDate = res['date']
+        trailer = res['trailer']
+        if res['img'] != [] : thumb = res['img'][0]
+
+    if thumb == '' or thumb is None:
+        thumb = av_img_video_url.makeImageURL(pumnum)
+        if isinstance(thumb, list) : thumb1 = thumb[0]
+        else: thumb1 = thumb
+    if trailer == '' or trailer is None:
+        trailer = av_img_video_url.makeVideoURL(pumnum)
+
     highlight=""
     if createDate != "-":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
@@ -417,7 +426,9 @@ def get_fc2rssbot_text(bot, update):
     else: 
         print(pumAndTitle)
         return
-        
+
+    pumnum = re.sub(r"[^0-9]", "", pumnum) #숫자를 제외한 문자는 제거
+    
     title = ''.join(title)
     fileSize = msg.split(" | ")[2]
     infoHash = msg.split(" | ")[4].split("\n")[0]
@@ -430,13 +441,26 @@ def get_fc2rssbot_text(bot, update):
 
     translatedTitle = filename_set.replaceTxt(filename_set.translater(title))
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static("fc2-ppv-"+str(pumnum))
+    thumb = ''; trailer = ''
+
+    if writer =="-" and actor =="-" and createDate =="-" : 
+        res = filename_set.get_pumInfo_fc2_from_fc2hub_static(pumnum.split("-")[-1])
+        writer = res['writer']
+        trailer = res['trailer']
+        if res['img'] != []: thumb = res['img'][0]
+
     highlight=""
     if createDate != "-":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
     
-    txt = "[.](" +f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"+ ") `FC2PPV " + str(pumnum) + "` #FC2PPV\_"+str(pumnum) +"\n"\
-        + "\[ [trailer]("+f"https://adult.contents.fc2.com/embed/{pumnum}) ]  "+\
+    if thumb == '' or thumb is None:
+        thumb = f"https://db.msin.jp/images/cover/fc2/fc2-ppv-{pumnum}.jpg"
+    if trailer == '' or trailer is None:
+        trailer = f"https://adult.contents.fc2.com/embed/{pumnum}"
+
+    txt = "[.](" +thumb+ ") `FC2PPV " + str(pumnum) + "` #FC2PPV\_"+str(pumnum) +"\n"\
+        + "\[ [trailer]("+trailer+") ]  "+\
         "\[ [evojav]("+f"https://evojav.pro/en/?s={pumnum}) ]  "+\
         "\[ [supjav]("+f"https://supjav.com/?s={pumnum}) ]  "+\
         "\[ [missav]("+f"https://missav.com/ko/FC2-PPV-{pumnum}) ]  "+\
@@ -477,23 +501,42 @@ def get_pumInfo(pumnum, chat_id, message_id=None):
     '''
     pumnum : qwer-1234 또는 fc2ppv 123456, fc2-ppv-123456
     '''
-    
-
     telbot.send_chat_action(chat_id=chat_id, action=telegram.ChatAction.TYPING)
 
     pumnum = filename_set.pumnum_check(pumnum) #fc2-ppv-12345
     title, writer, actor, createDate = filename_set.get_pumInfo_dbmsin_static(pumnum)
+    trailer=''; thumb=''
+
+    if title != "-": 
+        title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", title) #특수문자 제거
+        title = filename_set.replaceTxt(filename_set.translater(title)) #수정
+    else:
+        if writer =="-" and actor=="-" and createDate=="-" and pumnum.lower().find('fc2') == -1: #fc2 제외한 품번들
+            res = filename_set.get_pumInfo_from_javdb_static(pumnum)
+            title = res['title']
+            writer = res['writer']
+            actor = res['actor']
+            createDate = res['date']
+            trailer = res['trailer']
+            if res['img'] != []: thumb = res['img'][0]
+        elif writer =="-" and actor=="-" and createDate=="-" and pumnum.lower().find('fc2') != -1: #fc2 품번
+            res = filename_set.get_pumInfo_fc2_from_fc2hub_static(pumnum.split("-")[-1])
+            title = res['title']
+            writer = res['writer']
+            trailer = res['trailer']
+            if res['img'] != []: thumb = res['img'][0]
+
     highlight=""
     if createDate != "-":
         diffDate = datetime.now() - datetime.strptime(createDate, "%Y-%m-%d") # 날짜차이 계산
         if diffDate.days <= 7 : highlight="`"
-    if title != "-": 
-        title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]"," ", title) #특수문자 제거
-        title = filename_set.replaceTxt(filename_set.translater(title)) #수정
+    
     title = title.replace("_","\\_")
-    thumb = av_img_video_url.makeImageURL(pumnum)
-    if isinstance(thumb, list): thumb = thumb[1]
-    trailer = av_img_video_url.makeVideoURL(pumnum)
+    if thumb =='' or thumb is None:
+        thumb = av_img_video_url.makeImageURL(pumnum)
+        if isinstance(thumb, list): thumb = thumb[1]
+    if trailer =='' or trailer is None:    
+        trailer = av_img_video_url.makeVideoURL(pumnum)
     
     if pumnum.find("fc2") != -1 or pumnum.find("carib") != -1 or pumnum.find("1pon") != -1 or pumnum.find("10mu") != -1 or pumnum.find("paco") != -1 : 
         dburl=f"https://db.msin.jp/search/movie?str={pumnum}"
@@ -776,6 +819,7 @@ async def backup_klist(chat_id:str):
                 print("backup_klist - send doc fail : ", end="")
                 print(e)
     print(f"백업 완료")
+    telbot.send_message(chat_id=chat_id, text="백업 완료")
     # klist = watchlist.get_querys(txtFile)
     # if txtFile == newsKlistTxtFile : klist=klist[0].split(",")
     # txt = txtFile+ " backup"

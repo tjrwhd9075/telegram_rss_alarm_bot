@@ -337,6 +337,143 @@ def get_pumInfo_dbmsin_static(pumnum):
 
     return title, writer, actor, createDate
 
+def get_pumInfo_fc2_from_fc2hub_static(pumnum):
+    ''' 
+    pumnum : 숫자만 
+    return fc2info ={'title':'', 'pumnum':'', 'writer':'', 'trailer':'','img':[]}
+    '''
+    fc2hubUrl = f'https://fc2hub.com/search?kw={pumnum}'
+    headers = {
+        "Cookie":"age=off",
+        'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/53.36'
+    } 
+    req = urllib.request.Request(url=fc2hubUrl, headers=headers)
+
+    fc2info ={'title':'', 'pumnum':'', 'writer':'', 'trailer':'','img':[]}
+    try: 
+        res = urllib.request.urlopen(req)
+        # print(res.geturl())
+        if res.geturl() == fc2hubUrl : # 검색결과 없음
+            print(f"get_pumInfo_fc2_from_fc2hub_static - no reslut {pumnum}")
+            return fc2info
+        res = res.read().decode('utf-8')
+        soup = bs(res,'html.parser')
+
+        pumid = soup.find('h1', class_='card-title fc2-id')
+        if pumid is not None :
+            pumid = pumid.get_text().strip()
+            fc2info['pumnum'] = pumid
+
+        title = soup.find('h1', class_='card-text fc2-title')
+        if title is not None :
+            title = title.get_text().strip()
+            title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)]", " ", title)
+            title = replaceTxt(translater(title))
+            fc2info['title'] = title
+
+        # writer = soup.find('div', class_='col-8')
+        writer = soup.select_one('div.col-8')
+        if writer is not None :
+            writer = writer.get_text().split("\n")
+            writer = [w for w in writer if w != ""][0]
+            writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]", "", replaceWriterTxt(writer))
+            writer = "#"+translater(writer).replace(" ","") +" "
+            fc2info['writer'] = writer
+
+        #iframe 씨발꺼
+        fc2info['trailer'] = f'https://adult.contents.fc2.com/embed/{pumid.lower().replace("fc2-ppv-","")}'
+
+        imgs = soup.find('div', class_='col des').find_all('a')
+        if imgs is not None :
+            for img in imgs:
+                img = img['href']
+                fc2info['img'].append(img)
+        print(fc2info)
+        return fc2info
+
+    except Exception as e:
+        print(f"get_pumInfo_fc2_from_fc2hub_static - urlopen fail : {fc2hubUrl} | ",end=""); print(e)
+        return fc2info
+
+def get_pumInfo_from_javdb_static(pumnum):
+    ''' return puminfo ={'title':'', 'pumnum':'', 'writer':'','actor:'', 'date':'','trailer':'','img':[]} '''
+    url = f'https://javdb.com/search?q={pumnum}&f=all'
+
+    headers = {
+        "Cookie":"age=off",
+        'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.5359.125 Safari/53.36'
+    } 
+    req = urllib.request.Request(url=url, headers=headers)
+
+    puminfo ={'title':'', 'pumnum':'', 'writer':'','actor':'', 'date':'','trailer':'','img':[]}    
+
+    res = urllib.request.urlopen(req)
+    res = res.read().decode('utf-8')
+    soup = bs(res,'html.parser')
+
+    pums = soup.find_all('div', class_="item")
+    for pum in pums:
+        pumid = pum.find('div', class_='video-title').find('strong').get_text().strip()
+        if pumnum.upper().find(pumid.upper()) != -1 or pumid.upper().find(pumnum.upper()) != -1:
+            puminfo['pumnum'] = pumid
+            pumlink = "https://javdb.com" + pum.a['href']
+            title = pum.a['title']
+            title = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥(\s)]", " ", title)
+            title = replaceTxt(translater(title))
+            puminfo['title']=title
+            date = pum.find('div', class_='meta').get_text().strip().replace(" ","")
+            puminfo['date']=date
+
+            req1 = urllib.request.Request(url=pumlink, headers=headers)
+            res1 = urllib.request.urlopen(req1)
+            res1 = res1.read().decode('utf-8')
+            soup1 = bs(res1,'html.parser')
+
+            infos = soup1.find_all('div', class_='panel-block')
+            for info in infos :
+                txt = info.get_text().strip().replace("\n","").replace(" ","").replace("&nbsp;","").replace("\xa0","")
+
+                if txt.find('系列') !=-1: #시리즈
+                    writer = txt.split(':')[1]
+                    writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]", "", writer)
+                    writer = translater(writer)
+                    puminfo['writer']="#"+writer+" "
+                elif txt.find('片商')!=-1: #시리즈가 없으면 제작사
+                    writer = txt.split(':')[1]
+                    writer = re.sub(r"[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥]", "", writer)
+                    writer = translater(writer)
+                    puminfo['writer']="#"+writer+" "
+                
+                if txt.find('演員')!=-1: #여배우
+                    if txt.find('♀') != -1 : #여배우가 있으면 
+                        actor = txt.split(":")[1].split("♀")
+
+                        actortxt=''
+                        for act in actor:
+                            if act != "" and act!=" ":
+                                actortxt += "#"+translater(act)+" "
+                        puminfo['actor']=actortxt
+            #썸네일
+            thumb = soup1.find('div', class_='column column-video-cover')
+            if thumb is not None and thumb.a is not None :
+                puminfo['img'].append(thumb.a.img['src'])
+            #이미지
+            imgs = soup1.find('div', class_='tile-images preview-images')
+            if imgs is not None and imgs.find_all('a',class_="tile-item") is not None:
+                imgs = imgs.find_all('a',class_="tile-item")
+                for img in imgs:
+                    puminfo['img'].append(img['href'])
+            #트레일러
+            trailer = soup1.find('source', attrs={'type':'video/mp4'})
+            if trailer is not None:
+                if (trailer['src'].find("http://") == -1 or trailer['src'].find("https://") == -1) and trailer['src'].find("//") != -1: 
+                    trailer['src'] = trailer['src'].replace("//", 'https://')
+                puminfo['trailer'] = trailer['src']
+
+            print(puminfo)
+            return puminfo
+    print(puminfo)
+    return puminfo
 
 
 
