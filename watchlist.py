@@ -1,10 +1,13 @@
 import aiofile
+import asyncio
+semaphore = asyncio.Semaphore(10)
 
 async def read_file_asyn(filename):
-    async with aiofile.AIOFile(filename, 'r', encoding = 'UTF-8') as f:
-        contents = await f.read()
-        contents = contents.split("\n")
-        return contents
+    async with semaphore:
+        async with aiofile.AIOFile(filename, 'r', encoding = 'UTF-8') as f:
+            contents = await f.read()
+            contents = contents.split("\n")
+            return contents
 
 
 
@@ -32,18 +35,18 @@ async def get_querys_asyn(file, user_id=None):
     user_id is None -> return [전체쿼리] 
     user_id is not None -> return [유저에 해당하는 쿼리]
     '''
+    async with semaphore:
+        querys = await read_file_asyn(file)
 
-    querys = await read_file_asyn(file)
+        if user_id is None: #전체 쿼리 리턴
+            return querys
+        else: #유저id에 해당하는 라인만 리턴
+            qs=[]
+            for q in querys:
+                if str(q.split(" ")[0]) == str(user_id):
+                    qs.append(q)
 
-    if user_id is None: #전체 쿼리 리턴
-        return querys
-    else: #유저id에 해당하는 라인만 리턴
-        qs=[]
-        for q in querys:
-            if str(q.split(" ")[0]) == str(user_id):
-                qs.append(q)
-
-    return qs
+        return qs
 
 def find_query_line(txt, file):
     '''
@@ -173,21 +176,22 @@ async def find_keyword_lines_asyn(txt, file):
     찾으면 -> list["user_id" + " " + "keyword", ...]
     없으면 -> []
     '''
-    querys=[]
-    try: 
-        querys = await get_querys_asyn(file)
-    except Exception as e:
-        print("find_keyword_lines_asyn - get_querys_asyn error : ", end="")
-        print(e)
-    qs=[]
-    try:
-        if querys != []:
-            for query in querys:
-                if len(query.split(" "))==2:
-                    if txt.find(query.split(" ")[1].replace("!","")) != -1 : #키워드와 같은 문자열이 존재하면
-                        qs.append(query)
-    except Exception as e:
-        print("find_keyword_lines_asyn - find same keyword error : ", end="")
-        print(e)
-    return qs
+    async with semaphore:
+        querys=[]
+        try: 
+            querys = await get_querys_asyn(file)
+        except Exception as e:
+            print("find_keyword_lines_asyn - get_querys_asyn error : ", end="")
+            print(e)
+        qs=[]
+        try:
+            if querys != []:
+                for query in querys:
+                    if len(query.split(" "))==2:
+                        if txt.find(query.split(" ")[1].replace("!","")) != -1 : #키워드와 같은 문자열이 존재하면
+                            qs.append(query)
+        except Exception as e:
+            print("find_keyword_lines_asyn - find same keyword error : ", end="")
+            print(e)
+        return qs
     

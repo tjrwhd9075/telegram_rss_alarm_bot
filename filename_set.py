@@ -481,7 +481,7 @@ def get_pumInfo_from_javdb_static(pumnum):
             #트레일러
             trailer = soup1.find('source', attrs={'type':'video/mp4'})
             if trailer is not None:
-                if (trailer['src'].find("http://") == -1 or trailer['src'].find("https://") == -1) and trailer['src'].find("//") != -1: 
+                if trailer['src'][0:2] == "//":  # //asdfasf/asdf 형태일때
                     trailer['src'] = trailer['src'].replace("//", 'https://')
                 puminfo['trailer'] = trailer['src']
 
